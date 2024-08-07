@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+  <div style="background-color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px; padding: 36px; width: 100%; max-width: 500px;">
+    <h1 style="font-size: 28px; font-weight: 600; color: #333; margin-bottom: 32px;">Editar Perfil</h1>
+    <form method="post" style="display: flex; flex-direction: column; gap: 24px;">
+      {% csrf_token %}
+
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        {{ form.as_p }}
+      </div>
+
+      <div style="display: flex; justify-content: flex-end;">
+        <button type="submit" style="font-size: 16px; font-weight: 500; color: white; background-color: #007bff; border: none; border-radius: 6px; padding: 12px 24px; cursor: pointer; transition: background-color 0.3s ease;">
+          Guardar Cambios
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
