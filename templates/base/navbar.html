@@ -9,13 +9,13 @@
     </button>
     <div class="hidden w-full md:block md:w-auto" id="navbar-default">
       <ul class="flex flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700 ">
-        <li>
-
-      <a href="{% url 'home' %}" class="block py-2 pl-3 pr-4  md:bg-transparent text-gray-700 md:p-0 dark:text-white {% if request.path == '/' %} md:text-blue-700 {% endif %}">Home</a>
-
-        </li>
+{#        <li>#}
+{##}
+{#      <a href="{% url 'home' %}" class="block py-2 pl-3 pr-4  md:bg-transparent text-gray-700 md:p-0 dark:text-white {% if request.path == '/' %} md:text-blue-700 {% endif %}">Home</a>#}
+{##}
+{#        </li>#}
         <li class="relative">
-          <a href="#" class="block py-2 pl-3 pr-4  bg-blue-700 rounded md:bg-transparent text-gray-700  md:p-0 dark:text-white"  onclick="toggleCart()">Cart</a>
+          <a href="#" class="block py-2 pl-3 pr-4  bg-blue-700 rounded md:bg-transparent text-gray-700  md:p-0 dark:text-white"  onclick="toggleCart()">Carro</a>
           <div id="cart-window" class="fixed inset-0 flex items-center justify-center z-10 hidden">
             <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
               {% include 'purchases/cart.html' %}
@@ -28,20 +28,29 @@
           </div>
         </li>
       <li class="group relative">
-          {% if request.user.username%}
-  <a href="{% url 'purchases:solicitud_list' %}" class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent {% if request.path ==  '/purchases/list_solicitud/' %} md:text-blue-700 {% endif %}">
-    Purchases
-  </a>
-              </li>
-      {% endif %}
+  {% if request.user.username %}
+    <p class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent {% if request.path == '/purchases/list_solicitud/' or request.path == '/pedidos_stripe/purchases_stripe/' %} md:text-blue-700 {% endif %}">
+      Pedidos
+    </p>
+
+    <div class="absolute hidden group-hover:block w-48 bg-white shadow-lg rounded-lg p-4 z-10">
+      <a href="{% url 'purchases:solicitud_list' %}" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded {% if request.path == '/purchases/list_solicitud/' %} text-blue-700 {% endif %}">
+        Pedidos Zelle
+      </a>
+      <a href="{% url 'pedidos_stripe:purchases_stripe' %}" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded {% if request.path == '/pedidos_stripe/purchases_stripe/' %} text-blue-700 {% endif %}">
+        Pedidos Stripe
+      </a>
+    </div>
+  {% endif %}
+</li>
        <li class="relative">
-  <a href="{% url 'products:list' %}" class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent {% if request.path == '/products/' %} md:text-blue-700 {% endif %}">
-    Products
+  <a href="{% url 'products:list' %}" class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent {% if request.path == '/' %} md:text-blue-700 {% endif %}">
+    Productos
   </a>
   {% if request.user.usuario.rol.nombre == 'Proveedor' %}
   <div class="absolute hidden w-48 bg-white shadow-lg rounded-lg p-4 z-10">
     <a href="{% url 'products:create' %}" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded {% if request.path == '/' %} md:text-blue-700 {% endif %}">
-      Create Product
+      Crear Producto
     </a>
   </div>
   {% endif %}
@@ -51,7 +60,7 @@
 
         <li>
             {% if request.user.is_authenticated %}
-             <a href="{% url 'usuario:update_user' %}">   <span class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent {% if request.path == '/usuario/editar_perfil/' %} md:text-blue-700 {% endif %}">Welcome, {{ request.user.username }}</span> </a>
+             <a href="{% url 'usuario:update_user' %}">   <span class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent {% if request.path == '/usuario/editar_perfil/' %} md:text-blue-700 {% endif %}">Bienvenido, {{ request.user.username }}</span> </a>
                 <a href="{% url 'usuario:logout' %}" class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Logout</a>
             {% else %}
                 <li>

@@ -1,5 +1,5 @@
 {% if product %}
-<form method="POST" action="{% url 'purchases:start' %}"> {% csrf_token %}
+<form method="POST" action="{% url 'pedidos_stripe:start' %}"> {% csrf_token %}
     <input type="hidden" value="{{ product.handle }}" name="handle" />
     <div class="flex items-baseline text-gray-900 dark:text-white">
         <span class="text-3xl font-semibold">$</span>

@@ -13,214 +13,17 @@ from carro.carro import Carro
 from products.models import Product
 from usuario.decorator import role_required
 from .form import SolicitudZelleForm
-from .models import Purchase, SolicitudZelle, SolicitudZelleItem
-from django.core.mail import EmailMessage,send_mail
-from .env import config  # Si está en el mismo directorio
-
-
-STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY", default=None)
-stripe.api_key = STRIPE_SECRET_KEY
-
-
-
-# BASE_ENDPOINT= config("BASE_ENDPOINT", default="http://127.0.0.1:8000")
-BASE_ENDPOINT= "http://127.0.0.1:8000"
-
-
-cantidad = 0
-def purchase_start_view(request):
-    if not request.method == "POST":
-        return HttpResponseBadRequest()
-    if not request.user.is_authenticated:
-        return HttpResponseBadRequest()
-    handle = request.POST.get("handle")
-    obj = Product.objects.get(handle=handle)
-    stripe_price_id = obj.stripe_price_id
-    if stripe_price_id is None:
-        return HttpResponseBadRequest()
-
-    purchase = Purchase.objects.create(user=request.user, product=obj)
-    request.session['purchase_id'] = purchase.id
-    success_path = reverse("purchases:success")
-    if not success_path.startswith("/"):
-        success_path = f"/{success_path}"
-    cancel_path = reverse("purchases:stopped")
-    success_url = f"{BASE_ENDPOINT}{success_path}"
-    cancel_url = f"{BASE_ENDPOINT}{cancel_path}"
-    quantity = int(request.POST.get('quantity', 1))
-    global cantidad
-    cantidad = quantity
-    checkout_session = stripe.checkout.Session.create(
-        line_items = [
-            {
-                "price": stripe_price_id,
-                "quantity": quantity,
-            }
-        ],
-        mode="payment",
-        success_url=success_url,
-        cancel_url=cancel_url
-    )
-    purchase.stripe_checkout_session_id = checkout_session.id
-    purchase.save()
-    return HttpResponseRedirect(checkout_session.url)
-
-def purchase_success_view(request):
-    purchase_id = request.session.get("purchase_id")
-
-
-    if purchase_id:
-        purchase = Purchase.objects.get(id=purchase_id)
-        global cantidad
-        product = purchase.product
-        product.supply = product.supply - cantidad
-        cantidad = 0
-        product.save()
-        purchase.completed = True
-        purchase.save()
-        del request.session['purchase_id']
-        return HttpResponseRedirect(purchase.product.get_absolute_url())
-    return HttpResponse(f"Finished {purchase_id}")
-
-
-def purchase_success_cart_view(request):
-    session = request.session
-    carro = session.get('carro', {})
-    cart_items = carro.items()
-
-    for item_id, item in cart_items:
-        product = get_object_or_404(Product, pk=item["product_id"])
-        product.supply = product.supply - item["cantidad"]
-        product.save()
-
-    carro = Carro(request)
-    carro.limpiar_carro()
-    purchase_id = request.session.get("purchase_id")
-    if purchase_id:
-        purchase = Purchase.objects.get(id=purchase_id)
-        purchase.completed = True
-        purchase.save()
-        del request.session['purchase_id']
-        return HttpResponseRedirect(purchase.product.get_absolute_url())
-    return HttpResponse(f"Finished {purchase_id}")
-
-
-def purchase_stopped_view(request):
-    purchase_id = request.session.get("purchase_id")
-    if purchase_id:
-        purchase = Purchase.objects.get(id=purchase_id)
-        product = purchase.product
-        del request.session['purchase_id']
-        return HttpResponseRedirect(product.get_absolute_url())
-    return HttpResponse("Stopped")
-
-
-# This example sets up an endpoint using the Flask framework.
-# Watch this video to get started: https://youtu.be/7Ul1vfmsDck.
-
-
-
-STRIPE_SECRET_KEY = "sk_test_51PbVREDUVZyD9P5hMx44bCmUwBMlf0xjyLHEGrCliSwPrcyADzuH7RtHmfmtDWacsjoYuUcHgauWBrFTHFZHx6lP00yxOBc8hs"
-stripe.api_key = STRIPE_SECRET_KEY
-
-
-@csrf_exempt
-def create_checkout_session(request):
-    if request.method == 'POST':
-        # Create a new Stripe checkout session
-        session = stripe.checkout.Session.create(
-            line_items=[{
-                'price_data': {
-                    'currency': 'usd',
-                    'product_data': {
-                        'name': 'T-shirt',
-                    },
-                    'unit_amount': 2000,
-                },
-                'quantity': 2,
-            }],
-            mode='payment',
-            success_url=request.build_absolute_uri(reverse('purchases:success')),
-            cancel_url=request.build_absolute_uri(reverse('purchases:stopped')),
-        )
-        # Redirect the user to the Stripe checkout page
-        return redirect(session.url, status_code=303)
-    else:
-        return HttpResponse('Method not allowed', status=405)
-
-
-#
-# def purchase_start_view(request):
-#     if not request.method == "POST":
-#         return HttpResponseBadRequest()
-#     if not request.user.is_authenticated:
-#         return HttpResponseBadRequest()
-#     handle = request.POST.get("handle")
-#     obj = Product.objects.get(handle=handle)
-#     stripe_price_id = obj.stripe_price_id
-#     if stripe_price_id is None:
-#         return HttpResponseBadRequest()
-#
-#     purchase = Purchase.objects.create(user=request.user, product=obj)
-#     request.session['purchase_id'] = purchase.id
-#
-#
-#     session = stripe.checkout.Session.create(
-#         line_items=[{
-#             'price_data': {
-#                 'currency': 'usd',
-#                 'product_data': {
-#                     'name': obj.name,
-#                 },
-#                 'unit_amount': obj.stripe_price,
-#             },
-#             'quantity': 1,
-#         }],
-#         mode='payment',
-#         success_url=request.build_absolute_uri(reverse('purchases:success')),
-#         cancel_url=request.build_absolute_uri(reverse('purchases:stopped')),
-#     )
-#     purchase.stripe_checkout_session_id = session.id
-#     purchase.save()
-#     return HttpResponseRedirect(session.url)
-#
-
-def cart(request):
-    return render(request,"purchases/cart.html")
-
-
-def buy_cart(request):
-    session = request.session
-    carro = session.get('carro', {})
-    cart_items = carro.items()
-
-    line_items = []
-    for item_id, item in cart_items:
-        product = get_object_or_404(Product, pk=item["product_id"])
-        line_items.append({
-            "price": product.stripe_price_id,
-            "quantity": item["cantidad"],
-        })
-
-
-    checkout_session = stripe.checkout.Session.create(
-        payment_method_types=["card"],
-        line_items=line_items,
-        mode="payment",
-        success_url=f"{BASE_ENDPOINT}{reverse('purchases:success_cart')}",
-        cancel_url=f"{BASE_ENDPOINT}{reverse('purchases:stopped')}",
-    )
-
-
-    return HttpResponseRedirect(checkout_session.url)
-
-
+from .models import SolicitudZelle, SolicitudZelleItem
 
 
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 
+
+
+
+@login_required
 def create_solicitud_zelle(request):
     total = 0
     session = request.session
@@ -301,7 +104,7 @@ def view_solicitud_zelle(request, id_solicitud):
 
 
 
-
+@login_required
 def solicitud_list(request):
     # Obtener los parámetros de filtro de la solicitud
 

@@ -1,0 +1,47 @@
+
+ {% load static %}
+  <link rel="stylesheet" href="{% static 'css/pedidos/pedidos_stripe.css' %}">
+<table>
+  <thead>
+    <tr>
+        <th>Id</th>
+      <th>Usuario</th>
+      <th>Email</th>
+      <th>Completada</th>
+      <th>Precio de Stripe</th>
+      <th>Entrega</th>
+      <th>Timestamp</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for purchase in pedidos_stripe %}
+    <tr>
+      <td><a href="{% url 'pedidos_stripe:ver_solicitud_stripe' purchase.pk %}" >{{ purchase.pk }}</a></td>
+      <td><a href="{% url 'pedidos_stripe:ver_solicitud_stripe' purchase.pk %}" >{{ purchase.user.username }}</a></td>
+      <td><a href="{% url 'pedidos_stripe:ver_solicitud_stripe' purchase.pk %}" >{{ purchase.user.email }}</a></td>
+      <td class="{% if purchase.completed %}completed{% else %}not-completed{% endif %}"><a href="{% url 'pedidos_stripe:ver_solicitud_stripe' purchase.pk %}" >{% if purchase.completed %}Sí{% else %}No{% endif %}</a></td>
+      <td><a href="{% url 'pedidos_stripe:ver_solicitud_stripe' purchase.pk %}" >${{ purchase.stripe_price }}</a></td>
+      <td><a href="{% url 'pedidos_stripe:ver_solicitud_stripe' purchase.pk %}" >{% if purchase.completed %} {{ purchase.get_entrega_display }}  {% endif %}</a></td>
+      <td><a href="{% url 'pedidos_stripe:ver_solicitud_stripe' purchase.pk %}" >{{ purchase.timestamp }}</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+<div class="mt-4 flex justify-center">
+        <div class="btn-group">
+            {% if pedidos_stripe.has_previous %}
+            <a href="?page=1" class="btn">Primero</a>
+            <a href="?page={{ pedidos_stripe.previous_page_number }}" class="btn">Anterior</a>
+            {% endif %}
+
+            <span class="btn disabled">Página {{ pedidos_stripe.number }} de {{ pedidos_stripe.paginator.num_pages }}</span>
+
+            {% if pedidos_stripe.has_next %}
+            <a href="?page={{ pedidos_stripe.next_page_number }}" class="btn">Siguiente</a>
+            <a href="?page={{ pedidos_stripe.paginator.num_pages }}" class="btn">Último</a>
+            {% endif %}
+        </div>
+    </div>
+</div>

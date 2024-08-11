@@ -1,6 +1,6 @@
 <div class="bg-gray-100 p-4 rounded-md mb-4">
-  <h2 class="text-lg font-bold mb-2">Filtrar Solicitudes</h2>
-  <form method="GET" action="{% url 'purchases:solicitud_list' %}">
+  <h2 class="text-lg font-bold mb-2">Filtrar Pedidos</h2>
+  <form method="GET" action="{% url 'pedidos_stripe:purchases_stripe' %}">
       {% if request.user.usuario.rol.nombre == 'admin' %}
     <div class="flex items-center mb-2">
       <label for="usuario" class="mr-2">Usuario:</label>
@@ -16,6 +16,17 @@
         <option value="canceled">Cancelada</option>
       </select>
     </div>
+
+   <div class="flex items-center mb-2">
+      <label for="completado" class="mr-2">Completado:</label>
+      <select id="completado" name="completado" class="border border-gray-300 rounded-md px-2 py-1 flex-1">
+        <option value="">Todos</option>
+        <option value="true">Sí</option>
+        <option value="false">No</option>
+      </select>
+    </div>
+
+
     <div class="flex justify-end">
       <button type="submit" class="bg-gray-900 hover:bg-blue-600 text-white px-4 py-2 rounded-md">Filtrar</button>
     </div>

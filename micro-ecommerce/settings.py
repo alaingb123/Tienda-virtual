@@ -34,7 +34,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 EMAIL_HOST_USER = "alaingalvez76@gmail.com"
-EMAIL_HOST_PASSWORD = "bnnf qtax evzn oikq"
+EMAIL_HOST_PASSWORD = "zizc jjgw hazz tbzm"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 
@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'purchases',
     'carro',
     'usuario',
+    'pedidos_stripe',
 
 ]
 
@@ -100,12 +101,12 @@ WSGI_APPLICATION = 'micro-ecommerce.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 
 # Add these at the top of your settings.py
@@ -132,7 +133,7 @@ WSGI_APPLICATION = 'micro-ecommerce.wsgi.application'
 # }
 
 
-
+#
 # local postgre
 #
 # DATABASES = {
@@ -151,10 +152,10 @@ WSGI_APPLICATION = 'micro-ecommerce.wsgi.application'
 # }
 
 
-
-DATABASES = {
-    'default': dj_database_url.config()
-}
+#
+# DATABASES = {
+#     'default': dj_database_url.config()
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

@@ -22,12 +22,12 @@ from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
-    path('', views.home_view, name="home"),
     path('admin/', admin.site.urls),
-    path('products/', include('products.urls')),
+    path('', include('products.urls')),
     path('purchases/', include('purchases.urls')),
     path('carro/', include('carro.urls')),
     path('usuario/', include('usuario.urls')),
+    path('pedidos_stripe/', include('pedidos_stripe.urls')),
 ]
 
 if settings.DEBUG:

@@ -11,6 +11,8 @@ from django.views.decorators.cache import never_cache
 from usuario.forms import CrearUsuarioFormulario, PerfilUsuarioFormulario
 from django.core.mail import EmailMessage,send_mail
 
+from usuario.models import Rol, Usuario
+
 
 # Create your views here.
 
@@ -19,7 +21,10 @@ def crear_usuario(request):
     if request.method == 'POST':
         formulario = CrearUsuarioFormulario(request.POST)
         if formulario.is_valid():
-            formulario.save()
+            user = formulario.save(commit=False)
+            user.save()
+            cliente_role = Rol.objects.get(nombre='cliente')
+            Usuario.objects.create(user=user, rol=cliente_role)
             return redirect('usuario:login')  # Redirige al usuario a la página de inicio de sesión
     else:
         formulario = CrearUsuarioFormulario()
@@ -33,6 +38,7 @@ def crear_usuario(request):
 
 
 
+@never_cache
 def iniciar_sesion(request):
     if request.method == 'POST':
         formulario = AuthenticationForm(request, data=request.POST)
