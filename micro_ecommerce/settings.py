@@ -88,7 +88,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'micro-ecommerce.context_processors.vendor_files',
+                'micro_ecommerce.context_processors.vendor_files',
                 'carro.context_processor.importe_total_carro'
             ],
         },
