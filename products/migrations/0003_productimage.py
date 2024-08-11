@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             name='ProductImage',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('file', models.FileField(storage=django.core.files.storage.FileSystemStorage(location='C:\\Users\\Alain\\Downloads\\PortableGit\\micro-ecommerce\\src\\local-cdn\\protected'), upload_to=products.models.handle_product_attachment_upload)),
+                ('file', models.FileField(storage=django.core.files.storage.FileSystemStorage(location='C:\\Users\\Alain\\Downloads\\PortableGit\\micro_ecommerce\\src\\local-cdn\\protected'), upload_to=products.models.handle_product_attachment_upload)),
                 ('is_free', models.BooleanField(default=False)),
                 ('timestamp', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),

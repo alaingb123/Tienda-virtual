@@ -263,8 +263,9 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-micro-ecommerce/settings.py
-micro-ecommerce/wsgi.py
+micro_ecommerce/settings.py
+micro_ecommerce/wsgi.py
 
 local-cdn/media
 local-cdn/protected
+manage.py

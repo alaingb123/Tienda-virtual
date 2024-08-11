@@ -19,7 +19,7 @@ Learn how to build a Micro eCommerce Web App with Python and Serverless Postgres
 mkdir -p ~/dev
 cd ~/dev
 git clone https://github.com/codingforentrepreneurs/micro-ecommerce
-cd micro-ecommerce
+cd micro_ecommerce
 git checkout start
 ```
 

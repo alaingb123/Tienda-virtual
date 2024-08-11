@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='productimage',
             name='file',
-            field=models.FileField(storage=django.core.files.storage.FileSystemStorage(location='C:\\Users\\Alain\\Downloads\\PortableGit\\micro-ecommerce\\local-cdn\\protected'), upload_to=products.models.handle_product_attachment_upload),
+            field=models.FileField(storage=django.core.files.storage.FileSystemStorage(location='C:\\Users\\Alain\\Downloads\\PortableGit\\micro_ecommerce\\local-cdn\\protected'), upload_to=products.models.handle_product_attachment_upload),
         ),
     ]
