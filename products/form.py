@@ -3,12 +3,12 @@ from django.forms import modelformset_factory, inlineformset_factory
 from .models import Product, ProductImage
 
 
-input_css_class = "form-control"
+input_css_class = "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name','clasificacion', 'handle', 'price', 'supply']
+        fields = ['name', 'clasificaciones_padre','clasificacion', 'handle', 'price', 'supply']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -20,13 +20,16 @@ class ProductForm(forms.ModelForm):
 class ProductUpdateForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ["image", 'name','clasificacion', 'handle', 'price', 'supply']
+        fields = ["image", 'name', 'keywords','clasificaciones_padre', 'clasificacion', 'handle', 'price', 'supply']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # self.fields['name'].widget.attrs['placeholder'] = "Your name"
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = input_css_class
+
+
+
 
 
 

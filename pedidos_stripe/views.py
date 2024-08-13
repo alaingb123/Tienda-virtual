@@ -3,6 +3,7 @@ import random
 import stripe
 from django.conf.global_settings import EMAIL_HOST_USER
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
@@ -69,41 +70,15 @@ def purchase_start_view(request):
 
 
 
-#
-# @csrf_exempt
-# def create_checkout_session(request):
-#     if request.method == 'POST':
-#         # Create a new Stripe checkout session
-#         session = stripe.checkout.Session.create(
-#             line_items=[{
-#                 'price_data': {
-#                     'currency': 'usd',
-#                     'product_data': {
-#                         'name': 'T-shirt',
-#                     },
-#                     'unit_amount': 2000,
-#                 },
-#                 'quantity': 2,
-#             }],
-#             mode='payment',
-#             success_url=request.build_absolute_uri(reverse('purchases:success')),
-#             cancel_url=request.build_absolute_uri(reverse('purchases:stopped')),
-#         )
-#         # Redirect the user to the Stripe checkout page
-#         return redirect(session.url, status_code=303)
-#     else:
-#         return HttpResponse('Method not allowed', status=405)
-#
 
-
-
-@login_required
 def buy_cart_stripe(request):
+    if not request.user.is_authenticated:
+        messages.warning(request, 'Debes estar registrado para poder realizar compras.')
+        return HttpResponseRedirect(reverse('usuario:login'))
+
     total = 0
     if not request.method == "POST":
         return HttpResponseBadRequest()
-    if not request.user.is_authenticated:
-        return HttpResponseBadRequest("Debe autenticarse")
 
     purchase = Purchase.objects.create(user=request.user)
     request.session['purchase_id'] = purchase.id
@@ -115,9 +90,6 @@ def buy_cart_stripe(request):
         return HttpResponseBadRequest("El carrito está vacío.")
 
     cart_items = carro.items()
-
-
-
 
     line_items = []
     for item_id, item in cart_items:

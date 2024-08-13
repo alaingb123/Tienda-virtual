@@ -1,10 +1,12 @@
 {% load static %}
 
 {# COMMENT: css/output.css comes from the tailwind output #}
-<link rel="stylesheet" href="{% static 'css/output.css' %}" />
+{#<link rel="stylesheet" href="{% static 'css/output.css' %}" />#}
+
+ <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
 
 {# COMMENT: vendor_css_files comes from micro_ecommerce.context_processors.vendor_files #}
-{% for css_file in vendor_css_files %}
-<link rel="stylesheet" href="{% static css_file %}">
-{% endfor %}
+{#{% for css_file in vendor_css_files %}#}
+{#<link rel="stylesheet" href="{% static css_file %}">#}
+{#{% endfor %}#}

@@ -43,18 +43,39 @@
     </div>
   {% endif %}
 </li>
-       <li class="relative">
-  <a href="{% url 'products:list' %}" class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent {% if request.path == '/' %} md:text-blue-700 {% endif %}">
-    Productos
-  </a>
-  {% if request.user.usuario.rol.nombre == 'Proveedor' %}
-  <div class="absolute hidden w-48 bg-white shadow-lg rounded-lg p-4 z-10">
-    <a href="{% url 'products:create' %}" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded {% if request.path == '/' %} md:text-blue-700 {% endif %}">
-      Crear Producto
+
+
+      <li class="group relative">
+
+    <a href="{% url 'products:list' %}"  class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent {% if request.path == '/purchases/list_solicitud/' or request.path == '/pedidos_stripe/purchases_stripe/' %} md:text-blue-700 {% endif %}">
+      Productos
     </a>
-  </div>
+
+      {% if request.user.usuario.rol.nombre == 'Proveedor' %}
+    <div class="absolute hidden group-hover:block w-48 bg-white shadow-lg rounded-lg p-4 z-10">
+      <a href="{% url 'products:create' %}" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded {% if request.path == '/purchases/list_solicitud/' %} text-blue-700 {% endif %}">
+        Nuevo Producto
+      </a>
+      <a href="{% url 'products:mis_productos' %}" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded {% if request.path == '/pedidos_stripe/purchases_stripe/' %} text-blue-700 {% endif %}">
+        Mis Productos
+      </a>
+    </div>
   {% endif %}
 </li>
+
+
+{#       <li class="relative">#}
+{#  <a href="{% url 'products:list' %}" class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent {% if request.path == '/' %} md:text-blue-700 {% endif %}">#}
+{#    Productos#}
+{#  </a>#}
+{#  {% if request.user.usuario.rol.nombre == 'Proveedor' %}#}
+{#  <div class="absolute hidden w-48 bg-white shadow-lg rounded-lg p-4 z-10">#}
+{#    <a href="{% url 'products:create' %}" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded {% if request.path == '/' %} md:text-blue-700 {% endif %}">#}
+{#      Crear Producto#}
+{#    </a>#}
+{#  </div>#}
+{#  {% endif %}#}
+{#</li>#}
 
         </li>
 

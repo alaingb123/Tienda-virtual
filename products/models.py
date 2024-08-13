@@ -8,21 +8,25 @@ import stripe
 # Create your models here.
 
 
-STRIPE_SECRET_KEY = "sk_test_51PbVREDUVZyD9P5hMx44bCmUwBMlf0xjyLHEGrCliSwPrcyADzuH7RtHmfmtDWacsjoYuUcHgauWBrFTHFZHx6lP00yxOBc8hs"
-stripe.api_key = STRIPE_SECRET_KEY
+
 
 PROTECTED_MEDIA_ROOT = settings.PROTECTED_MEDIA_ROOT
 protected_storage = FileSystemStorage(location=str(PROTECTED_MEDIA_ROOT))
 
-class Clasificacion(models.Model):
+
+class ClasificacionPadre(models.Model):
     nombre = models.CharField(max_length=120)
-    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        if self.parent:
-            return f"{self.parent.nombre} > {self.nombre}"
-        else:
-            return self.nombre
+        return self.nombre
+
+
+class ClasificacionHija(models.Model):
+    nombre = models.CharField(max_length=120)
+    padre = models.ForeignKey(ClasificacionPadre, on_delete=models.CASCADE, related_name='hijos')
+
+    def __str__(self):
+        return f"{self.padre.nombre} > {self.nombre}"
 
 class Product(models.Model):
     user = models.ForeignKey(
@@ -32,8 +36,13 @@ class Product(models.Model):
     supply = models.IntegerField(default=1)
     image = models.ImageField(upload_to="products/", blank=True, null=True)
     name = models.CharField(max_length=120)
-    clasificacion = models.ForeignKey(
-        Clasificacion, on_delete=models.SET_NULL, null=True, blank=True
+    clasificacion = models.ManyToManyField(
+        ClasificacionHija, blank=True, related_name="pro"
+    )
+    keywords = models.TextField(blank=True, null=True)
+
+    clasificaciones_padre = models.ManyToManyField(
+        ClasificacionPadre, blank=True, related_name="productos_padre"
     )
     handle = models.SlugField(unique=True)  # slug
     price = models.DecimalField(max_digits=10, decimal_places=2, default=9.99)
@@ -81,6 +90,8 @@ class Product(models.Model):
                 )
                 self.stripe_price_id = stripe_price_obj.id
             self.price_changed_timestamp = timezone.now()
+        if self.keywords:
+            self.keywords = ', '.join([keyword.strip().lower() for keyword in self.keywords.split(',')])
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):

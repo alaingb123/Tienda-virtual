@@ -7,8 +7,7 @@ from carro.carro import Carro
 from usuario.decorator import role_required
 # Create your views here.
 from .form import ProductForm,ProductUpdateForm , ProductAttachmentInlineFormSet
-from .models import Product,ProductImage
-
+from .models import Product, ProductImage, ClasificacionPadre,ClasificacionHija
 
 
 @role_required(['Proveedor'])
@@ -28,7 +27,26 @@ def product_create_view(request):
 
 def product_list_view(request):
     object_list = Product.objects.all()
+    classifications = ClasificacionPadre.objects.all()
     carro = Carro(request)
+
+    # Handle search query
+    search_query = request.GET.get('search')
+    if search_query:
+        object_list = object_list.filter(keywords__icontains=search_query)
+
+    # Handle classification filter
+    classification_id = request.GET.get('classification_id')
+    if classification_id:
+        object_list = object_list.filter(clasificacion__id=classification_id)
+
+    classification_id_padre = request.GET.get('classification_id_padre')
+    if classification_id_padre:
+        object_list = object_list.filter(clasificaciones_padre__id=classification_id_padre)
+
+
+
+
 
     # Paginar los productos
     page_size = 20  # Número de solicitudes por página
@@ -46,6 +64,7 @@ def product_list_view(request):
     context = {
         'object_list': page_solicitudes,
         'carro': carro,
+        'classifications': classifications,
     }
     return render(request,"products/list.html",context)
 
@@ -69,6 +88,8 @@ def product_manage_detail_view(request,handle=None):
     if form.is_valid() and formset.is_valid():
         instance = form.save(commit=False)
         instance.save()
+        form.save_m2m()  # Guarda las relaciones ManyToMany
+
         formset.save(commit=False)
         for _form in formset:
 
@@ -86,9 +107,7 @@ def product_manage_detail_view(request,handle=None):
                 if attachments_obj is not None:
                     attachments_obj.product = instance
                     attachments_obj.save()
-        # form = ProductUpdateForm(request.POST or None, request.FILES or None, instance=obj)
-        # attachments = ProductImage.objects.filter(product=obj)
-        # formset = ProductAttachementInlineFormSet(request.POST or None, request.FILES or None, queryset=attachments)
+
 
         return redirect(obj.get_manage_url())
     context['form'] = form
@@ -122,3 +141,7 @@ def product_attachment_download_view(request,handle=None,pk=None):
     response['Conten-Type'] = content_type or 'application/octet-stream'
     response['Content-Disposition'] = f'attachment;filename={filename}'
     return response
+
+
+def mis_productos_table(request):
+    return render(request, 'products/mis_productos_table.html')
