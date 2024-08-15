@@ -150,6 +150,7 @@ def product_attachment_download_view(request,handle=None,pk=None):
     return response
 
 
+@role_required(['Proveedor'])
 def mis_productos_table(request):
     today = timezone.now().date()
     object_list = Product.objects.all()
@@ -227,13 +228,6 @@ def mis_productos_table(request):
             porcentaje = 0
 
         product.porcentaje = int(porcentaje)
-        print(product.porcentaje)
-
-
-
-
-
-
 
     context = {
         'productos': page_solicitudes,

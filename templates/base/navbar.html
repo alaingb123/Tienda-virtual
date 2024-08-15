@@ -47,7 +47,7 @@
 
       <li class="group relative">
 
-    <a href="{% url 'products:list' %}"  class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent {% if request.path == '/purchases/list_solicitud/' or request.path == '/pedidos_stripe/purchases_stripe/' %} md:text-blue-700 {% endif %}">
+    <a href="{% url 'products:list' %}"  class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent {% if request.path == '/' or request.path == '/mis_productos_table/' or request.path == '/create/' %} md:text-blue-700 {% endif %}">
       Productos
     </a>
 
@@ -62,6 +62,13 @@
     </div>
   {% endif %}
 </li>
+
+      <li>
+            {% if request.user.usuario.rol.nombre == 'Proveedor' %}
+             <a href="{% url 'pedidos_stripe:ventas' %}">   <span class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent {% if request.path == '/pedidos_stripe/ventas/' %} md:text-blue-700 {% endif %}">Ventas</span> </a>
+
+                </li>
+      {% endif %}
 
 
 {#       <li class="relative">#}

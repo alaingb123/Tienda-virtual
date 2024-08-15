@@ -43,7 +43,7 @@ class Purchase(models.Model):
         return f"{self.pk} - {self.user.username}"
 
 
-
+# NEcesidad de crear un campo id que contenga letras
 class SolicitudStripeItem(models.Model):
     solicitud = models.ForeignKey(Purchase, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

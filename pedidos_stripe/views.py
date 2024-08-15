@@ -259,3 +259,37 @@ def purchase_success_view(request):
         del request.session['purchase_id']
         return HttpResponseRedirect(purchase.product.get_absolute_url())
     return HttpResponse(f"Finished {purchase_id}")
+
+
+def ventas(request):
+    ventas = SolicitudStripeItem.objects.filter(product__user=request.user,solicitud__completed=True)
+    ventas = ventas.order_by('-solicitud__timestamp')
+    # Paginar los productos
+
+
+    page_size = 20  # Número de solicitudes por página
+    paginator = Paginator(ventas, page_size)
+    page_number = request.GET.get('page', 1)
+
+    try:
+        page_solicitudes = paginator.page(page_number)
+    except PageNotAnInteger:
+        page_solicitudes = paginator.page(1)
+    except EmptyPage:
+        page_solicitudes = paginator.page(paginator.num_pages)
+
+
+
+    context = {
+        "ventas":page_solicitudes,
+    }
+
+    return render(request,'purchases/stripe/ventas.html',context)
+
+
+def ver_venta(request,venta_id):
+    venta = SolicitudStripeItem.objects.get(id=venta_id)
+    context = {
+        "venta":venta
+    }
+    return render(request,'purchases/stripe/ver_venta.html',context)

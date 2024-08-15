@@ -14,4 +14,11 @@ urlpatterns = [
     path('success/', views.purchase_success_view, name='success'),
     path('stopped/', views.purchase_stopped_view, name='stopped'),
 
+
+    path('ventas/', views.ventas, name='ventas'),
+    path('ver_venta/<int:venta_id>/', views.ver_venta, name='ver_venta'),
+
+
+
+
 ]
