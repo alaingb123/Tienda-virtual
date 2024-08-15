@@ -5,6 +5,11 @@ from django.db import models
 from django.conf import settings
 from django.urls import reverse
 import stripe
+
+
+from django.utils import timezone
+
+
 # Create your models here.
 
 
@@ -99,6 +104,7 @@ class Product(models.Model):
 
     def get_manage_url(self):
         return reverse("products:manage", kwargs={"handle": self.handle})
+
 
 
 

@@ -1,13 +1,20 @@
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect, get_object_or_404
 import mimetypes
-from django.http import FileResponse,HttpResponseBadRequest
+from django.http import FileResponse, HttpResponseBadRequest, JsonResponse, HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt
 
 from carro.carro import Carro
+
 from usuario.decorator import role_required
 # Create your views here.
-from .form import ProductForm,ProductUpdateForm , ProductAttachmentInlineFormSet
-from .models import Product, ProductImage, ClasificacionPadre,ClasificacionHija
+from .form import ProductUpdateForm , ProductAttachmentInlineFormSet
+from .models import Product, ProductImage, ClasificacionPadre
+
+from pedidos_stripe.models import SolicitudStripeItem
+from django.db.models import Sum, Count
+from django.utils import timezone
+from datetime import datetime, timedelta
 
 
 @role_required(['Proveedor'])
@@ -144,4 +151,123 @@ def product_attachment_download_view(request,handle=None,pk=None):
 
 
 def mis_productos_table(request):
-    return render(request, 'products/mis_productos_table.html')
+    today = timezone.now().date()
+    object_list = Product.objects.all()
+    carro = Carro(request)
+
+
+    # Paginar los productos
+    page_size = 20 # Número de solicitudes por página
+    paginator = Paginator(object_list, page_size)
+    page_number = request.GET.get('page', 1)
+
+    try:
+        page_solicitudes = paginator.page(page_number)
+    except PageNotAnInteger:
+        page_solicitudes = paginator.page(1)
+    except EmptyPage:
+        page_solicitudes = paginator.page(paginator.num_pages)
+
+    productos = Product.objects.filter(user=request.user)
+
+    ventas = SolicitudStripeItem.objects.filter(product__in=productos,solicitud__completed=True)
+
+    total_sales = ventas.aggregate(
+        total=Sum('total_price')
+    )['total'] or 0
+
+    product_sales = {}
+    product_quantities = {}
+    ventas_dia= {}
+
+    for product in productos:
+        #ingreso total de las ventasd de un producto
+        product_ventas = SolicitudStripeItem.objects.filter(product=product, solicitud__completed=True).aggregate(
+            total_price=Sum('total_price')
+        )
+        #cantidad de productos vendidos
+        product_cantidad = SolicitudStripeItem.objects.filter(product=product, solicitud__completed=True).aggregate(
+            quantity=Sum('quantity')
+        )
+
+
+        product_sales[product.id] = product_ventas['total_price'] or 0
+        product_quantities[product.id] = product_cantidad['quantity'] or 0
+
+    for product in page_solicitudes:
+        product.total_sales = product_sales.get(product.id, 0)
+        product.cantidad = product_quantities.get(product.id, 0)
+
+        # promedio de ventas al dia de un producto
+        days_in_circulation = int((today - product.timestamp.date()).days)
+        try:
+            ventas_por_dias = product.cantidad / days_in_circulation
+        except:
+            ventas_por_dias = 0
+
+        product.ventas_dia = ventas_por_dias
+
+        # promedio de ventas por mes
+        try:
+            meses_en_circulacion = days_in_circulation/30
+        except:
+            meses_en_circulacion=0
+        try:
+            if meses_en_circulacion < 1:
+                meses_en_circulacion=1
+            ventas_mes = product.cantidad / meses_en_circulacion
+        except:
+            ventas_mes=0
+
+        product.ventas_mes = ventas_mes
+
+        try:
+            porcentaje = (ventas_mes * 100) / product.supply
+        except:
+            porcentaje = 0
+
+        product.porcentaje = int(porcentaje)
+        print(product.porcentaje)
+
+
+
+
+
+
+
+    context = {
+        'productos': page_solicitudes,
+        'carro': carro,
+        'total_sales': total_sales,
+    }
+    return render(request, 'products/mis_productos_table.html',context)
+
+
+
+def get_monthly_sales(product):
+    today = timezone.now().date()
+    start_of_month = datetime(today.year, today.month, 1).date()
+    monthly_sales = SolicitudStripeItem.objects.filter(
+        product=product,
+        solicitud__completed=True,
+        solicitud__timestamp__date__gte=start_of_month
+    ).aggregate(
+        total_quantity=Sum('quantity')
+    )
+    print(monthly_sales["total_quantity"])
+    return monthly_sales
+
+#
+# @csrf_exempt
+# @role_required(['Proveedor'])
+# def delete_product(request):
+#     if request.method == 'POST':
+#         product_id = int(request.POST.get('product_id'))
+#         try:
+#             product = Product.objects.get(pk=product_id)
+#             product.delete()
+#             return HttpResponseRedirect('products:mis_productos')
+#         except Product.DoesNotExist:
+#             return JsonResponse({'success': False, 'error': 'Product not found'})
+#     else:
+#         return JsonResponse({'success': False})
