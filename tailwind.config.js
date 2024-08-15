@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  mode: 'jit', // Habilita el modo JIT
   content: [
     "./src/**/*.{html,js}",
     "./templates/**/*.{html,js}",
@@ -10,7 +11,7 @@ module.exports = {
     extend: {},
   },
   plugins: [
-      require('flowbite/plugin')
+    require('flowbite/plugin')
   ]
 }
 
