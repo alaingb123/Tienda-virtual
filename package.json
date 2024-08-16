@@ -5,5 +5,10 @@
   },
   "scripts": {
     "watch": "tailwindcss -i ./static/tailwind/tailwind-input.css -o ./dist/output.css --watch"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.4.20",
+    "flowbite-datepicker": "^1.3.0",
+    "postcss": "^8.4.41"
   }
 }
