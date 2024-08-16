@@ -22,7 +22,7 @@
       <td class="{% if purchase.completed %}completed{% else %}not-completed{% endif %}"><a href="{% url 'pedidos_stripe:ver_solicitud_stripe' purchase.pk %}" >{% if purchase.completed %}Sí{% else %}No{% endif %}</a></td>
       <td><a href="{% url 'pedidos_stripe:ver_solicitud_stripe' purchase.pk %}" >${{ purchase.stripe_price }}</a></td>
       <td><a href="{% url 'pedidos_stripe:ver_solicitud_stripe' purchase.pk %}" >{% if purchase.completed %} {{ purchase.get_entrega_display }}  {% endif %}</a></td>
-      <td><a href="{% url 'pedidos_stripe:ver_solicitud_stripe' purchase.pk %}" >{{ purchase.timestamp }}</a></td>
+      <td><a href="{% url 'pedidos_stripe:ver_solicitud_stripe' purchase.pk %}" >{{ purchase.timestamp|date:"d. M, Y" }}</a></td>
     </tr>
     {% endfor %}
   </tbody>
