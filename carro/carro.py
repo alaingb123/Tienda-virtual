@@ -24,7 +24,7 @@ class Carro:
             for key, value in self.carro.items():
                 if key == str(product.pk):
                     if value["cantidad"] < product.supply:
-                        value["cantidad"] = value["cantidad"] + 1
+                        value["cantidad"] = value["cantidad"] + quantity
                         value["subtotal"] = float(value["subtotal"]) + float(product.price)
                         break
         self.guardar_carro()
