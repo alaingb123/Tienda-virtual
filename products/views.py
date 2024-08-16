@@ -265,3 +265,24 @@ def get_monthly_sales(product):
 #             return JsonResponse({'success': False, 'error': 'Product not found'})
 #     else:
 #         return JsonResponse({'success': False})
+
+
+@csrf_exempt
+def search(request):
+  if request.method == 'POST':
+    search_term = request.POST.get('search_term', '').lower()
+    category = request.POST.get('category')
+
+    # Realiza la consulta a la base de datos
+    productos = Product.objects.filter(
+      name__icontains=search_term,
+    )
+
+    # Convierte los resultados a un formato JSON
+    context = {
+        "productos":productos,
+    }
+
+    return JsonResponse(context, safe=False)
+
+  return render(request, 'products/mis_productos_table.html')

@@ -141,6 +141,8 @@ def pedidos_stripe(request):
     if entrega:
         solicitudes = solicitudes.filter(entrega=entrega)
 
+    solicitudes = solicitudes.order_by('-timestamp')
+
     completado = request.GET.get('completado' or None)
 
     if completado:
