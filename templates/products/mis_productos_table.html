@@ -81,6 +81,7 @@
 {#                          <th scope="col" class="px-4 py-3">Rating</th>#}
                           <th scope="col" class="px-4 py-3">Ventas</th>
                           <th scope="col" class="px-4 py-3">Ingresos</th>
+                          <th scope="col" class="px-4 py-3">Estado</th>
                           <th scope="col" class="px-4 py-3">Ultima Actualizacion</th>
                       </tr>
                   </thead>
@@ -123,6 +124,13 @@
                               </div>
                           </td>
                           <td class="px-4 py-2">${{ producto.total_sales|floatformat:2 }}</td>
+                         <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+    {% if producto.active %}
+        <span class="bg-green-500 text-white font-bold py-1 px-2 rounded-full">Activo</span>
+    {% else %}
+        <span class="bg-red-500 text-white font-bold py-1 px-2 rounded-full">Inactivo</span>
+    {% endif %}
+</td>
                           <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ producto.updated|date:"d. M, Y" }}</td>
                       </tr>
                      {% endfor %}

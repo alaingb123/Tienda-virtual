@@ -14,27 +14,30 @@
 
 <form class='space-y-5' method="POST" action="" enctype="multipart/form-data">
     {% csrf_token %}
-    <div>
-    {{ form.as_p }}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {{ form.as_ul }}
     </div>
 
     <div>
         {{ formset.management_form }}
         <div class="pb-3 border-b space-y-3" id="attachments">
             {% for form in formset %}
-            <div>
-                {{ form.as_p }}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {{ form.as_ul }}
             </div>
             {% endfor %}
         </div>
     </div>
 
-{#<a href="{% url 'products:delete_product' form.instance.handle %}" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" >Eliminar</a>#}
-
     <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" id="add-attachment-btn">Add attachment</button>
 
-<button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Save</button>
+    <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Save</button>
 </form>
+
+<div class="hidden" id="blank-form">
+    {{ formset.empty_form }}
+</div>
 
 
 

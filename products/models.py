@@ -57,6 +57,7 @@ class Product(models.Model):
     price_changed_timestamp = models.DateTimeField(
         auto_now=False, auto_now_add=False, blank=True, null=True
     )
+    active = models.BooleanField(default=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

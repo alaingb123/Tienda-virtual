@@ -34,6 +34,7 @@ def product_create_view(request):
 
 def product_list_view(request):
     object_list = Product.objects.all()
+    object_list = object_list.filter(active=True)
     classifications = ClasificacionPadre.objects.all()
     carro = Carro(request)
 
