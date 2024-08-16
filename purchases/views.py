@@ -2,6 +2,7 @@
 import random
 import stripe
 from django.conf.global_settings import EMAIL_HOST_USER
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
@@ -23,8 +24,11 @@ from django.utils.html import strip_tags
 
 
 
-@login_required
+
 def create_solicitud_zelle(request):
+    if not request.user.is_authenticated:
+        messages.warning(request, 'Debes estar registrado para poder realizar compras.')
+        return HttpResponseRedirect(reverse('usuario:login'))
     total = 0
     session = request.session
     carro = session.get('carro', {})
