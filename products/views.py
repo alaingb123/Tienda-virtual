@@ -26,6 +26,7 @@ def product_create_view(request):
         if request.user.is_authenticated:
             obj.user = request.user
             obj.save()
+            form.save_m2m()
             return redirect(obj.get_manage_url())
         else:
             form.add_error(None,"Your  must be looged in to create product")
@@ -154,13 +155,13 @@ def product_attachment_download_view(request,handle=None,pk=None):
 @role_required(['Proveedor'])
 def mis_productos_table(request):
     today = timezone.now().date()
-    object_list = Product.objects.all()
     carro = Carro(request)
 
+    productos = Product.objects.filter(user=request.user)
 
     # Paginar los productos
     page_size = 20 # Número de solicitudes por página
-    paginator = Paginator(object_list, page_size)
+    paginator = Paginator(productos, page_size)
     page_number = request.GET.get('page', 1)
 
     try:
@@ -170,7 +171,7 @@ def mis_productos_table(request):
     except EmptyPage:
         page_solicitudes = paginator.page(paginator.num_pages)
 
-    productos = Product.objects.filter(user=request.user)
+
 
     ventas = SolicitudStripeItem.objects.filter(product__in=productos,solicitud__completed=True)
 

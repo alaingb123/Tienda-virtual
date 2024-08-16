@@ -179,6 +179,9 @@ def pedidos_stripe(request):
 
 def purchase_detail(request, purchase_id):
     purchase = get_object_or_404(Purchase, pk=purchase_id)
+    if purchase.user != request.user:
+        messages.warning(request, 'No tiene acceso a ese pedido')
+        return HttpResponseRedirect(reverse('pedidos_stripe:purchases_stripe'))
     solicitud_items = SolicitudStripeItem.objects.filter(solicitud=purchase)
 
 
@@ -263,6 +266,7 @@ def purchase_success_view(request):
     return HttpResponse(f"Finished {purchase_id}")
 
 
+@role_required(['Proveedor'])
 def ventas(request):
     ventas = SolicitudStripeItem.objects.filter(product__user=request.user,solicitud__completed=True)
     ventas = ventas.order_by('-solicitud__timestamp')
@@ -289,8 +293,13 @@ def ventas(request):
     return render(request,'purchases/stripe/ventas.html',context)
 
 
+@role_required(['Proveedor'])
 def ver_venta(request,venta_id):
     venta = SolicitudStripeItem.objects.get(id=venta_id)
+    if venta.product.user != request.user:
+        messages.warning(request, 'No tiene acceso para esa venta')
+        return HttpResponseRedirect(reverse('pedidos_stripe:ventas'))
+
     context = {
         "venta":venta
     }
