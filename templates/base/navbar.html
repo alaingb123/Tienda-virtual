@@ -9,23 +9,10 @@
     </button>
     <div class="hidden w-full md:block md:w-auto" id="navbar-default">
       <ul class="flex flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-        {#        <li>#}
-{##}
-{#      <a href="{% url 'home' %}" class="block py-2 pl-3 pr-4  md:bg-transparent text-gray-700 md:p-0 dark:text-white {% if request.path == '/' %} md:text-blue-700 {% endif %}">Home</a>#}
-{##}
-{#        </li>#}
+
 <li class="relative">
-  <a href="#" class="block py-2 pl-3 pr-4 bg-blue-700 rounded md:bg-transparent text-gray-700 md:p-0 dark:text-white" onclick="toggleCart()">Carro</a>
-  <div id="cart-window" class="fixed inset-0 flex items-center justify-center z-10 hidden">
-    <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w">
-      {% include 'purchases/cart.html' %}
-      <button class="absolute top-2 right-2 text-gray-500 hover:text-gray-700" onclick="toggleCart()">
-        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-            </div>
-          </div>
+  <a href="{% url 'carro:ver_carro' %}" class="block py-2 pl-3 pr-4 bg-blue-700 rounded md:bg-transparent text-gray-700 md:p-0 dark:text-white" >Carro</a>
+
         </li>
       <li class="group relative">
   {% if request.user.username %}
@@ -71,18 +58,6 @@
       {% endif %}
 
 
-{#       <li class="relative">#}
-{#  <a href="{% url 'products:list' %}" class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent {% if request.path == '/' %} md:text-blue-700 {% endif %}">#}
-{#    Productos#}
-{#  </a>#}
-{#  {% if request.user.usuario.rol.nombre == 'Proveedor' %}#}
-{#  <div class="absolute hidden w-48 bg-white shadow-lg rounded-lg p-4 z-10">#}
-{#    <a href="{% url 'products:create' %}" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded {% if request.path == '/' %} md:text-blue-700 {% endif %}">#}
-{#      Crear Producto#}
-{#    </a>#}
-{#  </div>#}
-{#  {% endif %}#}
-{#</li>#}
 
         </li>
 
