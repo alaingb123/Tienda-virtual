@@ -37,6 +37,7 @@ class Product(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, default=1, on_delete=models.CASCADE
     )
+    description = models.TextField(blank=True, null=True)
     stripe_product_id = models.CharField(max_length=220, blank=True, null=True)
     supply = models.IntegerField(default=1)
     image = models.ImageField(upload_to="products/", blank=True, null=True)
