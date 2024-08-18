@@ -25,7 +25,6 @@ stripe.api_key = STRIPE_SECRET_KEY
 
 
 
-# BASE_ENDPOINT= config("BASE_ENDPOINT", default="http://127.0.0.1:8000")
 BASE_ENDPOINT= "http://127.0.0.1:8000"
 
 
