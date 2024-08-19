@@ -1,5 +1,4 @@
 <form method="get" action="{% url 'products:list' %}" class="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
-
     <div class="flex items-center mb-4">
         <label for="search" class="sr-only">Buscar productos</label>
         <div class="relative w-full">
@@ -14,51 +13,64 @@
     </div>
 
     <div class="flex space-x-4 p-4 bg-gray-100 rounded-lg">
-        <div class="relative group">
-            <button type="submit" class="breadcrumb-link text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white mr-4" data-classification-id="{{ classification.id }}">
-                Todos
-            </button>
-        </div>
-        {% for classification in classifications %}
-        {% if not classification.parent %}
+        <ol class="inline-flex items-center space-x-1 md:space-x-3">
             <div class="relative group">
-                <button type="submit" class="breadcrumb-link text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white mr-4" name="classification_id_padre" value="{{ classification.id }}">
-                    {{ classification.nombre }}
+                <button type="submit" class="breadcrumb-link text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white mr-4" data-classification-id="{{ classification.id }}">
+                    Todos
                 </button>
-                <div class="absolute left-0 mt-2 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100">
-                    {% if classification.hijos.all %}
-                    <div class="p-2">
-                        {% for child_classification in classification.hijos.all %}
-                        {% if child_classification.pro.exists %}
-                        <button type="submit" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700" name="classification_id" value="{{ child_classification.id }}">
-                            {{ child_classification.nombre }}
-                        </button>
-                        {% endif %}
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
             </div>
+            {% for classification in classifications %}
+            {% if not classification.parent %}
+            <div class="relative group">
+    <button type="submit" class="breadcrumb-link text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white mr-4" name="classification_id_padre" value="{{ classification.id }}" id="classification-{{ classification.id }}" onclick="handleClick(this, 'dropdown-{{ classification.id }}')">
+        {{ classification.nombre }}
+    </button>
+    <div class="absolute left-0 -top-12 hidden transition-opacity duration-300 ease-in-out" id="dropdown-{{ classification.id }}">
+        {% if classification.hijos.all %}
+        <div class="p-2 bg-white shadow-lg rounded-lg">
+            {% for child_classification in classification.hijos.all %}
+            {% if child_classification.pro.exists %}
+            <button type="submit" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700" name="classification_id" value="{{ child_classification.id }}" id="child-classification-{{ child_classification.id }}">
+                {{ child_classification.nombre }}
+            </button>
+            {% endif %}
+            {% endfor %}
+        </div>
         {% endif %}
-        {% endfor %}
     </div>
-
+</div>
+            {% if not forloop.last %}
+            <li>
+                <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+            </li>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+        </ol>
+    </div>
 </form>
 
 <script>
-    document.querySelectorAll('.group').forEach(group => {
-        let timeout;
+    function handleClick(button, dropdownId) {
+    const dropdown = document.getElementById(dropdownId);
+    if (event.target === button) {
+        // Si se hizo clic en el botón, envía el formulario
+        button.form.submit();
+    } else {
+        // Si se hizo clic en el menú desplegable, no hace nada
+        // (el menú desplegable ya se está mostrando)
+    }
+}
 
-        group.addEventListener('mouseenter', () => {
-            clearTimeout(timeout);
-            group.querySelector('div').classList.remove('opacity-0');
-            group.querySelector('div').classList.add('opacity-100');
+// Cerrar el dropdown si se hace clic fuera de él
+window.onclick = function(event) {
+    if (!event.target.matches('.breadcrumb-link')) {
+        const dropdowns = document.querySelectorAll('.absolute');
+        dropdowns.forEach(dropdown => {
+            dropdown.classList.add('hidden');
         });
-
-        group.addEventListener('mouseleave', () => {
-            timeout = setTimeout(() => {
-                group.querySelector('div').classList.add('opacity-0');
-            }, 5000); // Ajusta el tiempo en milisegundos aquí
-        });
-    });
+    }
+}
 </script>
