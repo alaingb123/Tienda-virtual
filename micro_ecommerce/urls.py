@@ -18,16 +18,25 @@ from django.urls import path, include
 
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth import views as auth_views
 
 from . import views
 
 urlpatterns = [
+
+    path('password_reset/', auth_views.PasswordResetView.as_view(template_name='usuario/reset_pass/password_reset.html'), name='password_reset'),
+    path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='usuario/reset_pass/complete.html'), name='password_reset_complete'),
+    path('password_reset_confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='usuario/reset_pass/confirm.html'), name='password_reset_confirm'),
+    path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(template_name='usuario/reset_pass/done.html'), name='password_reset_done'),
+
     path('admin/', admin.site.urls),
     path('', include('products.urls')),
     path('purchases/', include('purchases.urls')),
     path('carro/', include('carro.urls')),
     path('usuario/', include('usuario.urls')),
     path('pedidos_stripe/', include('pedidos_stripe.urls')),
+
+
 ]
 
 if settings.DEBUG:
