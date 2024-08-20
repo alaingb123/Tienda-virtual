@@ -76,62 +76,62 @@
                 </div>
             </div>
             <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+
+
+
+                <table style="width: 100%; font-size: 14px; font-family: 'Arial', sans-serif; color: #717171;  ">
+                    <thead style="background-color: #f8f8f8; color: #333;">
                         <tr>
-                            <th scope="col" class="px-4 py-3">id</th>
-                            <th scope="col" class="px-4 py-3">Producto</th>
-                            <th scope="col" class="px-4 py-3">Clasificacion</th>
-                            <th scope="col" class="px-4 py-3">Cliente</th>
-                            <th scope="col" class="px-4 py-3">Precio</th>
-                            <th scope="col" class="px-4 py-3">Cantidad</th>
-                            <th scope="col" class="px-4 py-3">Total</th>
-                            <th scope="col" class="px-4 py-3">Fecha</th>
-                            <th scope="col" class="px-4 py-3">Entrega</th>
-                            <th scope="col" class="px-4 py-3">
-                                <span class="sr-only">Actions</span>
-                            </th>
+                            <th scope="col" style="padding: 16px;">id</th>
+                            <th scope="col" style="padding: 16px;">Producto</th>
+                            <th scope="col" style="padding: 16px;">Clasificacion</th>
+                            <th scope="col" style="padding: 16px;">Cliente</th>
+                            <th scope="col" style="padding: 16px;">Precio</th>
+                            <th scope="col" style="padding: 16px;">Cantidad</th>
+                            <th scope="col" style="padding: 16px;">Total</th>
+                            <th scope="col" style="padding: 16px;">Fecha</th>
+                            <th scope="col" style="padding: 16px;">Entrega</th>
                         </tr>
                     </thead>
                     <tbody>
 
                     {% for venta in ventas %}
-                        <tr class="border-b dark:border-gray-700 cursor-pointer" data-href="{% url 'pedidos_stripe:ver_venta' venta.id %}">
-                            <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        <tr style="border-bottom: 1px solid #ddd; cursor: pointer;" data-href="{% url 'pedidos_stripe:ver_venta' venta.id %}">
+                            <th scope="row" style="padding: 16px; font-weight: 500; color: #222;">
                                 {{ venta.pk }}</th>
-                            <th scope="row" class="flex items-center px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
-    <img src="{{ venta.product.image.url }}" alt="{{ venta.product.name }}" class="w-auto h-8 mr-3">
-    {{ venta.product.name }}
+                           <th scope="row" style="display: flex; align-items: center; padding: 4px 16px; font-weight: 500; color: #111827; white-space: nowrap;  ">
+  <img src="{{ venta.product.image.url }}" alt="{{ venta.product.name }}" style="width: 64px; height: 48px; margin-right: 12px;">
+  {{ venta.product.name }}
 </th>
-                             {% for clasi in venta.product.clasificaciones_padre.all %}
-                            <td class="px-4 py-3">{{ clasi }}</td>
-                            {% endfor %}
-                            <td class="px-4 py-3">{% if venta.solicitud.user.email %}{{ venta.solicitud.user.email }} {% else %} {{ venta.solicitud.user.username }}{% endif %}</td>
-                            <td class="px-4 py-3">{{ venta.product.price }}</td>
-                            <td class="px-4 py-3">{{ venta.quantity }}</td>
-                            <td class="px-4 py-3">{{venta.total_price}}</td>
-                            <td class="px-4 py-3">{{venta.solicitud.timestamp|date:"d. M, Y"}}</td>
-                            <td class="px-4 py-3">
+
+                            <td style="padding: 16px;">{% for clasi in venta.product.clasificaciones_padre.all %}{{ clasi }}{% endfor %}</td>
+
+                            <td style="padding: 16px;">{% if venta.solicitud.user.email %}{{ venta.solicitud.user.email }} {% else %} {{ venta.solicitud.user.username }}{% endif %}</td>
+                            <td style="padding: 16px;">{{ venta.product.price }}</td>
+                            <td style="padding: 16px;">{{ venta.quantity }}</td>
+                            <td style="padding: 16px;">{{venta.total_price}}</td>
+                            <td style="padding: 16px;">{{venta.solicitud.timestamp|date:"d. M, Y"}}</td>
+                            <td style="padding: 16px; ">
     {% if venta.solicitud.entrega == 'pending' %}
-        <span class="inline-block px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-            <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span style="display: inline-block; padding: 8px 16px; border-radius: 9999px; font-size: 12px; font-weight: 500; background-color: #fef3c7; color: #eab308;">
+            <svg style="width: 16px; height: 16px; display: inline-block; margin-right: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             Pending
         </span>
     {% elif venta.solicitud.entrega == 'canceled' %}
-        <span class="inline-block px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-            <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        <span style="display: inline-block; padding: 8px 16px; border-radius: 9999px; font-size: 12px; font-weight: 500; background-color: #fee2e2; color: #dc2626;">
+            <svg style="width: 16px; height: 16px; display: inline-block; margin-right: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             Canceled
         </span>
     {% elif venta.solicitud.entrega == 'accepted' %}
-        <span class="inline-block px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-            <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        <span style="display: inline-block; padding: 8px 16px; border-radius: 9999px; font-size: 12px; font-weight: 500; background-color: #f0fdf4; color: #22c55e;">
+            <svg style="width: 16px; height: 16px; display: inline-block; margin-right: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
             Delivered
         </span>
     {% endif %}
 </td>
-                            <td class="px-4 py-3 flex items-center justify-end">
-                                <button id="apple-imac-27-dropdown-button" data-dropdown-toggle="apple-imac-27-dropdown" class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100" type="button">
-                                    <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <td style="padding: 16px; display: flex; align-items: center; justify-content: flex-end;">
+                                <button id="apple-imac-27-dropdown-button" data-dropdown-toggle="apple-imac-27-dropdown" style="display: inline-flex; align-items: center; padding: 4px 8px; font-size: 14px; font-weight: 500; color: #717171; background-color: transparent; border: none; border-radius: 6px; cursor: pointer;">
+                                    <svg style="width: 20px; height: 20px;" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
                                     </svg>
                                 </button>
@@ -154,6 +154,11 @@
 
                     </tbody>
                 </table>
+
+
+
+
+
             </div>
 
         <nav class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4" aria-label="Table navigation">

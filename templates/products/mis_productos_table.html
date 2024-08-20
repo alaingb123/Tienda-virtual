@@ -1,137 +1,326 @@
 {% extends "../base.html" %}
 
 {% block content %}
+<style>
+    /* Basic styles for responsiveness */
+    body {
+      font-family: sans-serif;
+      margin: 0;
+    }
+
+    section {
+      background-color: #f8fafc;
+      padding: 3rem 0;
+    }
+
+    @media (min-width: 640px) {
+      section {
+        padding: 5rem 0;
+      }
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    @media (min-width: 1024px) {
+      .container {
+        padding: 3rem;
+      }
+    }
+
+    .card {
+      background-color: white;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+
+    .card-header {
+      display: flex;
+      flex-direction: column;
+      padding: 2rem;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 1024px) {
+      .card-header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0;
+      }
+    }
+
+    .card-header-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .card-header-item h5 {
+      color: #6b7280;
+    }
+
+    .card-header-item h5.bold {
+      font-weight: bold;
+    }
+
+    .card-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .card-actions {
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+      }
+    }
+
+    .card-actions button,
+    .card-actions a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.6rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-radius: 0.5rem;
+      transition: background-color 0.15s ease-in-out;
+    }
+
+    .card-actions button.primary {
+      color: white;
+      background-color: #4299e1;
+    }
+
+    .card-actions button.primary:hover {
+      background-color: #3b82f6;
+    }
+
+    .card-actions button.secondary,
+    .card-actions a.secondary {
+      color: #111827;
+      background-color: white;
+      border: 1px solid #d1d5db;
+    }
+
+    .card-actions button.secondary:hover,
+    .card-actions a.secondary:hover {
+      background-color: #f3f4f6;
+    }
+
+    .card-body {
+      overflow-x: auto;
+    }
+
+    .card-body-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2rem;
+      gap: 2rem;
+    }
+
+    .card-body-content-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .card-body-content-item label {
+      display: none;
+    }
+
+    .card-body-content-item input,
+    .card-body-content-item select {
+      width: 100%;
+      padding: 1rem;
+      font-size: 0.875rem;
+      color: #111827;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      outline: none;
+    }
+
+    .card-body-content-item input:focus,
+    .card-body-content-item select:focus {
+      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+    }
+
+    .card-body-content-item svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: #6b7280;
+    }
+
+    .card-body-content-item svg.large {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+
+    .card-body-content-item svg.large path {
+      stroke-width: 1.5;
+    }
+
+    .card-body-content-item svg.large.fill {
+      fill: currentColor;
+    }
+
+    .card-body-content-item svg.large.stroke {
+      fill: none;
+    }
+
+    .card-body-content-item input[type="text"] {
+      position: relative;
+    }
+
+    .card-body-content-item input[type="text"] svg {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 1rem;
+      pointer-events: none;
+    }
+  </style>
 
 
-<section class="bg-gray-50 dark:bg-gray-900 py-3 sm:py-5">
-        <div class="px-4 mx-auto max-w-screen-2xl lg:px-12">
-            <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
-                <div class="flex flex-col px-4 py-3 space-y-3 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 lg:space-x-4">
-                    <div class="flex items-center flex-1 space-x-4">
-                        <h5>
-                            <span class="text-gray-500">Mis Productos:</span>
-                            <span class="dark:text-white">{{ productos.paginator.count }}</span>
-                        </h5>
-                        <h5>
-                            <span class="text-gray-500">Ingreso Total:</span>
-                            <span class="dark:text-white">${{ total_sales|floatformat:2 }}</span>
-                        </h5>
-                    </div>
-                    <div class="flex flex-col flex-shrink-0 space-y-3 md:flex-row md:items-center lg:justify-end md:space-y-0 md:space-x-3">
-                        <a href="{% url 'products:create' %}" class="flex items-center justify-center px-4 py-2 text-sm font-medium text-black rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300">
-                            <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
-                            </svg>
-                            Nuevo Producto
-                        </a>
 
-                        <a href="{% url 'products:mis_productos' %}" class="flex items-center justify-center flex-shrink-0 px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-                            <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                            </svg>
-                            Actualizar stocks
-                        </a>
-                        <button type="button" class="flex items-center justify-center flex-shrink-0 px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-                            <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                            </svg>
-                            Export
-                        </button>
-                    </div>
+<section>
+    <div class="container">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-item">
+            <h5 style="color: #6b7280;">Mis Productos:</h5>
+            <h5 style="color: #6b7280; font-weight: bold;">{{ productos.paginator.count }}</h5>
+          </div>
+          <div class="card-header-item">
+            <h5 style="color: #6b7280;">Ingreso Total:</h5>
+            <h5 style="color: #6b7280; font-weight: bold;">${{ total_sales|floatformat:2 }}</h5>
+          </div>
+          <div class="card-actions">
+            <a href="{% url 'products:create' %}" style="display: flex; align-items: center; justify-content: center; padding: 0.6rem 1rem; font-size: 0.875rem; font-weight: 500; color: white; background-color: #4299e1; border-radius: 0.5rem; transition: background-color 0.15s ease-in-out; @media (hover: hover) {&:hover { background-color: #3b82f6; } }">
+              <svg style="width: 1rem; height: 1rem; margin-right: 0.5rem;" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+              </svg>
+              Nuevo Producto
+            </a>
+            <a href="{% url 'products:mis_productos' %}" style="display: flex; align-items: center; justify-content: center; padding: 0.6rem 1rem; font-size: 0.875rem; font-weight: 500; color: #111827; background-color: white; border: 1px solid #d1d5db; border-radius: 0.5rem; transition: background-color 0.15s ease-in-out; @media (hover: hover) {&:hover { background-color: #f3f4f6; } }">
+              <svg style="width: 1.2rem; height: 1.2rem; margin-right: 0.5rem;" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+              </svg>
+              Actualizar stocks
+            </a>
+            <button type="button" style="display: flex; align-items: center; justify-content: center; padding: 0.6rem 1rem; font-size: 0.875rem; font-weight: 500; color: #111827; background-color: white; border: 1px solid #d1d5db; border-radius: 0.5rem; transition: background-color 0.15s ease-in-out; @media (hover: hover) {&:hover { background-color: #f3f4f6; } }">
+              <svg style="width: 1.2rem; height: 1.2rem; margin-right: 0.5rem;" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+              </svg>
+              Export
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-body-content">
+            <div class="card-body-content-item">
+              <label for="search-input" style="display: none;">Buscar</label>
+              <div style="position: relative;">
+                <div style="position: absolute; top: 50%; transform: translateY(-50%); left: 1rem; pointer-events: none;">
+                  <svg style="width: 1.5rem; height: 1.5rem; color: #6b7280;" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
                 </div>
-                <div class="overflow-x-auto">
-                    <div class="flex items-center justify-between p-4">
-                        <div class="flex items-center">
-                            <label for="search-input" class="sr-only">Buscar</label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
-                                </div>
-                                <input type="text" id="search-input" name="search_term" class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="Buscar producto">
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <label for="category-select" class="sr-only">Categoría</label>
-                            <select id="category-select" class="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
-                                <option value="">Todas las categorías</option>
-                                {% for category in categories %}
-                                    <option value="{{ category.name }}">{{ category.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th scope="col" class="p-4">
-                                    <div class="flex items-center">
-                                        <input id="checkbox-all" type="checkbox" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                        <label for="checkbox-all" class="sr-only">checkbox</label>
-                                    </div>
-                                </th>
-                                <th scope="col" class="px-4 py-3">Product0</th>
-                                <th scope="col" class="px-4 py-3">Categoria</th>
-                                <th scope="col" class="px-4 py-3">Precio</th>
-                                <th scope="col" class="px-4 py-3">Stock</th>
-                                <th scope="col" class="px-4 py-3">Ventas/Dia</th>
-                                <th scope="col" class="px-4 py-3">Ventas/Mes</th>
+                <input type="text" id="search-input" name="search_term" style="width: 100%; padding: 1rem; font-size: 0.875rem; color: #111827; border: 1px solid #d1d5db; border-radius: 0.5rem; focus:outline-none; @media (focus: focus) {&:focus { box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); } }" placeholder="Buscar producto">
+              </div>
+            </div>
+            <div class="card-body-content-item">
+              <label for="category-select" style="display: none;">Categoría</label>
+              <select id="category-select" style="width: 100%; padding: 1rem; font-size: 0.875rem; color: #111827; border: 1px solid #d1d5db; border-radius: 0.5rem; focus:outline-none; @media (focus: focus) {&:focus { box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); } }">
+                <option value="">Todas las categorías</option>
+                {% for category in categories %}
+                  <option value="{{ category.name }}">{{ category.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
 
-{#                          <th scope="col" class="px-4 py-3">Rating</th>#}
-                          <th scope="col" class="px-4 py-3">Ventas</th>
-                          <th scope="col" class="px-4 py-3">Ingresos</th>
-                          <th scope="col" class="px-4 py-3">Estado</th>
-                          <th scope="col" class="px-4 py-3">Ultima Actualizacion</th>
-                      </tr>
-                  </thead>
-                  <tbody>
+
+
+        <table style="width: 100%; font-size: 0.875rem; text-align: left; color: #6b7280;">
+          <thead style="background-color: #f3f4f6; color: #374151; text-transform: uppercase;">
+            <tr>
+              <th scope="col" style="padding: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <input id="checkbox-all" type="checkbox" style="width: 1.5rem; height: 1.5rem; background-color: #f3f4f6; border: 1px solid #d1d5db; border-radius: 0.25rem; appearance: none; @media (focus: focus) {&:focus { outline: 2px solid transparent; outline-offset: 2px; box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); } }" />
+                  <label for="checkbox-all" style="display: none;">checkbox</label>
+                </div>
+              </th>
+              <th scope="col" style="padding: 1rem;">Product0</th>
+              <th scope="col" style="padding: 1rem;">Categoria</th>
+              <th scope="col" style="padding: 1rem;">Precio</th>
+              <th scope="col" style="padding: 1rem;">Stock</th>
+              <th scope="col" style="padding: 1rem;">Ventas/Dia</th>
+              <th scope="col" style="padding: 1rem;">Ventas/Mes</th>
+              <th scope="col" style="padding: 1rem;">Ventas</th>
+              <th scope="col" style="padding: 1rem;">Ingresos</th>
+              <th scope="col" style="padding: 1rem;">Estado</th>
+              <th scope="col" style="padding: 1rem;">Ultima Actualizacion</th>
+            </tr>
+       </thead
+
+
+<tbody>
                   {% for producto in productos %}
-                      <tr class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer" data-href="{% url 'products:manage' producto.handle %}">
-                          <td class="w-4 px-4 py-3">
-                              <div class="flex items-center">
-                                  <input id="checkbox-table-search-1" type="checkbox" onclick="event.stopPropagation()" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                      <tr style="border-bottom: 1px solid #ced4da; border-bottom-color: #374151; background-color: #f8f9fa; cursor: pointer;" data-href="{% url 'products:manage' producto.handle %}">
+                          <td style="width: 4%; padding: 12px 16px;">
+                              <div style="display: flex; align-items: center;">
+                                  <input id="checkbox-table-search-1" type="checkbox" onclick="event.stopPropagation()" style="width: 20px; height: 20px; background-color: #e9ecef; border: 1px solid #ced4da; border-radius: 3px; color: #007bff;">
                                   <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
                               </div>
 
                           </td>
-                         <th scope="row" class="flex items-center px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
-    <img src="{{ producto.image.url }}" alt="{{ producto.name }}" class="w-auto h-8 mr-3">
+<th scope="row" style="display: flex; align-items: center; padding: 12px 16px; font-weight: 500; color: #212529;">
+    <img src="{{ producto.image.url }}" alt="{{ producto.name }}" style="width: 24px; height: 24px; margin-right: 8px;">
     {{ producto.name }}
 </th>
 
 
-                          <td class="px-4 py-2 row cursor-pointer">
+                          <td style="padding: 12px 16px; cursor: pointer;">
                               {% for clasi in producto.clasificaciones_padre.all %}
-                              <span class="bg-primary-100 text-primary-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">{{ clasi.nombre }}</span>
+                              <span style="background-color: #e2f2ff; color: #007bff; font-size: 12px; font-weight: 500; padding: 4px 8px; border-radius: 20px;">{{ clasi.nombre }}</span>
                                   {% endfor %}
                           </td>
-                      <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">${{ producto.price }}</td>
-                          <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
-                              <div class="flex items-center">
-                                  <div class="porcentaje-indicador {% if producto.porcentaje < 50 %} porcentaje-menor {% elif producto.porcentaje > 50 and producto.porcentaje <= 95 %} porcentaje-medio {% else %} porcentaje-mayor {% endif %}"></div>
+                      <td style="padding: 12px 16px; font-weight: 500; color: #212529;">${{ producto.price }}</td>
+                          <td style="padding: 12px 16px; font-weight: 500; color: #212529;">
+                              <div style="display: flex; align-items: center;">
+                                  <div style="display: inline-block; width: 12px; height: 12px; margin-right: 4px; border-radius: 50%; background-color: {% if producto.porcentaje < 50 %} #48bb78 {% elif producto.porcentaje > 50 and producto.porcentaje <= 95 %} #facc15 {% else %} #f56565 {% endif %}"></div>
                                   {{ producto.supply }}
                               </div>
                           </td>
-                          <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ producto.ventas_dia|floatformat:2 }}</td>
-                          <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ producto.ventas_mes }}</td>
-                          <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                              <div class="flex items-center">
-                                  <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-2 text-gray-400" aria-hidden="true">
+                          <td style="padding: 12px 16px; font-weight: 500; color: #212529;">{{ producto.ventas_dia|floatformat:2 }}</td>
+                          <td style="padding: 12px 16px; font-weight: 500; color: #212529;">{{ producto.ventas_mes }}</td>
+                          <td style="padding: 12px 16px; font-weight: 500; color: #212529;">
+                              <div style="display: flex; align-items: center;">
+                                  <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px; margin-right: 4px; color: #6c757d;" aria-hidden="true">
                                       <path d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" />
                                   </svg>
                                   {{ producto.cantidad}}
                               </div>
                           </td>
-                          <td class="px-4 py-2">${{ producto.total_sales|floatformat:2 }}</td>
-                         <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                          <td style="padding: 12px 16px; font-weight: 500; color: #212529;">${{ producto.total_sales|floatformat:2 }}</td>
+                         <td style="padding: 12px 16px; font-weight: 500; color: #212529;">
     {% if producto.active %}
-        <span class="bg-green-500 text-white font-bold py-1 px-2 rounded-full">Activo</span>
+        <span style="background-color: #28a745; color: #fff; font-weight: bold; padding: 4px 8px; border-radius: 20px;">Activo</span>
     {% else %}
-        <span class="bg-red-500 text-white font-bold py-1 px-2 rounded-full">Inactivo</span>
+        <span style="background-color: #dc3545; color: #fff; font-weight: bold; padding: 4px 8px; border-radius: 20px;">Inactivo</span>
     {% endif %}
 </td>
-                          <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ producto.updated|date:"d. M, Y" }}</td>
+                          <td style="padding: 12px 16px; font-weight: 500; color: #212529;">{{ producto.updated|date:"d. M, Y" }}</td>
                       </tr>
                      {% endfor %}
                   </tbody>
@@ -139,19 +328,19 @@
           </div>
 
 
-          <nav class="flex flex-col items-start justify-between p-4 space-y-3 md:flex-row md:items-center md:space-y-0" aria-label="Table navigation">
-  <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+          <nav style="display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; padding: 16px; gap: 16px; flex-direction: row; align-items: center; gap: 0;" aria-label="Table navigation">
+  <span style="font-size: 14px; font-weight: 400; color: #6c757d;">
     Showing
-    <span class="font-semibold text-gray-900 dark:text-white">{{ productos.start_index }}-{{ productos.end_index }}</span>
+    <span style="font-weight: 600; color: #212529;">{{ productos.start_index }}-{{ productos.end_index }}</span>
     of
-    <span class="font-semibold text-gray-900 dark:text-white">{{ productos.paginator.count }}</span>
+    <span style="font-weight: 600; color: #212529;">{{ productos.paginator.count }}</span>
   </span>
-  <ul class="inline-flex items-stretch -space-x-px">
+  <ul style="display: flex; align-items: stretch; gap: -1px;">
     {% if productos.has_previous %}
     <li>
-      <a href="?page={{ productos.previous_page_number }}" class="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+      <a href="?page={{ productos.previous_page_number }}" style="display: flex; align-items: center; justify-content: center; height: 100%; padding: 8px 12px; margin-left: 0; color: #6c757d; background-color: #fff; border-radius: 4px 0 0 4px; border: 1px solid #ced4da; hover:background-color: #e9ecef; hover:color: #495057;">
         <span class="sr-only">Previous</span>
-        <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <svg style="width: 20px; height: 20px;" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
           <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
         </svg>
       </a>
@@ -161,18 +350,18 @@
     {% for page_num in productos.paginator.page_range %}
     <li>
       {% if page_num == productos.number %}
-      <a href="?page={{ page_num }}" aria-current="page" class="z-10 flex items-center justify-center px-3 py-2 text-sm leading-tight border text-primary-600 bg-primary-50 border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">{{ page_num }}</a>
+      <a href="?page={{ page_num }}" aria-current="page" style="display: flex; align-items: center; justify-content: center; padding: 8px 12px; font-size: 14px; font-weight: 400; color: #007bff; background-color: #e2f2ff; border: 1px solid #ced4da; hover:background-color: #d1ecf1; hover:color: #0056b3;">{{ page_num }}</a>
       {% else %}
-      <a href="?page={{ page_num }}" class="flex items-center justify-center px-3 py-2 text-sm leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">{{ page_num }}</a>
+      <a href="?page={{ page_num }}" style="display: flex; align-items: center; justify-content: center; padding: 8px 12px; font-size: 14px; font-weight: 400; color: #6c757d; background-color: #fff; border: 1px solid #ced4da; hover:background-color: #e9ecef; hover:color: #495057;">{{ page_num }}</a>
       {% endif %}
     </li>
     {% endfor %}
 
     {% if productos.has_next %}
     <li>
-      <a href="?page={{ productos.next_page_number }}" class="flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+      <a href="?page={{ productos.next_page_number }}" style="display: flex; align-items: center; justify-content: center; height: 100%; padding: 8px 12px; color: #6c757d; background-color: #fff; border-radius: 0 4px 4px 0; border: 1px solid #ced4da; hover:background-color: #e9ecef; hover:color: #495057;">
         <span class="sr-only">Next</span>
-        <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <svg style="width: 20px; height: 20px;" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
           <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
         </svg>
       </a>

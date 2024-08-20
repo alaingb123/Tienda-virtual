@@ -144,12 +144,14 @@ def pedidos_stripe(request):
 
     completado = request.GET.get('completado' or None)
 
+
     if completado:
-        if completado == 'true':
-            completado = True
+        if completado == 'false':
+            solicitudes = solicitudes.filter(completed=False)
         else:
-            completado = False
-        solicitudes = solicitudes.filter(completed=completado)
+            solicitudes = solicitudes.filter(completed=True)
+    else:
+        solicitudes = solicitudes.filter(completed=True)
 
 
 
