@@ -96,9 +96,9 @@
                     <tbody>
 
                     {% for venta in ventas %}
-                        <tr style="border-bottom: 1px solid #ddd; cursor: pointer;" data-href="{% url 'pedidos_stripe:ver_venta' venta.id %}">
+                        <tr style="border-bottom: 1px solid #ddd;" data-href="{% url 'pedidos_stripe:ver_venta' venta.id %}">
                             <th scope="row" style="padding: 16px; font-weight: 500; color: #222;">
-                                {{ venta.pk }}</th>
+                              <a href="{% url 'pedidos_stripe:ver_venta' venta.id %}"> {{ venta.handle }} </a> </th>
                            <th scope="row" style="display: flex; align-items: center; padding: 4px 16px; font-weight: 500; color: #111827; white-space: nowrap;  ">
   <img src="{{ venta.product.image.url }}" alt="{{ venta.product.name }}" style="width: 64px; height: 48px; margin-right: 12px;">
   {{ venta.product.name }}

@@ -4,6 +4,22 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/extra/list_destinatario.css' %}">
 
+
+    {% if messages %}
+  {% for message in messages %}
+    {% if message.extra_tags == 'maximo de destinatarios alcanzado' %}
+      <div class="alert alert-warning">
+        {{ message }}
+      </div>
+    {% else %}
+      <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+      </div>
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+
 <h1>Lista de Destinatarios</h1>
 
 <div class="search-bar">  <!-- Agrega el contenedor con la clase search-bar -->

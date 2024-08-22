@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -10,8 +11,12 @@ from products.models import Product
 # Create your views here.
 
 
-
+MAX_DESTINATARIOS_ALCANZADO = "maximo de destinatarios alcanzado"
 def crear_destinatario(request):
+    if request.user.destinatario_set.count() >= 5:
+        messages.add_message(request, messages.WARNING, MAX_DESTINATARIOS_ALCANZADO)
+        return redirect('extra:list_destinatario')
+
     if request.method == 'POST':
         form = DestinatarioForm(request.POST)
         if form.is_valid():
@@ -63,6 +68,9 @@ def lista_destinatarios(request):
 
 def editar_destinatario(request, destinatario_id):
     destinatario = Destinatario.objects.get(pk=destinatario_id)
+
+    if destinatario.usuario != request.user:
+        return HttpResponseRedirect(reverse('extra:list_destinatario'))
 
     if request.method == 'POST':
         form = DestinatarioForm(request.POST, instance=destinatario)

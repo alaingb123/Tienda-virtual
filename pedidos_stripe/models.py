@@ -9,11 +9,22 @@ from extra.models import Destinatario
 from products.models import Product
 from django.core.exceptions import PermissionDenied
 from django.core.validators import EmailValidator,RegexValidator
-
+import uuid
 
 from django.conf import settings
 from django.core.validators import EmailValidator, RegexValidator
 # Create your models here.
+import string
+import random
+
+
+def generate_unique_handle():
+    while True:
+        handle = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+        if not Purchase.objects.filter(handle=handle).exists():
+            return handle
+
+
 
 
 class Purchase(models.Model):
@@ -23,6 +34,7 @@ class Purchase(models.Model):
         ('accepted', 'Entregada'),
         ('canceled', 'Cancelada'),
     ]
+    handle = models.CharField(max_length=6, unique=True, default=generate_unique_handle, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1, on_delete=models.CASCADE)
     product = models.ManyToManyField(Product, related_name='pedidos_stripe')
     stripe_checkout_session_id = models.CharField(max_length=220, null=True, blank=True)
@@ -47,6 +59,7 @@ class Purchase(models.Model):
 
 # NEcesidad de crear un campo id que contenga letras
 class SolicitudStripeItem(models.Model):
+    handle = models.CharField(max_length=6, unique=True, default=generate_unique_handle, editable=False)
     solicitud = models.ForeignKey(Purchase, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()

@@ -17,7 +17,7 @@
   <tbody>
     {% for purchase in pedidos_stripe %}
     <tr>
-      <td><a href="{% url 'pedidos_stripe:ver_solicitud_stripe' purchase.pk %}" >{{ purchase.pk }}</a></td>
+      <td><a href="{% url 'pedidos_stripe:ver_solicitud_stripe' purchase.pk %}" >{{ purchase.handle }}</a></td>
       <td><a href="{% url 'pedidos_stripe:ver_solicitud_stripe' purchase.pk %}" >{{ purchase.user.username }}</a></td>
       <td><a href="{% url 'pedidos_stripe:ver_solicitud_stripe' purchase.pk %}" >{{ purchase.user.email }}</a></td>
       <td class="{% if purchase.completed %}completed{% else %}not-completed{% endif %}"><a href="{% url 'pedidos_stripe:ver_solicitud_stripe' purchase.pk %}" >{% if purchase.completed %}Sí{% else %}No{% endif %}</a></td>
