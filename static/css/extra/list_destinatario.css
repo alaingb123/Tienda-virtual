@@ -1,0 +1,62 @@
+.add-button {
+    display: block; /* Ocupa todo el ancho del contenedor */
+    margin: 10px auto; /* Margen superior e inferior, centrado horizontalmente */
+    padding: 10px 20px; /* Espacio interno */
+    background-color: #4CAF50; /* Verde */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Transición suave para el hover */
+}
+
+.add-button:hover {
+    background-color: #45a049; /* Verde más oscuro */
+}
+
+
+
+.card {
+    border: 1px solid #ccc;
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 90%; /* Ajusta el ancho del card al 90% del contenedor */
+    max-width: 300px; /* Define el ancho máximo */
+    margin: 0 auto; /* Centra el card horizontalmente */
+    display: flex; /* Habilita flexbox para el card */
+    flex-direction: column; /* Ordena el contenido en columna */
+}
+
+.card h2 {
+    margin-top: 0;
+    font-weight: bold;
+}
+
+/* Estilos para pantallas pequeñas */
+@media (max-width: 480px) {
+    .card {
+        width: 100%; /* El card ocupa todo el ancho en pantallas pequeñas */
+    }
+}
+
+.edit-button {
+    background-color: #4CAF50; /* Color de fondo del botón */
+    color: white; /* Color del texto del botón */
+    padding: 5px 10px; /* Espacio interno del botón */
+    border: none; /* Elimina el borde del botón */
+    border-radius: 5px; /* Redondea las esquinas del botón */
+    text-decoration: none; /* Elimina el subrayado del enlace */
+    font-size: 14px; /* Tamaño del texto del botón */
+    align-self: flex-end; /* Alinea el botón al final del card */
+    cursor: pointer; /* Cambia el cursor a una mano al pasar el ratón */
+}
+
+.edit-button:hover {
+    background-color: #45a049; /* Cambia el color al pasar el ratón */
+}
+
+

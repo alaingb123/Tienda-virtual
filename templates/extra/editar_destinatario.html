@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/extra/crear_destinatario.css' %}">
+
+<div class="form-container">
+    <h1 class="form-title">Editar Destinatario</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="form-button">Guardar Cambios</button>
+    </form>
+</div>
+
+{% endblock %}

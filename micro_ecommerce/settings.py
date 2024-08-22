@@ -49,10 +49,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # internal
     'products',
-    'purchases',
     'carro',
     'usuario',
     'pedidos_stripe',
+    'extra',
 
 ]
 

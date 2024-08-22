@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .carro import Carro
 from products.models import Product
 
@@ -53,7 +53,24 @@ def eliminar_producto(request,product_id):
 
 
 def ver_carro(request):
-    return render(request,"purchases/cart.html")
+    session = request.session
+    carro = session.get('carro', {})
+    stock_error_products = []
+
+    for item_id, item in carro.items():
+        product = get_object_or_404(Product, pk=item["product_id"])
+        if product.supply < item["cantidad"]:
+            stock_error_products.append(product.name)
+
+    if stock_error_products:
+        stock_error = "Lo sentimos, no hay suficiente disponibilidad de los siguientes productos: " + ", ".join(stock_error_products) + ". Te recomendamos que los retires del carrito para continuar con tu compra."
+    else:
+        stock_error = None
+
+    context = {
+        "stock_error": stock_error
+    }
+    return render(request, "purchases/cart.html", context)
 
 
 

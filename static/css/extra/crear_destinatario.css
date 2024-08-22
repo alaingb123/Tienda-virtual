@@ -1,0 +1,61 @@
+.form-container {
+    background-color: #fff;
+    padding: 5px; /* Reducimos el padding */
+    margin: 5px auto; /* Reducimos el margen */
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 40%; /* Ajustamos el ancho máximo para que sea responsive */
+    display: flex; /* Usamos Flexbox */
+    flex-direction: column; /* Organizamos los elementos en columna */
+    align-items: center; /* Centramos los elementos horizontalmente */
+}
+
+.form-title {
+    text-align: center;
+    margin-bottom: 5px;
+    color: #333;
+    font-size: 1em; /* Reducimos el tamaño del título */
+}
+
+.form-group {
+    margin-bottom: 3px; /* Reducimos el margen */
+    width: 100%; /* Ocupamos todo el ancho */
+}
+
+.form-input {
+    width: 100%;
+    padding: 3px; /* Reducimos el padding */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 0.8em; /* Reducimos el tamaño de la fuente */
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+}
+
+.form-button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 3px 8px; /* Reducimos el padding */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: block; /* Ocupamos todo el ancho */
+    margin: 3px auto; /* Centramos el botón */
+    font-size: 0.8em; /* Reducimos el tamaño de la fuente */
+}
+
+.form-button:hover {
+    background-color: #0069d9;
+}
+
+/* Estilos para pantallas pequeñas */
+@media (max-width: 480px) {
+    .form-group {
+        margin-bottom: 2px; /* Margen aún más pequeño */
+    }
+}

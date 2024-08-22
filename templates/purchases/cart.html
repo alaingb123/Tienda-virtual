@@ -2,6 +2,14 @@
 
 {% block content %}
 <section class="bg-white dark:bg-gray-900">
+
+   {% if stock_error %}
+  <div style="background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 0.75rem 1.25rem; border-radius: 0.25rem; margin-bottom: 1.5rem;" role="alert">
+    <strong style="font-weight: bold;">¡Atención!</strong>
+    <span style="display: block; sm: inline;">{{ stock_error }}</span>
+  </div>
+  {% endif %}
+
   <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
     <div class="mx-auto max-w-screen-sm text-center mb-8 lg:mb-16">
       <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Carrito de compras</h2>
@@ -34,7 +42,7 @@
                   <h3 class="font-bold text-lg mb-2">Opciones de Compra:</h3>
   
                   <!-- Formulario para comprar con Stripe -->
-                  <form method="POST" action="{% url 'pedidos_stripe:buy_cart' %}" class="mb-2">
+                  <form method="POST" action="{% url 'extra:list_destinatario' %}" class="mb-2">
                       {% csrf_token %}
                       <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                           Comprar con Stripe
@@ -42,12 +50,12 @@
                   </form>
   
                   <!-- Formulario para comprar con Zelle -->
-                  <form method="POST" action="{% url 'purchases:create_solicitud_zelle' %}">
-                      {% csrf_token %}
-                      <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                          Comprar con Zelle
-                      </button>
-                  </form>
+{#                  <form method="POST" action="{% url 'purchases:create_solicitud_zelle' %}">#}
+{#                      {% csrf_token %}#}
+{#                      <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">#}
+{#                          Comprar con Zelle#}
+{#                      </button>#}
+{#                  </form>#}
               </div>
           </div>
       </div>

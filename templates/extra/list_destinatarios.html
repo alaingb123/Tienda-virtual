@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/extra/list_destinatario.css' %}">
+
+<h1>Lista de Destinatarios</h1>
+
+<div class="search-bar">  <!-- Agrega el contenedor con la clase search-bar -->
+    <form method="get">
+        <input type="text" name="q" placeholder="Buscar por nombre...">
+        <button type="submit">Buscar</button>
+    </form>
+</div>  <!-- Cierra el contenedor -->
+
+<a href="{% url 'extra:crear_destinatario' %}" class="add-button">
+    Agregar Destinatario
+</a>
+
+<ul id="destinatarios-list">
+    {% for destinatario in destinatarios %}
+    <li class="card" data-nombre="{{ destinatario.nombre|lower }}">
+        <div class="card-content">
+            <input type="radio" name="destinatario_id" id="destinatario-{{ destinatario.id }}" value="{{ destinatario.id }}" class="destinatario-radio">
+            <label for="destinatario-{{ destinatario.id }}">
+                <h2>{{ destinatario.nombre }} {{ destinatario.apellidos }}</h2>
+                <p>{{ destinatario.direccion }}</p>
+            </label>
+        </div>
+        <form method="post" action="{% url 'pedidos_stripe:buy_cart' destinatario.id %}">
+    {% csrf_token %}
+    <input type="hidden" name="selected_destinatario_id" id="destinatario_id" value="">
+    <button type="submit">Realizar Compra</button>
+</form>
+        <a href="{% url 'extra:editar_destinatario' destinatario.id %}" class="edit-button">
+            Editar
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+
+
+
+<script src="{% static 'js/extra/list_destinatario.js' %}"></script>
+
+
+{% endblock %}

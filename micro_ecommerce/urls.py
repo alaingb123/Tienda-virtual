@@ -31,10 +31,10 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
     path('', include('products.urls')),
-    path('purchases/', include('purchases.urls')),
     path('carro/', include('carro.urls')),
     path('usuario/', include('usuario.urls')),
     path('pedidos_stripe/', include('pedidos_stripe.urls')),
+    path('extra/', include('extra.urls')),
 
 
 ]

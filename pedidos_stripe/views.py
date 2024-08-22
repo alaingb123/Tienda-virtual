@@ -11,6 +11,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
 from carro.carro import Carro
+from extra.models import Destinatario
 from products.models import Product
 from usuario.decorator import role_required
 from .models import Purchase, SolicitudStripeItem
@@ -70,10 +71,17 @@ def purchase_start_view(request):
 
 
 
-def buy_cart_stripe(request):
+def buy_cart_stripe(request,destinatario_id):
     if not request.user.is_authenticated:
         messages.warning(request, 'Debes estar registrado para poder realizar compras.')
         return HttpResponseRedirect(reverse('usuario:login'))
+
+
+
+    if request.method == 'POST':
+        destinatario = get_object_or_404(Destinatario, pk=destinatario_id)
+
+
 
     total = 0
     if not request.method == "POST":
@@ -81,6 +89,8 @@ def buy_cart_stripe(request):
 
     purchase = Purchase.objects.create(user=request.user)
     request.session['purchase_id'] = purchase.id
+    if destinatario:
+        purchase.destinatario = destinatario
 
     session = request.session
     carro = session.get('carro', {})
@@ -89,7 +99,7 @@ def buy_cart_stripe(request):
         return HttpResponseBadRequest("El carrito está vacío.")
 
     cart_items = carro.items()
-
+    stock_error_products = []
     line_items = []
     for item_id, item in cart_items:
         product = get_object_or_404(Product, pk=item["product_id"])
@@ -97,6 +107,20 @@ def buy_cart_stripe(request):
             "price": product.stripe_price_id,
             "quantity": item["cantidad"],
         })
+        if product.supply < item["cantidad"]:
+            stock_error_products.append(product.name)
+
+    if stock_error_products:
+        stock_error = "Lo sentimos, no hay suficiente disponibilidad de los siguientes productos: " + ", ".join(
+            stock_error_products) + ". Te recomendamos que los retires del carrito para continuar con tu compra."
+        context = {
+            "stock_error": stock_error
+        }
+        return render(request, "purchases/cart.html", context)
+    else:
+        stock_error = None
+
+
 
 
     for item_id, item in cart_items:
@@ -180,7 +204,7 @@ def pedidos_stripe(request):
 
 def purchase_detail(request, purchase_id):
     purchase = get_object_or_404(Purchase, pk=purchase_id)
-    if purchase.user != request.user:
+    if purchase.user != request.user and request.user.usuario.rol.nombre != 'admin':
         messages.warning(request, 'No tiene acceso a ese pedido')
         return HttpResponseRedirect(reverse('pedidos_stripe:purchases_stripe'))
     solicitud_items = SolicitudStripeItem.objects.filter(solicitud=purchase)
@@ -206,6 +230,7 @@ def purchase_success_cart_view(request):
         product = get_object_or_404(Product, pk=item["product_id"])
         product.supply = product.supply - item["cantidad"]
         product.save()
+
 
     carro = Carro(request)
     carro.limpiar_carro()
