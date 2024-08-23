@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 import mimetypes
 from django.http import FileResponse, HttpResponseBadRequest, JsonResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
-
+from django.contrib.auth.models import  User
 from carro.carro import Carro
 
 from usuario.decorator import role_required
@@ -33,8 +33,13 @@ def product_create_view(request):
     context['form'] = form
     return render(request, 'products/create.html',context)
 
-def product_list_view(request):
+def product_list_view(request,provider_id=None):
+
     object_list = Product.objects.all()
+
+    if provider_id:
+        obj = get_object_or_404(User, id=provider_id)
+        object_list = object_list.filter(user=obj)
     object_list = object_list.filter(active=True)
     classifications = ClasificacionPadre.objects.all()
     carro = Carro(request)

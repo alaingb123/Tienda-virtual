@@ -7,6 +7,7 @@ urlpatterns = [
     path('create/', views.product_create_view, name='create'),
     path('mis_productos_table/', views.mis_productos_table, name='mis_productos'),
     path('', views.product_list_view, name='list'),
+    path('filter/<int:provider_id>/', views.product_list_view, name='filter_by_provider'),
 
     path('<slug:handle>/', views.product_detail_view, name='detail'),
     path('<slug:handle>/manage/', views.product_manage_detail_view, name='manage'),

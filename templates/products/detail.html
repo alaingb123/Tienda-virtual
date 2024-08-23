@@ -3,10 +3,14 @@
 {% block content %}
 
 <div class="flex flex-col md:flex-row">
-
     <div class="w-full md:w-3/4 space-y-4">
         <!-- main content-->
-        <h2 class="text-4xl font-bold dark:text-white">{{ object.name }}</h2>
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-4xl font-bold dark:text-white">{{ object.name }}</h2>
+            <div>
+                <a href="{% url 'products:filter_by_provider' object.user.pk %}" class="btn btn-primary">Filtrar por proveedor</a>
+            </div>
+        </div>
 {% if object.description %}
         <p class="mb-3 font-light text-gray-500 dark:text-gray-400 first-line:uppercase first-line:tracking-widest first-letter:text-7xl first-letter:font-bold first-letter:text-gray-900 dark:first-letter:text-gray-100 first-letter:mr-3 first-letter:float-left">
               {{ object.description|linebreaksbr }}

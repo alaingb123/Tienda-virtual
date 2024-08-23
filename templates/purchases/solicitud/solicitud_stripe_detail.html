@@ -69,4 +69,16 @@ Destinatario:
     </li>
 </ul>
 </div>
+
+    {% if user.is_staff %}
+<div class="mt-4 flex justify-end">
+    {% if purchase.entrega == 'pending' %}
+    <a href="{% url 'pedidos_stripe:aceptar' purchase.id  %}" class="btn btn-success mr-2">Aceptar</a>
+    <a href="{% url 'pedidos_stripe:cancelar' purchase.id  %}" class="btn btn-danger">Cancelar</a>
+    {% elif purchase.entrega == 'onway' %}
+    <a href="{% url 'pedidos_stripe:entregar' purchase.id  %}" class="btn btn-success">Entregar</a>
+    {% endif %}
+</div>
+{% endif %}
+
 {% endblock %}

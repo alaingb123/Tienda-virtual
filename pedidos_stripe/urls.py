@@ -18,6 +18,11 @@ urlpatterns = [
     path('ventas/', views.ventas, name='ventas'),
     path('ver_venta/<int:venta_id>/', views.ver_venta, name='ver_venta'),
 
+    #estdo de pedido
+    path('aceptar/<int:purchase_id>/', views.aceptar_pedido, name='aceptar'),
+    path('entregar/<int:purchase_id>/', views.entregar_pedido, name='entregar'),
+    path('cancelar/<int:purchase_id>/', views.cancelar_pedido, name='cancelar'),
+
 
 
 

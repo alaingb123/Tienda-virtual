@@ -346,3 +346,36 @@ def ver_venta(request,venta_id):
         "venta":venta
     }
     return render(request,'purchases/stripe/ver_venta.html',context)
+
+
+@role_required(['admin'])
+def aceptar_pedido(request, purchase_id):
+    purchase = get_object_or_404(Purchase, id=purchase_id)
+    if purchase.entrega == 'pending':
+        purchase.entrega = 'onway'
+        purchase.save()
+
+    return redirect('pedidos_stripe:ver_solicitud_stripe', purchase_id=purchase_id)
+
+
+@role_required(['admin'])
+def cancelar_pedido(request, purchase_id):
+    purchase = get_object_or_404(Purchase, id=purchase_id)
+
+    if purchase.entrega == 'pending':
+        purchase.entrega = 'canceled'
+        purchase.save()
+
+    return redirect('pedidos_stripe:ver_solicitud_stripe', purchase_id=purchase_id)
+
+
+
+@role_required(['admin'])
+def entregar_pedido(request, purchase_id):
+    purchase = get_object_or_404(Purchase, id=purchase_id)
+
+    if purchase.entrega == 'onway':
+        purchase.entrega = 'accepted'
+        purchase.save()
+
+    return redirect('pedidos_stripe:ver_solicitud_stripe', purchase_id=purchase_id)
