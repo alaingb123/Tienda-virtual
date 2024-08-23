@@ -286,7 +286,7 @@
                           </td>
 <th scope="row" style="display: flex; align-items: center; padding: 12px 16px; font-weight: 500; color: #212529;">
     <img src="{{ producto.image.url }}" alt="{{ producto.name }}" style="width: 24px; height: 24px; margin-right: 8px;">
-    {{ producto.name }}
+   <a href="{% url 'products:manage' producto.handle %}">{{ producto.name }} </a>
 </th>
 
 

@@ -20,6 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 
+from usuario.views import MyPasswordChangeView
 from . import views
 
 urlpatterns = [
@@ -37,6 +38,9 @@ urlpatterns = [
     path('extra/', include('extra.urls')),
 
 
+
+    path('<int:user_id>/password/', MyPasswordChangeView.as_view(),
+             name='change_password'),
 ]
 
 if settings.DEBUG:

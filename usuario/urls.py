@@ -19,8 +19,7 @@ urlpatterns = [
         path('cerrar_sesion/', cerrar_sesion, name='logout'),
 
         # Cambiar Contraseña
-        path('password/', MyPasswordChangeView.as_view(),
-             name='change_password'),
+
         path('pasword_change/', password_change_done, name='password_change_done'),
 
 
