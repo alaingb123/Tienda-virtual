@@ -3,9 +3,9 @@ from django.db import models
 from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-
+from django.contrib.auth.models import User
 from carro.carro import Carro
-from extra.models import Destinatario
+from extra.models import Destinatario, Municipio
 from products.models import Product
 from django.core.exceptions import PermissionDenied
 from django.core.validators import EmailValidator,RegexValidator
@@ -43,7 +43,15 @@ class Purchase(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     entrega = models.CharField(max_length=10, choices=ENTREGA_CHOICES,
                                default='pending')  # Campo para el estado de la solicitud
-    destinatario = models.ForeignKey(Destinatario, on_delete=models.SET_NULL, null=True, blank=True)
+
+    nombre = models.CharField(max_length=100,blank=True, null=True)
+    apellidos = models.CharField(max_length=150,default="")
+    telefono = models.CharField(max_length=20,blank=True, null=True)
+    carnet_de_identidad = models.CharField(max_length=11, blank=True, null=True)  # Opcional
+    correo_electronico = models.EmailField(blank=True, null=True)  # Opcional
+    direccion = models.CharField(max_length=255,default="")
+    municipio = models.ForeignKey(Municipio, on_delete=models.CASCADE,blank=True, null=True)  # Selector de municipio
+    instrucciones_entrega = models.TextField(blank=True, null=True)
 
     def guardar_producto(self,product,quantity,purchase):
 

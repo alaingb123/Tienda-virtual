@@ -54,16 +54,16 @@
 
 Destinatario:
 <ul id="destinatarios-list">
-    <li class="card" data-nombre="{{ purchase.destinatario.nombre|lower }}">
+    <li class="card" data-nombre="{{ purchase.nombre|lower }}">
         <div class="card-content">
-            <label for="destinatario-{{ purchase.destinatario.id }}">
-                <h2>{{ purchase.destinatario.nombre }} {{ purchase.destinatario.apellidos }}</h2>
-                <p>Teléfono: {{ purchase.destinatario.telefono }}</p>
-                <p>Carnet de Identidad: {{ purchase.destinatario.carnet_de_identidad }}</p>
-                <p>Correo Electrónico: {{ purchase.destinatario.correo_electronico }}</p>
-                <p>Dirección: {{ purchase.destinatario.direccion }}</p>
-                <p>Municipio: {{ purchase.destinatario.municipio }}</p>
-                <p>Instrucciones de Entrega: {{ purchase.destinatario.instrucciones_entrega }}</p>
+            <label for="destinatario-{{ purchase.id }}">
+                <h2>{{ purchase.nombre }} {{ purchase.apellidos }}</h2>
+                <p>Teléfono: {{ purchase.telefono }}</p>
+                <p>Carnet de Identidad: {{ purchase.carnet_de_identidad }}</p>
+                <p>Correo Electrónico: {{ purchase.correo_electronico }}</p>
+                <p>Dirección: {{ purchase.direccion }}</p>
+                <p>Municipio: {{ purchase.municipio }}</p>
+                <p>Instrucciones de Entrega: {{ purchase.instrucciones_entrega }}</p>
             </label>
         </div>
     </li>

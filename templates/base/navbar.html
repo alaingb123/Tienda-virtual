@@ -21,9 +21,9 @@
     </p>
 
     <div class="absolute hidden group-hover:block w-48 bg-white shadow-lg rounded-lg p-4 z-10">
-{#      <a href="{% url 'purchases:solicitud_list' %}" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded {% if request.path == '/purchases/list_solicitud/' %} text-blue-700 {% endif %}">#}
-{#        Pedidos Zelle#}
-{#      </a>#}
+      <a href="{% url 'purchases:solicitud_list' %}" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded {% if request.path == '/purchases/list_solicitud/' %} text-blue-700 {% endif %}">
+        Pedidos Zelle
+      </a>
       <a href="{% url 'pedidos_stripe:purchases_stripe' %}" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded {% if request.path == '/pedidos_stripe/purchases_stripe/' %} text-blue-700 {% endif %}">
         Pedidos Stripe
       </a>

@@ -90,7 +90,23 @@ def buy_cart_stripe(request,destinatario_id):
     purchase = Purchase.objects.create(user=request.user)
     request.session['purchase_id'] = purchase.id
     if destinatario:
-        purchase.destinatario = destinatario
+        if destinatario.nombre:
+            purchase.nombre = destinatario.nombre
+        if destinatario.apellidos:
+            purchase.apellidos = destinatario.apellidos
+        if destinatario.telefono:
+            purchase.telefono = destinatario.telefono
+        if destinatario.carnet_de_identidad:
+            purchase.carnet_de_identidad = destinatario.carnet_de_identidad
+        if destinatario.correo_electronico:
+            purchase.correo_electronico = destinatario.correo_electronico
+        if destinatario.direccion:
+            purchase.direccion = destinatario.direccion
+        if destinatario.municipio:
+            purchase.municipio = destinatario.municipio
+        if destinatario.instrucciones_entrega:
+            purchase.instrucciones_entrega = destinatario.instrucciones_entrega
+
 
     session = request.session
     carro = session.get('carro', {})
