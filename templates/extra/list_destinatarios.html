@@ -36,22 +36,24 @@
 <ul id="destinatarios-list">
     {% for destinatario in destinatarios %}
     <li class="card" data-nombre="{{ destinatario.nombre|lower }}">
-        <div class="card-content">
-            <input type="radio" name="destinatario_id" id="destinatario-{{ destinatario.id }}" value="{{ destinatario.id }}" class="destinatario-radio">
-            <label for="destinatario-{{ destinatario.id }}">
-                <h2>{{ destinatario.nombre }} {{ destinatario.apellidos }}</h2>
-                <p>{{ destinatario.direccion }}</p>
-            </label>
-        </div>
-        <form method="post" action="{% url 'pedidos_stripe:buy_cart' destinatario.id %}">
-    {% csrf_token %}
-    <input type="hidden" name="selected_destinatario_id" id="destinatario_id" value="">
-    <button type="submit">Realizar Compra</button>
-</form>
-        <a href="{% url 'extra:editar_destinatario' destinatario.id %}" class="edit-button">
-            Editar
-        </a>
-    </li>
+    <div class="card-content">
+        <input type="radio" name="destinatario_id" id="destinatario-{{ destinatario.id }}" value="{{ destinatario.id }}" class="destinatario-radio">
+        <label for="destinatario-{{ destinatario.id }}">
+            <h2>{{ destinatario.nombre }} {{ destinatario.apellidos }}</h2>
+            <p>{{ destinatario.direccion }}</p>
+        </label>
+    </div>
+    <form method="post" action="{% url 'pedidos_stripe:buy_cart' destinatario.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="selected_destinatario_id" id="destinatario_id" value="">
+        <button type="submit">Realizar Compra</button>
+    </form>
+    <a href="{% url 'extra:editar_destinatario' destinatario.id %}" class="edit-button">
+        Editar
+    </a>
+    <a href="{% url 'extra:eliminar_destinatario' destinatario.id %}" style="display: inline-block; text-decoration: none; color: #333; font-size: 20px; font-weight: bold;">
+        <i class="fas fa-times" style="margin-right: 5px;"></i>Eliminar
+    </a>
     {% endfor %}
 </ul>
 

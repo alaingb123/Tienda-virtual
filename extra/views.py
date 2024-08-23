@@ -30,10 +30,13 @@ def crear_destinatario(request):
 
 
 def lista_destinatarios(request):
+    if not request.user.is_authenticated:
+        messages.warning(request, 'Debes estar registrado para poder realizar compras.')
+        return HttpResponseRedirect(reverse('usuario:login'))
     """Vista para mostrar la lista de destinatarios."""
     destinatarios = Destinatario.objects.filter(usuario=request.user)  # Filtra por usuario actual
     query = request.GET.get('q')  # Obtiene el término de búsqueda de la URL
-    print(query)
+
     if query:
         destinatarios = destinatarios.filter(nombre__icontains=query)
     else:
@@ -81,4 +84,13 @@ def editar_destinatario(request, destinatario_id):
         form = DestinatarioForm(instance=destinatario)
 
     return render(request, 'extra/editar_destinatario.html', {'form': form})
+
+
+def eliminar_destinatario(request, destinatario_id):
+
+    destinatario = Destinatario.objects.get(id=destinatario_id)
+    if destinatario.usuario != request.user:
+        return HttpResponseRedirect(reverse('extra:list_destinatario'))
+    destinatario.delete()
+    return redirect('extra:list_destinatario')
 

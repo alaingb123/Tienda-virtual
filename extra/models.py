@@ -59,3 +59,12 @@ def crear_municipios_iniciales(sender, **kwargs):
 
 
 post_migrate.connect(crear_municipios_iniciales, sender=apps.get_app_config('extra'))
+
+
+class Promocion(models.Model):
+    nombre = models.CharField(max_length=100)
+    imagen = models.ImageField(upload_to="promociones/", blank=True, null=True)
+    imagen_peque = models.ImageField(upload_to="promociones/", blank=True, null=True)
+
+    def __str__(self):
+        return self.nombre

@@ -218,6 +218,7 @@ def pedidos_stripe(request):
 
 
 
+@login_required
 def purchase_detail(request, purchase_id):
     purchase = get_object_or_404(Purchase, pk=purchase_id)
     if purchase.user != request.user and request.user.usuario.rol.nombre != 'admin':

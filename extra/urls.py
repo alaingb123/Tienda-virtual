@@ -13,6 +13,7 @@ urlpatterns = [
     path('crear_destinatario/', views.crear_destinatario , name='crear_destinatario'),
     path('list_destinatario/', views.lista_destinatarios , name='list_destinatario'),
     path('editar_destinatario/<int:destinatario_id>', views.editar_destinatario , name='editar_destinatario'),
+    path('eliminar_destinatario/<int:destinatario_id>', views.eliminar_destinatario , name='eliminar_destinatario'),
 
 
 ]
