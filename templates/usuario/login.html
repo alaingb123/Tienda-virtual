@@ -1,23 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background-color: #f5f5f5;">
-  <div style="background-color: white; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 8px; padding: 24px; margin-bottom: 24px; width: 100%; max-width: 400px;">
-    <h1 style="text-align: center; font-size: 24px; font-weight: bold; color: #333; margin-bottom: 16px;">Iniciar sesión</h1>
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background-color: white;">
+  <div style="background-color: white; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); border-radius: 8px; padding: 40px; margin-bottom: 24px; width: 100%; max-width: 400px; text-align: center;">
+    
+    <h1 style="font-size: 28px; font-weight: bold; color: #007bff; margin-bottom: 24px;">Iniciar sesión</h1>
 
     <form style="display: flex; flex-direction: column; gap: 16px;" action="{% url 'usuario:login' %}" method="post">
       {% csrf_token %}
       {% for field in formulario %}
       <div style="position: relative;">
         <label for="{{ field.id_for_label }}" style="display: block; margin-bottom: 4px; font-size: 14px; color: #333;">{{ field.label }}</label>
-        <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 100%;" {% if field.field.widget.is_hidden %}hidden{% endif %} />
-        <div style="position: absolute; top: 50%; transform: translateY(-50%); right: 12px; display: flex; align-items: center;">
-          <svg style="width: 16px; height: 16px; color: #888;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4.875a.625.625 0 01.625.625v11.25a.625.625 0 01-1.25 0V5.5a.625.625 0 01.625-.625zM18 12h.008v.008H18V12zM9 12h.008v.008H9V12z" /></svg>
-        </div>
+        <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" style="padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 100%;" {% if field.field.widget.is_hidden %}hidden{% endif %} />
       </div>
       {% endfor %}
 
-      <button type="submit" style="background-color: #007bff; color: white; font-weight: bold; padding: 10px 16px; border: none; border-radius: 4px; cursor: pointer;">
+      <button type="submit" style="background-color: #ff7f50; color: white; font-weight: bold; padding: 12px; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.3s;">
         Iniciar sesión
       </button>
 
@@ -32,10 +30,10 @@
       </div>
       {% endif %}
 
-      <p style="text-align: center; color: #555; margin-top: 16px;">
+      <p style="color: #555; margin-top: 16px;">
         ¿No tienes una cuenta? <a href="{% url 'usuario:create' %}" style="color: #007bff; text-decoration: none; font-weight: bold;">Regístrate</a>
       </p>
-      <p style="text-align: center; color: #555; margin-top: 8px;">
+      <p style="color: #555; margin-top: 8px;">
         <a href="{% url 'password_reset' %}" style="color: #007bff; text-decoration: none; font-weight: bold;">¿Olvidaste tu contraseña?</a>
       </p>
     </form>
