@@ -166,6 +166,8 @@
       justify-items: center;
     }
 </style>
+
+{% if classifications %}
   <form method="get" action="{% url 'products:list' %}">
   <nav class="desktop-navigation-menu">
 
@@ -178,6 +180,8 @@
               Todo
           </a>
       </li>
+
+
 <!--CATEGORIAS-->
 <li class="menu-category">
   <a href="#" class="menu-title">Categorías</a>
@@ -198,7 +202,7 @@
                           {% for child_classification in classification.hijos.all %}
                               {% if child_classification.pro.exists %}
                                   <li class="panel-list-item"  >
-                                      <button id="button-link" name="classification_id" value="{{ child_classification.id }}" type="submit">{{ child_classification.nombre }}</a>
+                                      <button id="button-link" name="classification_id" value="{{ child_classification.id }}" type="submit">{{ child_classification.nombre }}</button>
                                   </li>
                               {% endif %}
                           {% endfor %}
@@ -289,7 +293,8 @@
 
   </nav>
   </form>
-
+<!--Aqui termina-->
+{% endif %}
   <div class="mobile-bottom-navigation">
 
     <button class="action-btn" data-mobile-menu-open-btn>
