@@ -1,7 +1,6 @@
 from django import forms
-from django.forms import modelformset_factory, inlineformset_factory
-from .models import Product, ProductImage
-
+from django.forms import modelformset_factory, inlineformset_factory, NumberInput
+from .models import Product, ProductImage, ProductOffer
 
 input_css_class = "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 select_css_class = "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 appearance-none"
@@ -11,7 +10,7 @@ select_css_class = "bg-gray-50 border border-gray-300 text-gray-900 text-sm roun
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'clasificaciones_padre','clasificacion', 'handle', 'price', 'supply', 'description']
+        fields = ['name', 'clasificaciones_padre','clasificacion', 'clasificaciones_nieta','handle', 'price', 'supply', 'description']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -23,7 +22,7 @@ class ProductForm(forms.ModelForm):
 class ProductUpdateForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ["image", 'name', 'keywords','clasificaciones_padre', 'clasificacion', 'handle', 'price', 'supply', 'description','active']
+        fields = ["image", 'name', 'keywords','clasificaciones_padre', 'clasificacion','clasificaciones_nieta', 'handle', 'price', 'supply', 'description','active']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -68,3 +67,22 @@ ProductAttachmentInlineFormSet = inlineformset_factory(
     extra=0,
     can_delete=True
 )
+
+
+
+class ProductOfferForm(forms.ModelForm):
+    precio_nuevo = forms.DecimalField(decimal_places=2, localize=True)
+
+    class Meta:
+        model = ProductOffer
+        fields = ['precio_nuevo', 'start_date', 'end_date']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        start_date = cleaned_data.get("start_date")
+        end_date = cleaned_data.get("end_date")
+
+        if start_date and end_date and start_date >= end_date:
+            raise forms.ValidationError("La fecha de inicio debe ser anterior a la fecha de finalización")
+
+        return cleaned_data

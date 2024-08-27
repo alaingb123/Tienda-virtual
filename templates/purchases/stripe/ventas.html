@@ -96,18 +96,17 @@
                     <tbody>
 
                     {% for venta in ventas %}
-                        <tr style="border-bottom: 1px solid #ddd;" data-href="{% url 'pedidos_stripe:ver_venta' venta.id %}">
-                            <th scope="row" style="padding: 16px; font-weight: 500; color: #222;">
-                              <a href="{% url 'pedidos_stripe:ver_venta' venta.id %}"> {{ venta.handle }} </a> </th>
-                           <th scope="row" style="display: flex; align-items: center; padding: 4px 16px; font-weight: 500; color: #111827; white-space: nowrap;  ">
-  <img src="{{ venta.product.image.url }}" alt="{{ venta.product.name }}" style="width: 64px; height: 48px; margin-right: 12px;">
-  {{ venta.product.name }}
-</th>
-
-                            <td style="padding: 16px;">{% for clasi in venta.product.clasificaciones_padre.all %}{{ clasi }}{% endfor %}</td>
-
+                        <tr style="border-bottom: 1px solid #ddd;">
+    <td style="padding: 16px;">
+        <a href="{% url 'pedidos_stripe:ver_venta' venta.id %}">{{ venta.handle }}</a>
+    </td>
+    <td style="display: flex; align-items: center; padding: 4px 16px; font-weight: 500; color: #111827; white-space: nowrap;">
+        <img src="{{ venta.product.image.url }}" alt="{{ venta.product.name }}" style="width: 64px; height: 48px; margin-right: 12px;">
+        {{ venta.product_name_snapshot }}
+    </td>
+    <td style="padding: 16px;">{% for clasi in venta.product.clasificaciones_padre.all %}{{ clasi }}{% endfor %}</td>
                             <td style="padding: 16px;">{% if venta.solicitud.user.email %}{{ venta.solicitud.user.email }} {% else %} {{ venta.solicitud.user.username }}{% endif %}</td>
-                            <td style="padding: 16px;">{{ venta.product.price }}</td>
+                            <td style="padding: 16px;">{{ venta.product_price_snapshot }}</td>
                             <td style="padding: 16px;">{{ venta.quantity }}</td>
                             <td style="padding: 16px;">{{venta.total_price}}</td>
                             <td style="padding: 16px;">{{venta.solicitud.timestamp|date:"d. M, Y"}}</td>
@@ -207,18 +206,7 @@
     </div>
     </section>
 
-    <script>
-  const rows = document.querySelectorAll('tr.cursor-pointer');
 
-
-  rows.forEach(row => {
-    row.addEventListener('click', function(event) {
-      window.location.href = this.dataset.href;
-    });
-  });
-
-
-</script>
 
 
 

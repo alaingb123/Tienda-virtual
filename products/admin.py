@@ -2,11 +2,25 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import Product, ProductImage, ClasificacionPadre, ClasificacionHija
+from .models import Product, ProductImage, ClasificacionPadre, ClasificacionHija, ProductOffer
 
 admin.site.register(Product)
 
 admin.site.register(ProductImage)
+
+
+@admin.register(ProductOffer)
+class ProductOfferAdmin(admin.ModelAdmin):
+    list_display = ('product', 'is_active')
+
+    actions = ['execute_update_offers']
+
+    def execute_update_offers(self, request, queryset):
+        for offer in queryset:
+            offer.is_offer_active()
+        self.message_user(request, "Ofertas actualizadas exitosamente.")
+
+    execute_update_offers.short_description = "Actualizar ofertas"
 
 
 
@@ -32,3 +46,7 @@ class ClasificacionHijaAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         return qs.select_related('padre')
+
+
+
+

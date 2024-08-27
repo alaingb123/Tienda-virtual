@@ -73,7 +73,13 @@ class SolicitudStripeItem(models.Model):
     quantity = models.PositiveIntegerField()
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
+    # # Almacenar una "instantánea" de los datos del producto en el momento de la venta
+    product_name_snapshot = models.CharField(max_length=120,default=product.name)
+    product_price_snapshot = models.DecimalField(max_digits=10, decimal_places=2,default=0.00)
+
     def save(self, *args, **kwargs):
+        self.product_name_snapshot = self.product.name
+        self.product_price_snapshot = self.product.price
         self.total_price = self.product.price * self.quantity
         super().save(*args, **kwargs)
 

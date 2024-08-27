@@ -2,19 +2,23 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect, get_object_or_404
 import mimetypes
 from django.http import FileResponse, HttpResponseBadRequest, JsonResponse, HttpResponseRedirect
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import  User
 from carro.carro import Carro
 
 from usuario.decorator import role_required
 # Create your views here.
-from .form import ProductUpdateForm , ProductAttachmentInlineFormSet
+from .form import ProductUpdateForm, ProductAttachmentInlineFormSet, ProductOfferForm
 from .models import Product, ProductImage, ClasificacionPadre
 
 from pedidos_stripe.models import SolicitudStripeItem
 from django.db.models import Sum, Count
 from django.utils import timezone
 from datetime import datetime, timedelta
+
+
+
 
 
 @role_required(['Proveedor'])
@@ -293,3 +297,55 @@ def search(request):
     return JsonResponse(context, safe=False)
 
   return render(request, 'products/mis_productos_table.html')
+
+@role_required(['Proveedor'])
+def crear_oferta(request, product_id):
+    product = Product.objects.get(id=product_id)
+
+    if request.user != product.user:
+        print("el usuairo es diferente")
+        return redirect('products:detail', handle=product.handle)
+
+    try:
+        if product.offer:
+            print("el producto ya tiene oferta ")
+            return redirect('products:detail', handle=product.handle)
+    except:
+        pass
+
+
+    if request.method == 'POST':
+        form = ProductOfferForm(request.POST)
+        if form.is_valid():
+            oferta = form.save(commit=False)
+            oferta.product = product
+            oferta.precio_viejo = product.price
+            oferta.save()
+            oferta.is_offer_active()
+            print("se creo la oferta")
+            return redirect('products:detail', handle=product.handle)
+        else:
+            print("Errores en el formulario:", form.errors)
+    else:
+        form = ProductOfferForm()
+
+    return render(request, 'products/oferta/crear_oferta.html', {'form': form,'product':product})
+
+@role_required(['Proveedor'])
+def eliminar_oferta(request,product_id):
+    product = Product.objects.get(id=product_id)
+    print(product)
+    if request.method == 'POST':
+        print("el metodo es post")
+        if request.user == product.user:
+            print("el usuario es el que es")
+            try:
+                print("la oferta se va a eliminar")
+                product.offer.eliminar_oferta()
+            except:
+                print("la oferta no se elimino")
+                return redirect('products:detail', handle=product.handle)
+        else:
+            return redirect('products:detail', handle=product.handle)
+    return redirect('products:detail', handle=product.handle)
+

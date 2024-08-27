@@ -4,7 +4,7 @@
 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background-color: white;">
   <div style="background-color: white; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); border-radius: 8px; padding: 40px; margin-bottom: 24px; width: 100%; max-width: 400px; text-align: center;">
     
-    <h1 style="font-size: 28px; font-weight: bold; color: #007bff; margin-bottom: 24px;">Iniciar sesión</h1>
+    <h1 style="font-size: 28px; font-weight: bold; color: {{ PRIMARY_COLOR }}; margin-bottom: 24px;">Iniciar sesión</h1>
 
     <form style="display: flex; flex-direction: column; gap: 16px;" action="{% url 'usuario:login' %}" method="post">
       {% csrf_token %}
@@ -15,7 +15,7 @@
       </div>
       {% endfor %}
 
-      <button type="submit" style="background-color: #ff7f50; color: white; font-weight: bold; padding: 12px; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.3s;">
+      <button type="submit" style="background-color: {{ SECONDARY_COLOR }}; color: white; font-weight: bold; padding: 12px; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.3s;">
         Iniciar sesión
       </button>
 
@@ -31,10 +31,10 @@
       {% endif %}
 
       <p style="color: #555; margin-top: 16px;">
-        ¿No tienes una cuenta? <a href="{% url 'usuario:create' %}" style="color: #007bff; text-decoration: none; font-weight: bold;">Regístrate</a>
+        ¿No tienes una cuenta? <a href="{% url 'usuario:create' %}" style="color: {{ PRIMARY_COLOR }}; text-decoration: none; font-weight: bold;">Regístrate</a>
       </p>
       <p style="color: #555; margin-top: 8px;">
-        <a href="{% url 'password_reset' %}" style="color: #007bff; text-decoration: none; font-weight: bold;">¿Olvidaste tu contraseña?</a>
+        <a href="{% url 'password_reset' %}" style="color: {{ PRIMARY_COLOR }}; text-decoration: none; font-weight: bold;">¿Olvidaste tu contraseña?</a>
       </p>
     </form>
   </div>
