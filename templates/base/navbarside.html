@@ -1,175 +1,65 @@
-<div class="container-fluid" style="margin-left: -3%; left: 0;">
-    <div class="row" >
-        <div class="col-auto min-vh-100 bg-light d-none d-md-block" > 
-            <!-- Sidebar visible solo en pantallas medianas y grandes -->
-
-            <div class="pt-4 pb-1 px-2">
-                <a href="#" class="text-black text-decoration-none" title="Ir a eCommerce">
-                    <i class="fa-solid fs-2 fa-american-sign-language-interpreting me-2"></i>
-                    <span class="fs-4 d-none d-sm-inline">eCommerce</span>
-                </a>
+<div class="header-top">
+    <div class="container">
+        <div class="wrapper flexitem">
+            <div class="left">
+                <ul class="flexitem main-links">
+                    <li><a href="">Blog</a></li>
+                    <li><a href="">Products</a></li>
+                    <li><a href="">Wishlist</a></li>
+                </ul>
             </div>
-
-            <hr class="text-black">
-            <ul class="nav nav-pills flex-column mb-auto">
-                <li class="nav-item">
-                    <a href="#" class="nav-link" id="home" title="Ir a la página principal" data-bs-toggle="tooltip">
-                        <i class="fa-solid fa-home me-2"></i>
-                        <span class="d-none d-sm-inline">Home</span>
-                    </a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="dropdownPedidos" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Ver pedidos" data-bs-toggle="tooltip">
-                        <i class="fa-solid fa-table me-2"></i>
-                        <span class="d-none d-sm-inline">Pedidos</span>
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownPedidos">
-                        {% if request.user.username %}
-                          
-                            <li><a class="dropdown-item" href="{% url 'pedidos_stripe:purchases_stripe' %}">Pedidos Stripe</a></li>
-                        {% endif %}
-                    </ul>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="dropdownProductos" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Gestionar productos" data-bs-toggle="tooltip">
-                        <i class="fa-solid fa-th me-2"></i>
-                        <span class="d-none d-sm-inline">Productos</span>
-                    </a>
-                    {% if request.user.usuario.rol.nombre == 'Proveedor' %}
-                        <ul class="dropdown-menu" aria-labelledby="dropdownProductos">
-                            <li><a class="dropdown-item" href="{% url 'products:create' %}">Nuevo Producto</a></li>
-                            <li><a class="dropdown-item" href="{% url 'products:mis_productos' %}">Mis Productos</a></li>
+            <div class="right">
+                <ul class="flexitem main-links">
+                    <li><a href="">Sign up</a></li>
+                    <li><a href="">My Account</a></li>
+                    <li><a href="">Order Tracking</a></li>
+                    <li>
+                        <a href="">USD<span class="icon-small"><i class="fas fa-chevron-down"></i></span></a>
+                        <ul>
+                            <li class="current"><a href="">USD</a></li>
+                            <li><a href="">EURO</a></li>
+                            <li><a href="">GPB</a></li>
+                            <li><a href="">IDR</a></li>
                         </ul>
-                    {% endif %}
-                </li>
-                
-                <li class="nav-item">
-                    <a href="#" class="nav-link" href="{% url 'carro:ver_carro' %}" title="Ver el carro de compras" data-bs-toggle="tooltip">
-                        <i class="fa-solid fa-shopping-cart me-2"></i>
-                        <span class="d-none d-sm-inline">Carro</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link" title="Ver perfil de usuario" data-bs-toggle="tooltip">
-                        <i class="fa-solid fa-user-circle me-2"></i>
-                        <span class="d-none d-sm-inline">Usuario</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    {% if request.user.usuario.rol.nombre == 'Proveedor' %}
-                        <a href="{% url 'pedidos_stripe:ventas' %}" class="nav-link" title="Ver ventas" data-bs-toggle="tooltip">
-                            <i class="fa-solid fa-dollar-sign me-2"></i>
-                            <span class="d-none d-sm-inline">Ventas</span>
-                        </a>
-                    {% endif %}
-                </li>
-                <li class="nav-item">
-                    {% if request.user.is_authenticated %}
-                        <a href="{% url 'usuario:logout' %}" class="nav-link" title="Cerrar sesión" data-bs-toggle="tooltip">
-                            <i class="fa-solid fa-sign-out-alt me-2"></i>
-                            <span class="d-none d-sm-inline">Cerrar sesión</span>
-                        </a>
-                    {% else %}
-                        <a href="{% url 'usuario:login' %}" class="nav-link" title="Iniciar sesión" data-bs-toggle="tooltip">
-                            <i class="fa-solid fa-sign-in-alt me-2"></i>
-                            <span class="d-none d-sm-inline">Autenticarse</span>
-                        </a>
-                    {% endif %}
-                </li>
-            </ul>
+                    </li>
+                    <li>
+                        <a href="">English<span class="icon-small"><i class="fas fa-chevron-down"></i></span></a>
+                        <ul>
+                            <li class="current"><a href="">English</a></li>
+                            <li><a href="">Spanish</a></li>
+                            <li><a href="">German</a></li>
+                            <li><a href="">Russian</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
         </div>
-
-        <div class="col-12 d-md-none" style="margin-left: 0; left: 0; background-color: white; width: 100%;"> <!-- Navbar visible solo en pantallas pequeñas -->
-            <nav class="navbar navbar-expand-lg navbar-light" style="background-color: white; width: 100%;"> <!-- Navbar blanco -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="border: none; outline: none; border-radius: 8px;"> <!-- Ajusta el valor de border-radius según sea necesario -->
-                    <span id="iconToggle">
-                        <i class="fa-solid fa-bars" style="color: #003366; font-size: 1.3em;"></i> <!-- Color azul oscuro -->
-                    </span>
-                </button>
-                
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav w-100"> <!-- Asegúrate de que la lista ocupe el 100% del ancho -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" id="home" title="Ir a la página principal" data-bs-toggle="tooltip">
-                                <i class="fa-solid fa-home me-2"></i>
-                                Home
-                            </a>
+    </div>
+</div>
+<!--header top-->
+<div class="header-nav">
+    <div class="container">
+        <div class="wrapper flexitem">
+            <a href="" class="trigger desktop-hide"><i class="fas fa-bars"></i></a>
+            <div class="left flexitem">
+                <div class="logo"><a href=""><span class="circle">.Store</span></a></div>
+                <nav class="mobile hide">
+                    <ul class="flexitem second-link">
+                        <li><a href="">Home</a></li>
+                        <li><a href="">Shop</a></li>
+                        <li>
+                            <a href="">Women</a>
+                            <div class="icon-small"><i class="fas fa-chevron-down"></i></div>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="dropdownPedidos" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Ver pedidos" data-bs-toggle="tooltip">
-                                <i class="fa-solid fa-table me-2"></i>
-                                Pedidos
-                            </a>
-                            <ul class="dropdown-menu w-100" aria-labelledby="dropdownPedidos" style="width: 100vw; left: 0;"> <!-- Asegúrate de que el menú desplegable ocupe el 100% del ancho -->
-                                {% if request.user.username %}
-                                    <li><a class="dropdown-item" href="{% url 'pedidos_stripe:purchases_stripe' %}" style="width: 100%;">Pedidos Stripe</a></li>
-                                {% endif %}
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="dropdownProductos" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Gestionar productos" data-bs-toggle="tooltip">
-                                <i class="fa-solid fa-th me-2"></i>
-                                Productos
-                            </a>
-                            <ul class="dropdown-menu w-100" aria-labelledby="dropdownProductos" style="width: 100vw; left: 0;"> <!-- Asegúrate de que el menú desplegable ocupe el 100% del ancho -->
-                                {% if request.user.usuario.rol.nombre == 'Proveedor' %}
-                                    <li><a class="dropdown-item" href="{% url 'products:create' %}" style="width: 100%;">Nuevo Producto</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'products:mis_productos' %}" style="width: 100%;">Mis Productos</a></li>
-                                {% endif %}
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'carro:ver_carro' %}" title="Ver el carro de compras" data-bs-toggle="tooltip">
-                                <i class="fa-solid fa-shopping-cart me-2"></i>
-                                Carro
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" title="Ver perfil de usuario" data-bs-toggle="tooltip">
-                                <i class="fa-solid fa-user-circle me-2"></i>
-                                Usuario
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            {% if request.user.usuario.rol.nombre == 'Proveedor' %}
-                                <a href="{% url 'pedidos_stripe:ventas' %}" class="nav-link" title="Ver ventas" data-bs-toggle="tooltip">
-                                    <i class="fa-solid fa-dollar-sign me-2"></i>
-                                    Ventas
-                                </a>
-                            {% endif %}
-                        </li>
-                        <li class="nav-item">
-                            {% if request.user.is_authenticated %}
-                                <a href="{% url 'usuario:logout' %}" class="nav-link" title="Cerrar sesión" data-bs-toggle="tooltip">
-                                    <i class="fa-solid fa-sign-out-alt me-2"></i>
-                                    Cerrar sesión
-                                </a>
-                            {% else %}
-                                <a href="{% url 'usuario:login' %}" class="nav-link" title="Iniciar sesión" data-bs-toggle="tooltip">
-                                    <i class="fa-solid fa-sign-in-alt me-2"></i>
-                                    Autenticarse
-                                </a>
-                            {% endif %}
+                        <li><a href="">Men</a></li>
+                        <li>
+                            <a href="">Sports</a>
+                            <div class="fly-item"><span>New!</span></div>
                         </li>
                     </ul>
-                </div>
-            </nav>
+                </nav>
+            </div>
+            <div class="right"></div>
         </div>
-        
-        
-        
-        
     </div>
-    <script>
-        function toggleNavbar(button) {
-            const icon = document.querySelector('#iconToggle i'); // Selecciona el ícono dentro del span
-            if (button.getAttribute('aria-expanded') === 'true') {
-                icon.classList.remove('fa-bars'); // Cambia al ícono de cierre
-                icon.classList.add('fa-xmark'); // Cambia al ícono de cierre
-            } else {
-                icon.classList.remove('fa-xmark'); // Cambia de vuelta al ícono de hamburguesa
-                icon.classList.add('fa-bars');
-            }
-        }
-        </script>
 </div>

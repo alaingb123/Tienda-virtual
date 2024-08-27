@@ -5,146 +5,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     {% include 'base/css.html' %}
-   
+    {% include 'base/js.html' %}
     <title>{% block head_title %}Micro eCommerce{% endblock head_title %}</title>
-    <style>
-        body {
-            background-color: #ffffff; /* Gris suave para el fondo */
-        }
-
-        .bg-light {
-            background-color: #FFFFFF; /* Fondo blanco para la barra lateral */
-        }
-
-        .nav-link {
-            color: #003366; /* Azul profundo para los enlaces */
-        }
-
-        .nav-link:hover {
-            background-color: #FF6600; /* Naranja vibrante al pasar el ratón */
-            color: #FFFFFF; /* Texto blanco al pasar el ratón */
-        }
-
-        .nav-link.active {
-            background-color: #003366; /* Azul profundo para el enlace activo */
-            color: #FFFFFF; /* Texto blanco para el enlace activo */
-        }
-
-        .dropdown-menu {
-            background-color: #FFFFFF; /* Fondo blanco para el menú desplegable */
-        }
-
-        .dropdown-item {
-            color: #003366; /* Azul profundo para los elementos del menú desplegable */
-        }
-
-        .dropdown-item:hover {
-            background-color: #FF6600; /* Naranja vibrante al pasar el ratón en el menú desplegable */
-            color: #FFFFFF; /* Texto blanco al pasar el ratón */
-        }
-
-        .btn.btn-outline-success {
-    background-color: #003366; /* Azul profundo */
-    color: #FFFFFF; /* Texto blanco */
-}
-
-.btn.btn-outline-success:hover {
-    background-color: #FF6600; /* Naranja vibrante */
-    color: #FFFFFF; /* Texto blanco */
-    border-color: #FF6600;
-}
-
-
-        hr {
-            border-color: #CCCCCC; /* Gris claro para la línea horizontal */
-        }
-
-        #home {
-    background-color: #003366; /* Azul profundo para el enlace */
-    color: #FFFFFF; /* Texto blanco para el enlace */
-}
-
-a.text-black {
-    color: #003366; /* Azul profundo para el texto */
-}
-
-.tooltip {
-            background-color: #343a40; /* Color de fondo del tooltip */
-            color: #ffffff; /* Color del texto */
-            border-radius: 4px; /* Bordes redondeados */
-            padding: 5px 10px; /* Espaciado interno */
-            font-size: 14px; /* Tamaño de fuente */
-            opacity: 0.9; /* Opacidad */
-            transition: opacity 0.3s; /* Transición suave */
-        }
-
-        .tooltip::after {
-            border-top-color: #343a40; /* Color de la flecha */
-        }
-
-        .navbar-toggler {
-    border: none; /* Elimina el borde */
-    outline: none; /* Elimina el contorno al hacer clic */
-}
-
-.navbar-toggler:focus {
-    box-shadow: none; /* Elimina el efecto de sombra al hacer foco */
-}
-
-@media (max-width: 767.98px) { /* Para dispositivos móviles */
-    #mainContent {
-        margin-left: 0 !important; /* Elimina el margen izquierdo */
-    }
-}
-@media (max-width: 767.98px) { /* Para pantallas pequeñas */
-    .carousel-item img {
-        height: auto; /* Ajusta la altura automáticamente */
-        max-height: 300px; /* Establece una altura máxima para pantallas pequeñas */
-    }
-}
-.carousel-item img {
-    width: 100%; /* Asegura que la imagen ocupe todo el ancho del contenedor */
-    height: 400px; /* Establece una altura fija */
-    object-fit: cover; /* Mantiene la proporción de la imagen y recorta si es necesario */
-    
-}
-.carousel {
-    margin-top: 0; /* Sin margen en pantallas grandes */
-}
-
-@media (max-width: 767.98px) { /* Para pantallas pequeñas */
-    .carousel {
-        margin-top: 20px; /* Ajusta el margen superior según sea necesario */
-    }
-}
-#mainContent {
-    margin-left: 225px; /* Para pantallas más grandes */
-    padding: 0;
-    width: 83%; /* Para pantallas más grandes */
-}
-
-@media (max-width: 768px) { /* Ajusta el tamaño según tus necesidades */
-    #mainContent {
-        margin-left: 0; /* Sin margen en dispositivos móviles */
-        margin-top: 20px;
-        width: 100%; /* Ancho completo en dispositivos móviles */
-    }
-}
-
-.sidebar {
-    width: 300px; /* Ancho para pantallas grandes */
-}
-
-@media (max-width: 768px) { /* Ajusta el tamaño según tus necesidades */
-    .sidebar {
-        width: 100%; /* Ancho completo en dispositivos móviles */
-        height: auto; /* Ajusta la altura automáticamente */
-    }
-}
-
-    </style>
+   
     
 </head>
 
@@ -153,29 +20,38 @@ a.text-black {
     <div class="d-flex flex-column min-vh-100">
         <div class="container-fluid mt-4 flex-grow-1">
             <div class="row">
-                <div class="col-md-3 p-0 position-fixed" style="top: 0; left: 0; height: 100vh; z-index: 1000; margin-left: 0;"> <!-- Sidebar fijo y pegado al borde -->
-                    {% include 'base/navbarside.html' %}
+                <div class="col-md-3 p-0 position-fixed" > 
+                    {% include 'base/navbar1.html' %}
                 </div>
                 
-                <div class="col-md-9 offset-md-3" id="mainContent" > <!-- Ajusta el margen y el ancho -->
-                    <div class="min-vh-100">
+                <div class="col-md-9 offset-md-3" id="mainContent"> <!-- Ajusta el margen y el ancho -->
+                    <div class="min-vh-100 d-flex flex-column">
                         {% block content %}
-                        {% endblock content %}
+                        <!-- Aquí va el contenido dinámico -->
+                        {% endblock %}
                     </div>
                 </div>
+                
             </div>
         </div>
         
-        {% include 'base/footer.html' %}
+     {% include 'base/footer.html' %}
     </div>
 
-    {% include 'base/js.html' %}
+   <!-- {% include 'base/js.html' %} -->
 
     <script>
         $(document).ready(function(){
             $('[data-bs-toggle="tooltip"]').tooltip(); 
         });
     </script>
+
+<script src="./assets/js/script.js"></script>
+
+<!--- ionicon link-->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
 </body>
 
 

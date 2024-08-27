@@ -1,40 +1,73 @@
 {%load static%}
 
-<nav class="navbar navbar-light bg-light">
-    <div class="container-fluid">
-      <form class="d-flex">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
+<div class="banner">
+
+    <div class="container">
+
+      <div class="slider-container has-scrollbar">
+
+        <div class="slider-item">
+
+          <img src="./assets/images/banner-1.jpg" alt="women's latest fashion sale" class="banner-img">
+
+          <div class="banner-content">
+
+            <p class="banner-subtitle">Trending item</p>
+
+            <h2 class="banner-title">Women's latest fashion sale</h2>
+
+            <p class="banner-text">
+              starting at &dollar; <b>20</b>.00
+            </p>
+
+            <a href="#" class="banner-btn">Shop now</a>
+
+          </div>
+
+        </div>
+
+        <div class="slider-item">
+
+          <img src="./assets/images/banner-2.jpg" alt="modern sunglasses" class="banner-img">
+
+          <div class="banner-content">
+
+            <p class="banner-subtitle">Trending accessories</p>
+
+            <h2 class="banner-title">Modern sunglasses</h2>
+
+            <p class="banner-text">
+              starting at &dollar; <b>15</b>.00
+            </p>
+
+            <a href="#" class="banner-btn">Shop now</a>
+
+          </div>
+
+        </div>
+
+        <div class="slider-item">
+
+          <img src="./assets/images/banner-3.jpg" alt="new fashion summer sale" class="banner-img">
+
+          <div class="banner-content">
+
+            <p class="banner-subtitle">Sale Offer</p>
+
+            <h2 class="banner-title">New fashion summer sale</h2>
+
+            <p class="banner-text">
+              starting at &dollar; <b>29</b>.99
+            </p>
+
+            <a href="#" class="banner-btn">Shop now</a>
+
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
-  </nav>
 
-  <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img src="{% static 'img/1 Caffe.png' %}" class="d-block w-100" alt="...">
-        </div>
-        <div class="carousel-item">
-            <img src="{% static 'img/1 Carne.png' %}" class="d-block w-100" alt="...">
-        </div>
-        <div class="carousel-item">
-            <img src="{% static 'img/1 Frutas.png' %}" class="d-block w-100" alt="...">
-        </div>
-    </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-    </button>
-</div>
-
-
-<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="#">Home</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Library</li>
-    </ol>
-  </nav>
+  </div>
