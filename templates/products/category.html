@@ -10,7 +10,7 @@
 
 
 {% for clasification in classifications %}
-
+{% if clasification.productos_padre.count > 0  %}
             <div class="category-item">
 
               <div class="category-img-box">
@@ -32,6 +32,7 @@
               </div>
   
             </div>
+    {% endif %}
               {% endfor %}
   
 
