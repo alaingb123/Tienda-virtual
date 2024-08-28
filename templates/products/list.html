@@ -9,14 +9,12 @@
 {% include 'products/prueba2.html' with promociones=promociones %}
 
 
-{% for clasification in classifications %}
 
-{#{% if classification.productos_padre.count > 0 %}#}
 
-{% include 'products/category.html' with clasification=clasification %}
 
-{#    {% endif %}#}
-    {% endfor %}
+
+{% include 'products/category.html' with classifications=classifications %}
+
 
 {% include 'products/productos.html' with classifications=classifications %}
 

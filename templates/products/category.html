@@ -9,12 +9,14 @@
           <div class="category-item-container has-scrollbar">
 
 
-
+{% for clasification in classifications %}
 
             <div class="category-item">
-  
+
               <div class="category-img-box">
+                  <a href="{% url 'products:list' %}?classification_id_padre={{ clasification.id }}">
                 <img src="{{ clasification.image.url }}" alt="{{ clasification.nombre }}" width="30">
+                  </a>
               </div>
   
               <div class="category-content-box">
@@ -30,6 +32,7 @@
               </div>
   
             </div>
+              {% endfor %}
   
 
 
