@@ -176,101 +176,102 @@
       <ul class="desktop-menu-category-list">
 
         <li class="menu-category">
-          <a href="{% url 'products:list' %}?classification_id={{ classification.id }}" class="menu-title">
+          <a href="{% url 'products:list' %}" class="menu-title">
               Todo
           </a>
       </li>
 
 
 <!--CATEGORIAS-->
-<li class="menu-category">
-  <a href="#" class="menu-title">Categorías</a>
-  <div class="dropdown-panel">
-      <ul class="dropdown-panel-list" >
-       <!---TIENE QUE ESTAR ORGANIZADO HORIZONTALMENTE-->
-       <div id="conten-horizontal">
-          {% for classification in classifications %}
-              {% if not classification.parent %}
-              <div id="cont-hijos">
-                  <li class="menu-title" >
-                      <a href="#" >{{ classification.nombre }}</a>
-                  </li>
-          
-           
-                  {% if classification.hijos.all %}
-                    
-                          {% for child_classification in classification.hijos.all %}
-                              {% if child_classification.pro.exists %}
-                                  <li class="panel-list-item"  >
-                                      <button id="button-link" name="classification_id" value="{{ child_classification.id }}" type="submit">{{ child_classification.nombre }}</button>
-                                  </li>
-                              {% endif %}
-                          {% endfor %}
-                     
-                  {% endif %}
-                
-                  <li class="panel-list-item" >
-                    <a href="#">
-                        <img src="{{ classification.image.url }}" alt="{{ classification.nombre }}" width="250" height="119">
-                    </a>
-                  </li>
-                </div>
-              {% endif %}
-          {% endfor %}
-        </div>
-      </ul>
-  </div>
-</li>
+{#<li class="menu-category">#}
+{#  <a href="#" class="menu-title">Categorías</a>#}
+{#  <div class="dropdown-panel">#}
+{#      <ul class="dropdown-panel-list" >#}
+{#       <!---TIENE QUE ESTAR ORGANIZADO HORIZONTALMENTE-->#}
+{#       <div id="conten-horizontal">#}
+{#          {% for classification in classifications %}#}
+{#              {% if not classification.parent %}#}
+{#              <div id="cont-hijos">#}
+{#                  <li class="menu-title" >#}
+{#                      <a href="#" >{{ classification.nombre }}</a>#}
+{#                       <button id="button-link" name="classification_id" value="{{ classification.id }}" type="submit">{{ classification.nombre }}</button>#}
+{#                  </li>#}
+{#          #}
+{#           #}
+{#                  {% if classification.hijos.all %}#}
+{#                    #}
+{#                          {% for child_classification in classification.hijos.all %}#}
+{#                              {% if child_classification.pro.exists %}#}
+{#                                  <li class="panel-list-item"  >#}
+{#                                      <button id="button-link" name="classification_id" value="{{ child_classification.id }}" type="submit">{{ child_classification.nombre }}</button>#}
+{#                                  </li>#}
+{#                              {% endif %}#}
+{#                          {% endfor %}#}
+{#                     #}
+{#                  {% endif %}#}
+{#                #}
+{#                  <li class="panel-list-item" >#}
+{#                    <a href="#">#}
+{#                        <img src="{{ classification.image.url }}" alt="{{ classification.nombre }}" width="250" height="119">#}
+{#                    </a>#}
+{#                  </li>#}
+{#                </div>#}
+{#              {% endif %}#}
+{#          {% endfor %}#}
+{#        </div>#}
+{#      </ul>#}
+{#  </div>#}
+{#</li>#}
 
 
 
 
+{% for classification in classifications %}
+    {% if classification.productos_padre.count > 0 %}
 
-        
+
         <li class="menu-category">
-          <a href="#" class="menu-title">Men's</a>
-
+          <button id="button-link" name="classification_id_padre" value="{{ classification.id }}" type="submit" class="menu-title">{{ classification.nombre }}</button>
+{% if not classification.parent %}
+            {% if classification.hijos.all %}
+                {% for child_classification in classification.hijos.all %}
+                {% if child_classification.pro.exists %}
           <ul class="dropdown-list">
 
             <li class="dropdown-item">
-              <a href="#">Shirt</a>
-            </li>
-
-            <li class="dropdown-item">
-              <a href="#">Shorts & Jeans</a>
-            </li>
-
-            <li class="dropdown-item">
-              <a href="#">Safety Shoes</a>
-            </li>
-
-            <li class="dropdown-item">
-              <a href="#">Wallet</a>
+              <button id="button-link" name="classification_id" value="{{ child_classification.id }}" type="submit" >{{ child_classification.nombre }}</button>
             </li>
 
           </ul>
         </li>
+                    {% endif %}
 
-        <li class="menu-category">
-          <a href="#" class="menu-title">Women's</a>
+                    {% endfor %}
+                    {% endif %}
+                    {% endif %}
+    {% endif %}
+                    {% endfor %}
 
-          <ul class="dropdown-list">
-
-            <li class="dropdown-item">
-              <a href="#">Dress & Frock</a>
-            </li>
-
-            <li class="dropdown-item">
-              <a href="#">Earrings</a>
-            </li>
-
-            <li class="dropdown-item">
-              <a href="#">Necklace</a>
-            </li>
-
-            <li class="dropdown-item">
-              <a href="#">Makeup Kit</a>
-            </li>
+{#        <li class="menu-category">#}
+{#          <a href="#" class="menu-title">Women's</a>#}
+{##}
+{#          <ul class="dropdown-list">#}
+{##}
+{#            <li class="dropdown-item">#}
+{#              <a href="#">Dress & Frock</a>#}
+{#            </li>#}
+{##}
+{#            <li class="dropdown-item">#}
+{#              <a href="#">Earrings</a>#}
+{#            </li>#}
+{##}
+{#            <li class="dropdown-item">#}
+{#              <a href="#">Necklace</a>#}
+{#            </li>#}
+{##}
+{#            <li class="dropdown-item">#}
+{#              <a href="#">Makeup Kit</a>#}
+{#            </li>#}
 
           </ul>
         </li>
@@ -279,9 +280,9 @@
 
      
 
-        <li class="menu-category">
-          <a href="#" class="menu-title">Blog</a>
-        </li>
+{#        <li class="menu-category">#}
+{#          <a href="#" class="menu-title">Blog</a>#}
+{#        </li>#}
 
         <li class="menu-category">
           <a href="#" class="menu-title">Mejores Ofertas</a>

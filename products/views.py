@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import  User
 from carro.carro import Carro
+from extra.models import Promocion
 
 from usuario.decorator import role_required
 # Create your views here.
@@ -40,6 +41,8 @@ def product_create_view(request):
 def product_list_view(request,provider_id=None):
 
     object_list = Product.objects.all()
+    promociones = Promocion.objects.all()
+
 
     if provider_id:
         obj = get_object_or_404(User, id=provider_id)
@@ -83,6 +86,7 @@ def product_list_view(request,provider_id=None):
         'object_list': page_solicitudes,
         'carro': carro,
         'classifications': classifications,
+        'promociones': promociones,
     }
     return render(request,"products/list.html",context)
 

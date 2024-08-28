@@ -137,6 +137,7 @@ class ProductOffer(models.Model):
 
     def is_offer_active(self):
         now = timezone.now()
+        print(self.product)
         if self.start_date <= now <= self.end_date and self.is_active == False:
             # La oferta está activa, actualiza los precios del producto
             self.product.price = self.precio_nuevo
@@ -144,19 +145,22 @@ class ProductOffer(models.Model):
             self.save()
             self.is_active = True
             self.save()
+            # print("es true con cambios")
             return True
 
-        if self.is_active == True:
+        if self.is_active == True and self.start_date <= now <= self.end_date:
+            # print("es true sin cambios")
             return True
 
         if self.end_date < now:
             self.product.price = self.precio_viejo
             self.product.save()
             self.delete()
-
+            # print("es false con cambios")
             return False
         self.is_active = False
         self.save()
+        # print("es false sin cambios")
         return False
 
     def eliminar_oferta(self):

@@ -6,11 +6,17 @@
 
 
 
+{% include 'products/prueba2.html' with promociones=promociones %}
 
 
-{% include 'products/prueba2.html' with classifications=classifications %}
+{% for clasification in classifications %}
 
-{% include 'products/category.html' with classifications=classifications %}
+{#{% if classification.productos_padre.count > 0 %}#}
+
+{% include 'products/category.html' with clasification=clasification %}
+
+{#    {% endif %}#}
+    {% endfor %}
 
 {% include 'products/productos.html' with classifications=classifications %}
 

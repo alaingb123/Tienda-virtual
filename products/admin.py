@@ -2,9 +2,10 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import Product, ProductImage, ClasificacionPadre, ClasificacionHija, ProductOffer
+from .models import Product, ProductImage, ClasificacionPadre, ClasificacionHija, ProductOffer, ClasificacionNieta
 
 admin.site.register(Product)
+admin.site.register(ClasificacionNieta)
 
 admin.site.register(ProductImage)
 
