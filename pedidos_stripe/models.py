@@ -44,6 +44,10 @@ class Purchase(models.Model):
     entrega = models.CharField(max_length=10, choices=ENTREGA_CHOICES,
                                default='pending')  # Campo para el estado de la solicitud
 
+
+
+
+    # # Almacenar una "instantánea" de los datos del destinatario en el momento de la venta
     nombre = models.CharField(max_length=100,blank=True, null=True)
     apellidos = models.CharField(max_length=150,default="")
     telefono = models.CharField(max_length=20,blank=True, null=True)
