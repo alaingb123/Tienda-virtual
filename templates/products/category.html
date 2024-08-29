@@ -15,7 +15,9 @@
 
               <div class="category-img-box">
                   <a href="{% url 'products:list' %}?classification_id_padre={{ clasification.id }}">
+                      {% if clasification.image %}
                 <img src="{{ clasification.image.url }}" alt="{{ clasification.nombre }}" width="30">
+                          {% endif %}
                   </a>
               </div>
   
