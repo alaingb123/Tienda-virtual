@@ -120,6 +120,12 @@ class Product(models.Model):
     def get_manage_url(self):
         return reverse("products:manage", kwargs={"handle": self.handle})
 
+
+class ProductView(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)  # Opcional, si deseas rastrear usuarios
+    timestamp = models.DateTimeField(auto_now_add=True)
+
 class ProductOffer(models.Model):
     product = models.OneToOneField(Product, on_delete=models.CASCADE, related_name='offer')
     precio_nuevo = models.DecimalField(max_digits=10, decimal_places=2)

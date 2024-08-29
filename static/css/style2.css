@@ -968,26 +968,32 @@
   /*-----------------------------------*\
     #PRODUCT MINIMAL
   \*-----------------------------------*/
-  
-  .product-minimal { margin-bottom: 30px; }
-  
-  .product-minimal .product-showcase { margin-bottom: 10px; }
-  
-  .product-minimal .showcase-wrapper {
+.product-minimal {
+    margin-bottom: 30px;
+}
+
+.product-minimal .product-showcase {
+    margin-bottom: 10px;
+}
+
+.product-minimal .showcase-wrapper {
     display: flex;
-    align-items: center;
-    overflow-x: auto;
-    overscroll-behavior-inline: contain;
-    scroll-snap-type: inline mandatory;
-  }
-  
-  .product-minimal .showcase-container {
-    min-width: 100%;
-    padding: 0 5px;
+    flex-direction: column; /* Cambia a columna para scroll vertical */
+    overflow-y: auto; /* Permite el scroll vertical */
+    overscroll-behavior: contain;
+    scroll-snap-type: y mandatory; /* Cambia a scroll vertical */
+    max-height: 400px; /* Ajusta la altura máxima según sea necesario */
+}
+
+.product-minimal .showcase-container {
+    min-height: 100%;
+    padding: 5px 0;
     scroll-snap-align: start;
-  }
-  
-  .product-minimal .showcase {
+    display: flex;
+    flex-direction: column;
+}
+
+.product-minimal .showcase {
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -995,13 +1001,17 @@
     border: 1px solid var(--cultured);
     padding: 15px;
     border-radius: var(--border-radius-md);
-  }
-  
-  .product-minimal .showcase:not(:last-child) { margin-bottom: 15px; }
-  
-  .product-minimal .showcase-content { width: calc(100% - 85px); }
-  
-  .product-minimal .showcase-title {
+}
+
+.product-minimal .showcase:not(:last-child) {
+    margin-bottom: 15px;
+}
+
+.product-minimal .showcase-content {
+    width: calc(100% - 85px);
+}
+
+.product-minimal .showcase-title {
     color: var(--eerie-black);
     font-size: var(--fs-7);
     font-weight: var(--weight-600);
@@ -1010,15 +1020,16 @@
     overflow: hidden;
     text-overflow: ellipsis;
     margin-bottom: 2px;
-  }
-  
-  .product-minimal .showcase-category {
+}
+
+.product-minimal .showcase-category {
     width: max-content;
     color: var(--davys-gray);
     font-size: var(--fs-8);
     text-transform: capitalize;
     margin-bottom: 3px;
-  }
+}
+
   
   .product-minimal .showcase-category:hover { color: var(--salmon-pink); }
   

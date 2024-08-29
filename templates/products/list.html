@@ -13,13 +13,17 @@
 
 
 
-
+{% if classifications %}
 {% include 'products/category.html' with classifications=classifications %}
+    {% endif %}
+
+{% if classifications %}
+{% include 'products/productos.html' with classifications=classifications top_products=top_products %}
+    {% endif %}
 
 
-{% include 'products/productos.html' with classifications=classifications %}
+{% include 'products/productosMinimal.html' %}
 
-{% include 'products/productosMinimal.html' with classifications=classifications %}
 
 {% include 'products/productosFeatured.html' with classifications=classifications %}
 

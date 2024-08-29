@@ -11,14 +11,14 @@ from extra.models import Promocion
 from usuario.decorator import role_required
 # Create your views here.
 from .form import ProductUpdateForm, ProductAttachmentInlineFormSet, ProductOfferForm
-from .models import Product, ProductImage, ClasificacionPadre
+from .models import Product, ProductImage, ClasificacionPadre, ProductView
 
 from pedidos_stripe.models import SolicitudStripeItem
 from django.db.models import Sum, Count
 from django.utils import timezone
 from datetime import datetime, timedelta
 
-
+from django.db import models
 
 
 
@@ -39,10 +39,26 @@ def product_create_view(request):
     return render(request, 'products/create.html',context)
 
 def product_list_view(request,provider_id=None):
+    top_products = (
+        Product.objects.annotate(total_sold=Sum('solicitudstripeitem__quantity'))
+        .order_by('-total_sold')[:5]
+    )
+    today = timezone.now().date()
+    seven_days_ago = today - timedelta(days=7)
+    new_products = Product.objects.filter(timestamp__gte=seven_days_ago)[:5]
+
 
     object_list = Product.objects.all()
     promociones = Promocion.objects.all()
 
+    week_ago = timezone.now() - timedelta(days=7)
+
+    # Obtener los productos y contar las vistas de la última semana
+    trending_products = (
+        Product.objects.annotate(
+            view_count=models.Count('productview', filter=models.Q(productview__timestamp__gte=week_ago)))
+        .order_by('-view_count')[:5]  # Limitar a los 10 más vistos
+    )
 
     if provider_id:
         obj = get_object_or_404(User, id=provider_id)
@@ -82,11 +98,15 @@ def product_list_view(request,provider_id=None):
         page_solicitudes = paginator.page(paginator.num_pages)
 
 
+
     context = {
         'object_list': page_solicitudes,
         'carro': carro,
         'classifications': classifications,
         'promociones': promociones,
+        'top_products': top_products,
+        'new_products': new_products,
+        'trending_products': trending_products,
     }
     return render(request,"products/list.html",context)
 
@@ -139,6 +159,8 @@ def product_manage_detail_view(request,handle=None):
 def product_detail_view(request,handle=None):
     obj = get_object_or_404(Product,handle=handle)
     attachments = ProductImage.objects.filter(product=obj)
+    if request.user.usuario.rol == "cliente":
+        ProductView.objects.create(product=obj, user=request.user)
     # attachments = obj.productattachment_set.all()
     is_owner = False
 
