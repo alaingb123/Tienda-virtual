@@ -45,7 +45,12 @@
         width: 50%;
         background-color: var(--image-bg);
         box-sizing: border-box;
+        height: auto; /* Mantiene la proporción de la imagen */
+        object-fit: cover; /* Asegura que la imagen cubra el área del contenedor */
     }
+
+    
+
     
     .title {
         margin-top: 10%;
@@ -123,7 +128,7 @@
     }
     
     .btn {
-        width: 80%;
+        width: 53%;
         letter-spacing: 1px;
         text-transform: uppercase;
         color: white;
