@@ -32,9 +32,13 @@
                   <button class="sidebar-accordion-menu" data-accordion-btn >
 
                     <div class="menu-title-flex">
+                      {%if clasification.image%}
                       <img src="{{ clasification.image.url }}" alt="{{ clasification.nombre }}" width="20" height="20"
+
                         class="menu-title-img">
+                        {%endif%}
      <a href="{% url 'products:list' %}?classification_id_padre={{ clasification.id }}">
+
                       <p class="menu-title">{{ clasification.nombre }}</p>
          </a>
                     </div>
