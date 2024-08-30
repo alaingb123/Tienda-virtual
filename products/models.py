@@ -47,6 +47,7 @@ class Product(models.Model):
         settings.AUTH_USER_MODEL, default=1, on_delete=models.CASCADE
     )
     description = models.TextField(blank=True, null=True)
+    short_description = models.CharField(max_length=150, blank=True, null=True)
     stripe_product_id = models.CharField(max_length=220, blank=True, null=True)
     supply = models.IntegerField(default=1)
     image = models.ImageField(upload_to="products/", blank=True, null=True)
@@ -163,6 +164,7 @@ class ProductOffer(models.Model):
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     is_active = models.BooleanField(default=False)
+    is_premium = models.BooleanField(default=False)  # Nuevo campo para ofertas premium
 
 
     def __str__(self):
@@ -206,6 +208,20 @@ class ProductOffer(models.Model):
             self.delete()
         else:
             self.delete()
+
+    def get_time_remaining(self):
+        now = timezone.now()
+        if self.end_date > now:
+            time_remaining = self.end_date - now
+            days, seconds = time_remaining.days, time_remaining.seconds
+            hours = seconds // 3600
+            minutes = (seconds % 3600) // 60
+            return {
+                'days': days,
+                'hours': hours,
+                'minutes': minutes,
+            }
+        return None  # La oferta ya ha terminado
 
 
 

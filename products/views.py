@@ -12,7 +12,7 @@ from extra.models import Promocion
 from usuario.decorator import role_required
 # Create your views here.
 from .form import ProductUpdateForm, ProductAttachmentInlineFormSet, ProductOfferForm
-from .models import Product, ProductImage, ClasificacionPadre, ProductView, Rating
+from .models import Product, ProductImage, ClasificacionPadre, ProductView, Rating, ProductOffer
 
 from pedidos_stripe.models import SolicitudStripeItem
 from django.db.models import Sum, Count
@@ -44,6 +44,8 @@ def product_list_view(request,provider_id=None):
         Product.objects.annotate(total_sold=Sum('solicitudstripeitem__quantity'))
         .order_by('-total_sold')[:5]
     )
+
+    premium_offer = ProductOffer.objects.filter(is_premium=True)
 
     top_rated = Product.objects.order_by('-rating_product__average_rating')[:5]
 
@@ -112,6 +114,7 @@ def product_list_view(request,provider_id=None):
         'new_products': new_products,
         'trending_products': trending_products,
         'top_rated': top_rated,
+        'premium_offer': premium_offer,
     }
     return render(request,"products/list.html",context)
 
