@@ -2,13 +2,22 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import Product, ProductImage, ClasificacionPadre, ClasificacionHija, ProductOffer, ClasificacionNieta
+from .models import Product, ProductImage, ClasificacionPadre, ClasificacionHija, ProductOffer, ClasificacionNieta, \
+    Rating_product, Rating
 
 admin.site.register(Product)
 admin.site.register(ClasificacionNieta)
 
 admin.site.register(ProductImage)
 
+
+@admin.register(Rating_product)
+class Rating_product(admin.ModelAdmin):
+    list_display = ('product', 'average_rating')
+
+@admin.register(Rating)
+class Rating(admin.ModelAdmin):
+    list_display = ('average', 'user', "score")
 
 @admin.register(ProductOffer)
 class ProductOfferAdmin(admin.ModelAdmin):
