@@ -106,7 +106,7 @@ def product_list_view(request,provider_id=None):
 
 
     context = {
-        'object_list': page_solicitudes,
+        'object_list': object_list,
         'carro': carro,
         'classifications': classifications,
         'promociones': promociones,

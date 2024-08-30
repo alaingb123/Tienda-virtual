@@ -19,6 +19,12 @@ from .models import Purchase, SolicitudStripeItem
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
+from django.http import HttpResponseBadRequest
+from django.contrib import messages
+from django.urls import reverse
+from stripe.error import APIConnectionError
+import stripe
 
 
 STRIPE_SECRET_KEY = "sk_test_51PbVREDUVZyD9P5hMx44bCmUwBMlf0xjyLHEGrCliSwPrcyADzuH7RtHmfmtDWacsjoYuUcHgauWBrFTHFZHx6lP00yxOBc8hs"
@@ -148,18 +154,25 @@ def buy_cart_stripe(request,destinatario_id):
     purchase.stripe_price = total
     purchase.save()
 
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=line_items,
+            mode="payment",
+            success_url=f"{BASE_ENDPOINT}{reverse('pedidos_stripe:success_cart')}",
+            cancel_url=f"{BASE_ENDPOINT}{reverse('pedidos_stripe:stopped')}",
+        )
+        purchase.stripe_checkout_session_id = checkout_session.id
+        purchase.save()
+    except APIConnectionError:
+        # Manejo de error de conexión con Stripe
+        stock_error =  'Error de conexión con Stripe. Por favor, intenta más tarde.'
+        return render(request, "purchases/cart.html", {"stock_error": stock_error})
 
-
-
-    checkout_session = stripe.checkout.Session.create(
-        payment_method_types=["card"],
-        line_items=line_items,
-        mode="payment",
-        success_url=f"{BASE_ENDPOINT}{reverse('pedidos_stripe:success_cart')}",
-        cancel_url=f"{BASE_ENDPOINT}{reverse('pedidos_stripe:stopped')}",
-    )
-    purchase.stripe_checkout_session_id = checkout_session.id
-    purchase.save()
+    except Exception as e:
+        # Manejo de otras excepciones
+        messages.error(request, f'Ocurrió un error inesperado: {str(e)}')
+        return render(request, "purchases/cart.html", {"stock_error": stock_error})
 
 
     return HttpResponseRedirect(checkout_session.url)
