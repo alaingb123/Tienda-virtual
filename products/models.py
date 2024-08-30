@@ -87,6 +87,8 @@ class Product(models.Model):
 
 
     def save(self, *args, **kwargs):
+        if not hasattr(self, 'rating_product'):
+            Rating_product.objects.create(product=self)
         if self.name:
             stripe_product_r = stripe.Product.create(name=self.name)
             self.stripe_product_id = stripe_product_r.id
@@ -119,6 +121,34 @@ class Product(models.Model):
 
     def get_manage_url(self):
         return reverse("products:manage", kwargs={"handle": self.handle})
+
+
+
+class Rating_product(models.Model):
+    product = models.OneToOneField(Product, on_delete=models.CASCADE, related_name='rating_product')
+    average_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
+
+    def update_average_rating(self):
+        ratings = Rating.objects.filter(average=self)
+        if ratings.exists():
+            total_score = 0
+            for ratin in ratings:
+                total_score = total_score + ratin.score
+            self.average_rating = total_score / ratings.count()
+        else:
+            self.average_rating = 0
+        self.save()
+
+
+class Rating(models.Model):
+    average = models.ForeignKey(Rating_product, on_delete=models.CASCADE, related_name='average',default=1)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    score = models.PositiveIntegerField()  # Suponiendo que el rating va de 1 a 5
+
+    class Meta:
+        unique_together = ('average', 'user')  # Un usuario solo puede evaluar un producto una vez
+
+
 
 
 class ProductView(models.Model):

@@ -22,5 +22,6 @@ urlpatterns = [
     #Crear oferta
     path('crear_oferta/<int:product_id>/', views.crear_oferta, name='crear_oferta'),
     path('eliminar_oferta/<int:product_id>/', views.eliminar_oferta, name='eliminar_oferta'),
+    path('rate_product/<int:product_id>/', views.rate_product, name='rate_product'),
 
 ]

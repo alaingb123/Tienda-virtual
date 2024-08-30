@@ -1,7 +1,8 @@
+from django.core.checks import messages
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect, get_object_or_404
 import mimetypes
-from django.http import FileResponse, HttpResponseBadRequest, JsonResponse, HttpResponseRedirect
+from django.http import FileResponse, HttpResponseBadRequest, JsonResponse, HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import  User
@@ -11,7 +12,7 @@ from extra.models import Promocion
 from usuario.decorator import role_required
 # Create your views here.
 from .form import ProductUpdateForm, ProductAttachmentInlineFormSet, ProductOfferForm
-from .models import Product, ProductImage, ClasificacionPadre, ProductView
+from .models import Product, ProductImage, ClasificacionPadre, ProductView, Rating
 
 from pedidos_stripe.models import SolicitudStripeItem
 from django.db.models import Sum, Count
@@ -43,6 +44,9 @@ def product_list_view(request,provider_id=None):
         Product.objects.annotate(total_sold=Sum('solicitudstripeitem__quantity'))
         .order_by('-total_sold')[:5]
     )
+
+    top_rated = Product.objects.order_by('-rating_product__average_rating')[:5]
+
     today = timezone.now().date()
     seven_days_ago = today - timedelta(days=7)
     new_products = Product.objects.filter(timestamp__gte=seven_days_ago)[:5]
@@ -107,6 +111,7 @@ def product_list_view(request,provider_id=None):
         'top_products': top_products,
         'new_products': new_products,
         'trending_products': trending_products,
+        'top_rated': top_rated,
     }
     return render(request,"products/list.html",context)
 
@@ -375,3 +380,25 @@ def eliminar_oferta(request,product_id):
             return redirect('products:detail', handle=product.handle)
     return redirect('products:detail', handle=product.handle)
 
+
+
+@role_required(['cliente'])
+def rate_product(request, product_id):
+    if request.method == 'POST':
+        product = get_object_or_404(Product, id=product_id)
+        rating_product = product.rating_product
+
+        score = int(request.POST.get('score'))
+
+        rating, created = Rating.objects.update_or_create(
+            average=rating_product,
+            user=request.user,
+            defaults={'score': score}
+        )
+
+        rating_product.update_average_rating()
+
+        messages = 'Tu calificación ha sido registrada.'
+        return redirect('products:detail', handle=product.handle)
+
+    return HttpResponse(status=405)
