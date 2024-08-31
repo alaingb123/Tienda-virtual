@@ -60,6 +60,17 @@
       color: #9ca3af; /* Color más claro para el texto */
   }
 
+  /* Estilo para el card */
+  .card {
+    max-width: 600px; /* Ancho máximo del card */
+      margin: 5px auto; /* Centrar el card horizontalmente */
+      padding: 1rem; /* Espaciado interno */
+      text-align: center; /* Alinear texto al centro */
+      border: 1px solid #e5e7eb; /* Borde del card */
+      border-radius: 8px; /* Bordes redondeados */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra del card */
+  }
+
   /* Responsividad */
   @media (max-width: 768px) {
     table {
@@ -75,8 +86,9 @@
       margin-bottom: 0.5rem; /* Reducir espaciado entre filas */
       border: 1px solid #e5e7eb; /* Añadir borde a las filas */
     }
-       /* Ocultar la columna "Precio" en la vista móvil */
-       th:nth-child(3), td:nth-child(3) {
+
+    /* Ocultar la columna "Precio" en la vista móvil */
+    th:nth-child(3), td:nth-child(3) {
         display: none; /* Ocultar el encabezado y las celdas de Precio */
     }
 
@@ -89,9 +101,10 @@
         position: relative; /* Mantener posición relativa si se necesita para otros estilos */
     }
 }
-
 </style>
 
+<div class="card">
+{% if request.session.carro.items %}
 <table class="w-4/5 border-collapse rounded-lg overflow-hidden"> 
     <thead>
       <tr class="bg-gray-200 text-gray-700">
@@ -103,7 +116,6 @@
       </tr>
     </thead>
     <tbody>
-      {% if request.session.carro.items %}
       {% for key, value in request.session.carro.items %}
       <tr class="border-b border-gray-200 hover:bg-gray-100">
         <td class="px-4 py-3" data-label="Producto">{{ value.name }}</td>
@@ -123,12 +135,12 @@
         </td>
       </tr>
       {% endfor %}
-      {% else %}
-      <tr>
-        <td colspan="5" class="px-4 py-3 text-center font-light text-gray-500 dark:text-gray-400">
-          Tu carrito de compras está vacío.
-        </td>
-      </tr>
-      {% endif %}
     </tbody>
 </table>
+{% else %}
+<div class="px-4 py-3 text-center font-light text-gray-500 dark:text-gray-400">
+
+  Tu carrito de compras está vacío.
+</div>
+{% endif %}
+</div>

@@ -17,9 +17,7 @@
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     padding: 1.5rem;
-    margin: 10px 0; /* Ajustar solo el margen vertical */
-    margin-right: 30px;
-    margin-left: 40px;
+    
 }
 
 /* Alertas */
@@ -105,8 +103,8 @@ button:hover {
     .card {
         width: 90%; /* Hacer que las tarjetas ocupen el 90% del ancho */
         margin: 10px 0; /* Ajustar márgenes superior e inferior */
-        margin-right: 0px;
-        margin-left: 0px;
+        margin-right: 0;
+        margin-left: 0;
     }
 
     .total-container {
@@ -147,9 +145,8 @@ button:hover {
 
     <div class="flex flex-center mb-6">
         <!-- Tarjeta para la tabla del carrito -->
-        <div class="card">
             {% include 'purchases/cart-table.html' %}
-        </div>
+     
 
         {% if importe_total_carro %}
         <div class="card" id="card-333">
@@ -160,7 +157,7 @@ button:hover {
             </div>
 
             <!-- Botón para limpiar el carrito -->
-            <div class="mb-4">
+            <div class="mb-4 flex justify-center">
                 <a href="{% url 'carro:limpiar' %}" class="bg-white hover:bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center">
                     <ion-icon name="trash-outline" style="margin-right: 8px;"></ion-icon>
                     Limpiar Carrito
