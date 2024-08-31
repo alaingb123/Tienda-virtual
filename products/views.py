@@ -160,8 +160,28 @@ def product_manage_detail_view(request,handle=None):
     formset = ProductAttachmentInlineFormSet(request.POST or None,request.FILES or None,queryset=attachments)
     if form.is_valid() and formset.is_valid():
         instance = form.save(commit=False)
-        instance.save()
-        form.save_m2m()  # Guarda las relaciones ManyToMany
+        try:
+            instance.save()
+            form.save_m2m()  # Guarda las relaciones ManyToMany
+        except APIConnectionError:
+            # Manejo de error de conexión con Stripe
+            conexion_error = 'Error de conexión con Stripe. Por favor, intenta más tarde.'
+            context = {
+                'conexion_error': conexion_error,
+                'form': form,
+                'formset': formset,
+            }
+            return render(request, 'products/manager.html', context)
+
+        except Exception as e:
+            # Manejo de otras excepciones
+            conexion_error = f'Ocurrió un error inesperado: {str(e)}'
+            context = {
+                'conexion_error': conexion_error,
+                'form': form,
+                'formset': formset,
+            }
+            return render(request, 'products/manager.html', context)
 
         formset.save(commit=False)
         for _form in formset:
