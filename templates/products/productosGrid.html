@@ -22,9 +22,11 @@
 
                   <div class="showcase-actions">
 
+                      {% if request.user.usuario.rol.nombre == 'cliente' %}
                    <a  href="{% url 'products:like' object.pk %}" class="btn-action">
                       <ion-icon name="heart-outline"></ion-icon>
                     </a>
+                      {% endif %}
 
 
                     <a  href="{% url 'products:detail' object.handle %}" class="btn-action">
@@ -33,15 +35,17 @@
 
                     </a>
 
-                    <button class="btn-action">
-                      <ion-icon name="repeat-outline"></ion-icon>
-                    </button>
+{#                    <button class="btn-action">#}
+{#                      <ion-icon name="repeat-outline"></ion-icon>#}
+{#                    </button>#}
+                    {% if request.user.usuario.rol.nombre == 'cliente' %}
     <form action="{% url 'carro:agregar' object.id %}" method="POST">
                       {% csrf_token %}
                     <button type="submit" class="btn-action">
                       <ion-icon name="bag-add-outline"></ion-icon>
                     </button>
     </form>
+                  {% endif %}
 
                   </div>
 
