@@ -20,6 +20,7 @@ class ProductForm(forms.ModelForm):
 
 
 class ProductUpdateForm(forms.ModelForm):
+
     class Meta:
         model = Product
         fields = ["image", 'name', 'keywords','clasificaciones_padre', 'clasificacion','clasificaciones_nieta', 'handle', 'price', 'supply', 'description', 'short_description' , 'active']

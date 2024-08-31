@@ -6,10 +6,12 @@ from products.models import Product
 def agregar_producto(request,product_id):
     carro = Carro(request)
     product = Product.objects.get(pk=product_id)
-
+    if product.active == False:
+        return redirect('products:list')
     quantity = int(request.POST.get('quantity', 1))
     print(" la cantidad es : ", quantity)
     carro.agregar(product=product,quantity=quantity)
+
 
     return redirect("products:list")
 
@@ -62,7 +64,7 @@ def ver_carro(request):
         if product.supply < item["cantidad"]:
             stock_error_products.append(product.name)
 
-    if stock_error_products:
+    if stock_error_products or product.active == False:
         stock_error = "Lo sentimos, no hay suficiente disponibilidad de los siguientes productos: " + ", ".join(stock_error_products) + ". Te recomendamos que los retires del carrito para continuar con tu compra."
     else:
         stock_error = None

@@ -5,19 +5,39 @@ from django.contrib import admin
 from .models import Product, ProductImage, ClasificacionPadre, ClasificacionHija, ProductOffer, ClasificacionNieta, \
     Rating_product, Rating
 
-admin.site.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    readonly_fields = [f.name for f in Product._meta.fields]  # Todos los campos son de solo lectura
+    list_display = ['name', 'user', 'price', 'active', 'timestamp']  # Campos a mostrar en la lista
+    search_fields = ['name', 'user__username', 'description']  # Campos por los que se puede buscar
+    list_filter = ['active']  # Campos por los que se puede filtrar
+
+    def has_change_permission(self, request, obj=None):
+        return False  # Evita que se pueda cambiar el modelo en su totalidad
+
+    def has_delete_permission(self, request, obj=None):
+        return False  # Evita que se pueda eliminar el modelo
+
+admin.site.register(Product, ProductAdmin)
+
 admin.site.register(ClasificacionNieta)
 
-admin.site.register(ProductImage)
 
 
-@admin.register(Rating_product)
-class Rating_product(admin.ModelAdmin):
+
+class Rating_productAdmin(admin.ModelAdmin):
     list_display = ('product', 'average_rating')
 
-@admin.register(Rating)
-class Rating(admin.ModelAdmin):
-    list_display = ('average', 'user', "score")
+    def has_add_permission(self, request):
+        return False  # Evita que se pueda añadir un nuevo rating
+
+    def has_change_permission(self, request, obj=None):
+        return False  # Evita que se pueda cambiar un rating existente
+
+    def has_delete_permission(self, request, obj=None):
+        return False  # Evita que se pueda eliminar un rating
+
+admin.site.register(Rating_product, Rating_productAdmin)
+
 
 
 

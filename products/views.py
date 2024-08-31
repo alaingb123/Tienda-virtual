@@ -209,6 +209,8 @@ def product_manage_detail_view(request,handle=None):
 
 def product_detail_view(request,handle=None):
     obj = get_object_or_404(Product,handle=handle)
+    if obj.active == False:
+        return redirect('products:list')
     attachments = ProductImage.objects.filter(product=obj)
     if request.user.usuario.rol == "cliente":
         ProductView.objects.create(product=obj, user=request.user)
