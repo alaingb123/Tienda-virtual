@@ -87,9 +87,10 @@
   <div class="header-main">
 
     <div class="container">
+      {% load static %}
 
       <a href="#" class="header-logo">
-        <img src="./assets/images/logo/logo.svg" alt="Anon's logo" width="120" height="36">
+        <img src="{% static 'img/logo.png' %}" alt="Anon's logo" width="150" height="56">
       </a>
 
       <form method="get" action="{% url 'products:list' %}" >
