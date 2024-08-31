@@ -88,8 +88,6 @@ class Product(models.Model):
 
 
     def save(self, *args, **kwargs):
-        if not hasattr(self, 'rating_product'):
-            Rating_product.objects.create(product=self)
         if self.name:
             stripe_product_r = stripe.Product.create(name=self.name)
             self.stripe_product_id = stripe_product_r.id

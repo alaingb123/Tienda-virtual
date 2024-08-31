@@ -171,7 +171,7 @@ def buy_cart_stripe(request,destinatario_id):
 
     except Exception as e:
         # Manejo de otras excepciones
-        messages.error(request, f'Ocurrió un error inesperado: {str(e)}')
+        stock_error = f'Ocurrió un error inesperado: {str(e)}'
         return render(request, "purchases/cart.html", {"stock_error": stock_error})
 
 

@@ -71,17 +71,38 @@
                   </a>
 
                   <div class="showcase-rating">
-                    <ion-icon name="star"></ion-icon>
-                    <ion-icon name="star"></ion-icon>
-                    <ion-icon name="star"></ion-icon>
-                    <ion-icon name="star-outline"></ion-icon>
-                    <ion-icon name="star-outline"></ion-icon>
-                  </div>
+                          {% for i in "12345"|make_list %}
+                              {% with j=i|add:-1 %}
+
+                              {% if i|add:0  <= object.rating_product.average_rating %}
+                        <ion-icon name="star"></ion-icon>
+
+
+
+                              {% endif %}
+
+                              {% if i|add:0  > object.rating_product.average_rating and j|add:0  < object.rating_product.average_rating  %}
+                                      <ion-icon name="star-half"></ion-icon>  <!-- Estrella media -->
+                        {% else %}
+
+                                      {% endif %}
+
+                             {% if i|add:0  >= object.rating_product.average_rating and j|add:0  >= object.rating_product.average_rating %}
+                              <ion-icon name="star-outline"></ion-icon>
+                                  {% endif %}
+{% endwith %}
+                              {% endfor %}
+
+
+                      </div>
 
                   <div class="price-box">
-                    <p class="price">$48.00</p>
-                    <del>$75.00</del>
-                  </div>
+
+                  <p class="price">${{ object.price }}</p>
+    {% if object.offer %}
+                  <del>${{ object.offer.precio_viejo }}</del>
+                     {% endif %}
+                </div>
 
                 </div>
 

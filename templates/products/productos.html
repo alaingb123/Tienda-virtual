@@ -91,14 +91,14 @@
                     {% for top in top_products %}
                   <div class="showcase">
 
-                    <a href="#" class="showcase-img-box">
+                    <a href="{% url 'products:detail' top.handle %}" class="showcase-img-box">
                       <img src="{{top.image.url}}" alt="{{ top.name }}" width="75" height="75"
                         class="showcase-img">
                     </a>
 
                     <div class="showcase-content">
 
-                      <a href="#">
+                      <a href="{% url 'products:detail' top.handle %}">
                         <h4 class="showcase-title">{{ top.name }}</h4>
                       </a>
 

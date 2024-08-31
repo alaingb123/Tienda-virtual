@@ -15,7 +15,9 @@
                 <div class="showcase">
                   
                   <div class="showcase-banner">
+                      <a href="{% url 'products:detail' offer.product.handle %}">
                     <img src="{{ offer.product.image.url }}" alt="{{ offer.product.name }}" class="showcase-img">
+                      </a>
                   </div>
 
                   <div class="showcase-content">
@@ -46,7 +48,7 @@
 
                       </div>
 
-                    <a href="#">
+                    <a href="{% url 'products:detail' offer.product.handle %}">
                       <h3 class="showcase-title">{{ offer.product.name }}</h3>
                     </a>
 

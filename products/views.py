@@ -6,13 +6,15 @@ from django.http import FileResponse, HttpResponseBadRequest, JsonResponse, Http
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import  User
+from stripe import APIConnectionError
+
 from carro.carro import Carro
 from extra.models import Promocion
 
 from usuario.decorator import role_required
 # Create your views here.
 from .form import ProductUpdateForm, ProductAttachmentInlineFormSet, ProductOfferForm
-from .models import Product, ProductImage, ClasificacionPadre, ProductView, Rating, ProductOffer
+from .models import Product, ProductImage, ClasificacionPadre, ProductView, Rating, ProductOffer, Rating_product
 
 from pedidos_stripe.models import SolicitudStripeItem
 from django.db.models import Sum, Count
@@ -31,8 +33,29 @@ def product_create_view(request):
         obj = form.save(commit=False)
         if request.user.is_authenticated:
             obj.user = request.user
-            obj.save()
-            form.save_m2m()
+            try:
+                obj.save()
+                if not hasattr(obj, 'rating_product'):
+                    Rating_product.objects.create(product=obj)
+                form.save_m2m()
+            except APIConnectionError:
+                # Manejo de error de conexión con Stripe
+                conexion_error = 'Error de conexión con Stripe. Por favor, intenta más tarde.'
+                context = {
+                    'conexion_error':conexion_error,
+                    'form':form
+                }
+                return render(request, 'products/create.html', context )
+
+            except Exception as e:
+                # Manejo de otras excepciones
+                conexion_error =  f'Ocurrió un error inesperado: {str(e)}'
+                context = {
+                    'conexion_error': conexion_error,
+                    'form': form
+                }
+                return render(request, 'products/create.html', context)
+
             return redirect(obj.get_manage_url())
         else:
             form.add_error(None,"Your  must be looged in to create product")
