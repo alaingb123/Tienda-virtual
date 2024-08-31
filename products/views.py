@@ -14,7 +14,7 @@ from extra.models import Promocion
 from usuario.decorator import role_required
 # Create your views here.
 from .form import ProductUpdateForm, ProductAttachmentInlineFormSet, ProductOfferForm
-from .models import Product, ProductImage, ClasificacionPadre, ProductView, Rating, ProductOffer, Rating_product
+from .models import Product, ProductImage, ClasificacionPadre, ProductView, Rating, ProductOffer, Rating_product, Like
 
 from pedidos_stripe.models import SolicitudStripeItem
 from django.db.models import Sum, Count
@@ -450,3 +450,11 @@ def rate_product(request, product_id):
         return redirect('products:detail', handle=product.handle)
 
     return HttpResponse(status=405)
+
+
+def like_product(request, product_id):
+    product = Product.objects.get(id=product_id)
+    user = request.user
+
+    like, created = Like.objects.get_or_create(user=user, product=product)
+    return redirect('products:list')

@@ -269,3 +269,4 @@ micro_ecommerce/wsgi.py
 local-cdn/media
 local-cdn/protected
 manage.py
+**/migrations/

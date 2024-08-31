@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.utils import timezone
 import pathlib
 from django.core.files.storage import FileSystemStorage
@@ -253,4 +254,12 @@ class ProductImage(models.Model):
         return reverse("products:download",kwargs={"handle": self.product.handle, "pk":self.pk})
 
 
+
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['user', 'product']  # Un usuario solo puede dar like a un producto una vez
 
