@@ -22,9 +22,9 @@
 
                   <div class="showcase-actions">
 
-                    <button class="btn-action">
+                   <a  href="{% url 'products:like' object.pk %}" class="btn-action">
                       <ion-icon name="heart-outline"></ion-icon>
-                    </button>
+                    </a>
 
 
                     <a  href="{% url 'products:detail' object.handle %}" class="btn-action">
@@ -66,7 +66,7 @@
                   {% endif %}
 
 
-                  <a href="#">
+                  <a href="{% url 'products:detail' object.handle %}">
                     <h3 class="showcase-title">{{ object.name }}</h3>
                   </a>
 

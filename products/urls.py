@@ -24,4 +24,6 @@ urlpatterns = [
     path('eliminar_oferta/<int:product_id>/', views.eliminar_oferta, name='eliminar_oferta'),
     path('rate_product/<int:product_id>/', views.rate_product, name='rate_product'),
 
+    path('like_product/<int:product_id>/', views.like_product, name='like'),
+
 ]

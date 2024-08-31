@@ -3,7 +3,8 @@ from django.contrib import admin
 # Register your models here.
 
 from .models import Product, ProductImage, ClasificacionPadre, ClasificacionHija, ProductOffer, ClasificacionNieta, \
-    Rating_product, Rating
+    Rating_product, Rating, Likes
+
 
 class ProductAdmin(admin.ModelAdmin):
     readonly_fields = [f.name for f in Product._meta.fields]  # Todos los campos son de solo lectura
@@ -65,6 +66,7 @@ class ProductOfferAdmin(admin.ModelAdmin):
     execute_update_offers.short_description = "Actualizar ofertas"
 
 admin.site.register(ProductOffer, ProductOfferAdmin)
+admin.site.register(Likes)
 
 
 
