@@ -1,5 +1,8 @@
 {%load static%}
 
+
+
+
 <div class="banner">
 
     <div class="container">
@@ -9,7 +12,13 @@
           {% for promocion in promociones %}
         <div class="slider-item">
 
-          <img src="{{ promocion.imagen.url }}" alt="{{ promocion.nombre }}"  class="banner-img">
+          <img 
+          src="{{ promocion.imagen.url }}" 
+          srcset="{{ promocion.imagen_peque.url }} 600w, {{ promocion.imagen.url }} 1200w" 
+          sizes="(max-width: 600px) 100vw, 50vw" 
+          alt="{{ promocion.nombre }}" 
+          class="banner-img"
+      >
 
           <div class="banner-content">
 
