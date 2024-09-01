@@ -9,6 +9,7 @@ urlpatterns = [
     path('', views.product_list_view, name='list'),
     path('filter/<int:provider_id>/', views.product_list_view, name='filter_by_provider'),
     path('like_filter/<int:provider_id>/', views.product_list_view, name='filter_by_provider'),
+    path('promotion/<int:promotion_id>/', views.product_list_view, name='promotion'),
 
 
 

@@ -81,7 +81,7 @@ class Product(models.Model):
 
     @property
     def display_name(self):
-        return self.name
+        return self.name+" | "+self.handle
 
     @property
     def display_price(self):

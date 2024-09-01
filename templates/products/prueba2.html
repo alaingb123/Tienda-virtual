@@ -12,7 +12,7 @@
           {% for promocion in promociones %}
               {% if promocion.imagen_peque and promocion.imagen %}
         <div class="slider-item">
-
+ <a href="{% url 'products:promotion' promocion.pk %}">
           <img
           src="{{ promocion.imagen.url }}"
           srcset="{{ promocion.imagen_peque.url }} 600w, {{ promocion.imagen.url }} 1200w"
@@ -20,7 +20,7 @@
           alt="{{ promocion.nombre }}" 
           class="banner-img"
       >
-
+<a/>
           <div class="banner-content">
 
 {#            <p class="banner-subtitle">Trending item</p>#}

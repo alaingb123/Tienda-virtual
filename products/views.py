@@ -62,7 +62,7 @@ def product_create_view(request):
     context['form'] = form
     return render(request, 'products/create.html',context)
 
-def product_list_view(request,provider_id=None,promotion_id=None,liked=None):
+def product_list_view(request,provider_id=None,promotion_id=None):
     object_list = Product.objects.all()
     object_list = object_list.filter(active=True)
 
