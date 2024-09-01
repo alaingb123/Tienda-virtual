@@ -8,8 +8,8 @@ from .models import Product, ProductImage, ClasificacionPadre, ClasificacionHija
 
 class ProductAdmin(admin.ModelAdmin):
     readonly_fields = [f.name for f in Product._meta.fields]  # Todos los campos son de solo lectura
-    list_display = ['name', 'user', 'price', 'active', 'timestamp']  # Campos a mostrar en la lista
-    search_fields = ['name', 'user__username', 'description']  # Campos por los que se puede buscar
+    list_display = ['name', 'user', 'price', 'active', 'handle', 'timestamp' ]  # Campos a mostrar en la lista
+    search_fields = ['name', 'user__username','handle']  # Campos por los que se puede buscar
     list_filter = ['active']  # Campos por los que se puede filtrar
 
     def has_change_permission(self, request, obj=None):
@@ -66,7 +66,10 @@ class ProductOfferAdmin(admin.ModelAdmin):
     execute_update_offers.short_description = "Actualizar ofertas"
 
 admin.site.register(ProductOffer, ProductOfferAdmin)
-admin.site.register(Likes)
+
+@admin.register(Likes)
+class LikesAdmin(admin.ModelAdmin):
+    list_display = ['user', 'product', 'timestamp']
 
 
 

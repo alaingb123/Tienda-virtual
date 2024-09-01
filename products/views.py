@@ -62,39 +62,70 @@ def product_create_view(request):
     context['form'] = form
     return render(request, 'products/create.html',context)
 
-def product_list_view(request,provider_id=None):
+def product_list_view(request,provider_id=None,promotion_id=None,liked=None):
+    object_list = Product.objects.all()
+    object_list = object_list.filter(active=True)
+
+
+
+    # productos mas vendidos
     top_products = (
-        Product.objects.annotate(total_sold=Sum('solicitudstripeitem__quantity'))
+        Product.objects.filter(active=True).annotate(total_sold=Sum('solicitudstripeitem__quantity'))
         .order_by('-total_sold')[:5]
     )
+    #------------------------------------------------------------------------------
 
-    premium_offer = ProductOffer.objects.filter(is_premium=True)
+    # productos gustados por el usuario
 
-    top_rated = Product.objects.order_by('-rating_product__average_rating')[:5]
 
+
+    # ---------------------------------------------------------------
+
+
+
+
+    # ofertas premuim
+    premium_offer = ProductOffer.objects.filter(is_premium=True,is_active=True)
+    # ---------------------------------------------------------------
+
+    # productos mejor evaluados
+    top_rated = Product.objects.filter(active=True).order_by('-rating_product__average_rating')[:5]
+    # ---------------------------------------------------------------
+
+    # productos nuevos
     today = timezone.now().date()
     seven_days_ago = today - timedelta(days=7)
-    new_products = Product.objects.filter(timestamp__gte=seven_days_ago)[:5]
+    new_products = Product.objects.filter(timestamp__gte=seven_days_ago,active=True)[:5]
+    # ---------------------------------------------------------------
 
 
-    object_list = Product.objects.all()
+
     promociones = Promocion.objects.all()
 
-    week_ago = timezone.now() - timedelta(days=7)
+    # filtrar por la promocion
+    if promotion_id:
+        promotion = get_object_or_404(Promocion, id=promotion_id)
+        object_list = promotion.productos.filter(active=True)
+    # ------------------------------------------------------------
+
+
 
     # Obtener los productos y contar las vistas de la última semana
+    week_ago = timezone.now() - timedelta(days=7)
     trending_products = (
         Product.objects.annotate(
-            view_count=models.Count('productview', filter=models.Q(productview__timestamp__gte=week_ago)))
+            view_count=models.Count('productview', filter=models.Q(productview__timestamp__gte=week_ago,active=True)))
         .order_by('-view_count')[:5]  # Limitar a los 10 más vistos
     )
+    # ---------------------------------------------------------------
 
     if provider_id:
         obj = get_object_or_404(User, id=provider_id)
         object_list = object_list.filter(user=obj)
-    object_list = object_list.filter(active=True)
+
     classifications = ClasificacionPadre.objects.all()
     carro = Carro(request)
+
 
     # Handle search query
     search_query = request.GET.get('search')
@@ -106,6 +137,10 @@ def product_list_view(request,provider_id=None):
     if classification_id:
         object_list = object_list.filter(clasificacion__id=classification_id)
 
+    liked = request.GET.get('liked_product')
+    if liked:
+        object_list = Product.objects.filter(like__user=request.user)
+
     classification_id_padre = request.GET.get('classification_id_padre')
     if classification_id_padre:
         object_list = object_list.filter(clasificaciones_padre__id=classification_id_padre)
@@ -114,17 +149,18 @@ def product_list_view(request,provider_id=None):
 
 
 
-    # Paginar los productos
-    page_size = 20  # Número de solicitudes por página
-    paginator = Paginator(object_list, page_size)
-    page_number = request.GET.get('page', 1)
 
-    try:
-        page_solicitudes = paginator.page(page_number)
-    except PageNotAnInteger:
-        page_solicitudes = paginator.page(1)
-    except EmptyPage:
-        page_solicitudes = paginator.page(paginator.num_pages)
+    # # Paginar los productos
+    # page_size = 20  # Número de solicitudes por página
+    # paginator = Paginator(object_list, page_size)
+    # page_number = request.GET.get('page', 1)
+    #
+    # try:
+    #     page_solicitudes = paginator.page(page_number)
+    # except PageNotAnInteger:
+    #     page_solicitudes = paginator.page(1)
+    # except EmptyPage:
+    #     page_solicitudes = paginator.page(paginator.num_pages)
 
 
 
@@ -454,8 +490,33 @@ def rate_product(request, product_id):
 
 @role_required(['cliente'])
 def like_product(request, product_id):
-    product = Product.objects.get(id=product_id)
+    product = get_object_or_404(Product, id=product_id)
     user = request.user
 
+    print("El producto es:", product)
+
+    # Verificar si el usuario ya dio like al producto
     like, created = Likes.objects.get_or_create(user=user, product=product)
+
+    if created:
+        print("Se ha creado un nuevo like para este producto.")
+    else:
+        print("El usuario ya había dado like a este producto anteriormente.")
+
+    return redirect('products:list')
+
+@role_required(['cliente'])
+def dislike_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    user = request.user
+    print("el like es ", product)
+
+
+    try:
+        like = Likes.objects.get(user=user, product=product)
+        print("el like es ",like)
+        like.delete()  # Eliminar el like del usuario para el producto
+    except Likes.DoesNotExist:
+        pass  # El usuario no había dado like previamente
+
     return redirect('products:list')

@@ -53,3 +53,7 @@ class Carro:
     def limpiar_carro(self):
         self.session["carro"]={}
         self.session.modified=True
+
+    def obtener_cantidad_total(self):
+        total_cantidad = sum(item['cantidad'] for item in self.carro.values())
+        return total_cantidad

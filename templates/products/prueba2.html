@@ -10,11 +10,12 @@
       <div class="slider-container has-scrollbar">
 
           {% for promocion in promociones %}
+              {% if promocion.imagen_peque and promocion.imagen %}
         <div class="slider-item">
 
-          <img 
-          src="{{ promocion.imagen.url }}" 
-          srcset="{{ promocion.imagen_peque.url }} 600w, {{ promocion.imagen.url }} 1200w" 
+          <img
+          src="{{ promocion.imagen.url }}"
+          srcset="{{ promocion.imagen_peque.url }} 600w, {{ promocion.imagen.url }} 1200w"
           sizes="(max-width: 600px) 100vw, 50vw" 
           alt="{{ promocion.nombre }}" 
           class="banner-img"
@@ -35,6 +36,7 @@
           </div>
 
         </div>
+              {% endif %}
           {% endfor %}
 
 

@@ -8,6 +8,8 @@ urlpatterns = [
     path('mis_productos_table/', views.mis_productos_table, name='mis_productos'),
     path('', views.product_list_view, name='list'),
     path('filter/<int:provider_id>/', views.product_list_view, name='filter_by_provider'),
+    path('like_filter/<int:provider_id>/', views.product_list_view, name='filter_by_provider'),
+
 
 
     path('<slug:handle>/', views.product_detail_view, name='detail'),
@@ -25,5 +27,7 @@ urlpatterns = [
     path('rate_product/<int:product_id>/', views.rate_product, name='rate_product'),
 
     path('like_product/<int:product_id>/', views.like_product, name='like'),
+    path('dislike_product/<int:product_id>/', views.dislike_product, name='dislike'),
+
 
 ]

@@ -116,12 +116,12 @@
      
       <a class="action-btn" href="{% url 'carro:ver_carro' %}">
         <ion-icon name="bag-handle-outline"></ion-icon>
-        <span class="count">0</span>
+        <span class="count">{{ request.session.carro|length }} </span>
       </a>
 
-      <a class="action-btn" href="">
+      <a class="action-btn" href="{% url 'products:list' %}?liked_product=fdijvef79vr8y38y3121321}">
         <ion-icon name="heart-outline"></ion-icon>
-        <span class="count">0</span>
+        <span class="count">{{ cantidad_like }}</span>
       </a>
       
 
@@ -312,18 +312,19 @@
     <button class="action-btn">
       <ion-icon name="bag-handle-outline"></ion-icon>
 
-      <span class="count">0</span>
+      <span class="count">{{ request.session.carro|length }}</span>
     </button>
 
     <button class="action-btn">
       <ion-icon name="home-outline"></ion-icon>
     </button>
 
-    <button class="action-btn">
+
+      <a class="action-btn" href="{% url 'products:list' %}?liked_product={{ cantidad_like }}">
       <ion-icon name="heart-outline"></ion-icon>
 
-      <span class="count">0</span>
-    </button>
+      <span class="count">{{ cantidad_like }}</span>
+    </a>
 
     <button class="action-btn" data-mobile-menu-open-btn>
       <ion-icon name="grid-outline"></ion-icon>

@@ -76,6 +76,9 @@ class Product(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    def usuarios_que_dieron_like(self):
+        return [like.user for like in self.like.all()]
+
     @property
     def display_name(self):
         return self.name
@@ -257,7 +260,7 @@ class ProductImage(models.Model):
 
 class Likes(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,related_name='like')
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:

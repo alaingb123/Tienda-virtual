@@ -23,9 +23,15 @@
                   <div class="showcase-actions">
 
                       {% if request.user.usuario.rol.nombre == 'cliente' %}
-                   <a  href="{% url 'products:like' object.pk %}" class="btn-action">
+                          {% if request.user in object.usuarios_que_dieron_like %}
+                   <a  href="{% url 'products:dislike' object.pk %}" class="btn-action">
+                      <ion-icon name="heart-dislike-outline"></ion-icon>
+                    </a>
+                              {% else %}
+                               <a  href="{% url 'products:like' object.pk %}" class="btn-action">
                       <ion-icon name="heart-outline"></ion-icon>
                     </a>
+                              {% endif %}
                       {% endif %}
 
 

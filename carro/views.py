@@ -58,22 +58,23 @@ def ver_carro(request):
     session = request.session
     carro = session.get('carro', {})
     stock_error_products = []
+    stock_error = None
 
     for item_id, item in carro.items():
-        product = get_object_or_404(Product, pk=item["product_id"])
-        if product.supply < item["cantidad"]:
-            stock_error_products.append(product.name)
+        try:
+            product = get_object_or_404(Product, pk=item["product_id"])
+            if product.supply < item["cantidad"] or not product.active:
+                stock_error_products.append(product.name)
+        except:
+            pass
 
-    if stock_error_products or product.active == False:
+    if stock_error_products:
         stock_error = "Lo sentimos, no hay suficiente disponibilidad de los siguientes productos: " + ", ".join(stock_error_products) + ". Te recomendamos que los retires del carrito para continuar con tu compra."
-    else:
-        stock_error = None
 
     context = {
         "stock_error": stock_error
     }
     return render(request, "purchases/cart.html", context)
-
 
 
 
