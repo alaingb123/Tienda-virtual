@@ -164,7 +164,7 @@ class ProductOffer(models.Model):
     precio_nuevo = models.DecimalField(max_digits=10, decimal_places=2)
     precio_viejo = models.DecimalField(max_digits=10, decimal_places=2)
     start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
+    end_date = models.DateTimeField(null=True, blank=True)
     is_active = models.BooleanField(default=False)
     is_premium = models.BooleanField(default=False)  # Nuevo campo para ofertas premium
 
@@ -178,7 +178,7 @@ class ProductOffer(models.Model):
     def is_offer_active(self):
         now = timezone.now()
         print(self.product)
-        if self.start_date <= now <= self.end_date and self.is_active == False:
+        if self.start_date <= now and (self.end_date is None or self.end_date >= now) and not self.is_active:
             # La oferta está activa, actualiza los precios del producto
             self.product.price = self.precio_nuevo
             self.product.save()
@@ -188,11 +188,11 @@ class ProductOffer(models.Model):
             # print("es true con cambios")
             return True
 
-        if self.is_active == True and self.start_date <= now <= self.end_date:
+        if self.is_active and self.start_date <= now and (self.end_date is None or self.end_date >= now):
             # print("es true sin cambios")
             return True
 
-        if self.end_date < now:
+        if self.end_date is not None and self.end_date < now:
             self.product.price = self.precio_viejo
             self.product.save()
             self.delete()
@@ -213,7 +213,10 @@ class ProductOffer(models.Model):
 
     def get_time_remaining(self):
         now = timezone.now()
-        if self.end_date > now:
+        if self.end_date is None:
+            return "Oferta sin fecha de finalización definida"
+
+        if self.end_date is not None and self.end_date > now:
             time_remaining = self.end_date - now
             days, seconds = time_remaining.days, time_remaining.seconds
             hours = seconds // 3600

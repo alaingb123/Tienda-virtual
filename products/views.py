@@ -248,8 +248,9 @@ def product_detail_view(request,handle=None):
     if obj.active == False:
         return redirect('products:list')
     attachments = ProductImage.objects.filter(product=obj)
-    if request.user.usuario.rol == "cliente":
-        ProductView.objects.create(product=obj, user=request.user)
+    if request.user.is_authenticated:
+        if request.user.usuario.rol == "cliente":
+            ProductView.objects.create(product=obj, user=request.user)
     # attachments = obj.productattachment_set.all()
     is_owner = False
 
