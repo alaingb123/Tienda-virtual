@@ -24,59 +24,45 @@
               </div>
 
               <ul class="sidebar-menu-category-list">
-
-                  {% for clasification in classifications %}
-{% if clasification.productos_padre.count > 0  %}
-                <li class="sidebar-menu-category">
-
-                  <button class="sidebar-accordion-menu" data-accordion-btn >
-
-                    <div class="menu-title-flex">
-                      {%if clasification.image%}
-                      <img src="{{ clasification.image.url }}" alt="{{ clasification.nombre }}" width="20" height="20"
-
-                        class="menu-title-img">
-                        {%endif%}
-     <a href="{% url 'products:list' %}?classification_id_padre={{ clasification.id }}">
-
-                      <p class="menu-title">{{ clasification.nombre }}</p>
-         </a>
-                    </div>
-
-                    <div>
-                      <ion-icon name="add-outline" class="add-icon"></ion-icon>
-                      <ion-icon name="remove-outline" class="remove-icon"></ion-icon>
-                    </div>
-
-                  </button>
-
-                 {% if clasification.hijos.all %}
-
-                  <ul class="sidebar-submenu-category-list" data-accordion>
-                {% for child_classification in clasification.hijos.all %}
-             {% if child_classification.pro.exists %}
-                    <li class="sidebar-submenu-category">
-                      <a href="{% url 'products:list' %}?classification_id={{ child_classification.id }}" class="sidebar-submenu-title">
-                        <p class="product-name">{{ child_classification.nombre }}</p>
-                          {% with product_count=child_classification.pro.count %}
-                        <data value="300" class="stock" title="Available Stock">{{ product_count }}</data>
-                          {% endwith %}
-                      </a>
+                {% for clasification in classifications %}
+                    {% if clasification.productos_padre.count > 0 %}
+                        <li class="sidebar-menu-category">
+                            <div>
+                                <button class="sidebar-accordion-menu" data-accordion-btn>
+                                    <div class="menu-title-flex">
+                                        {% if clasification.image %}
+                                            <img src="{{ clasification.image.url }}" alt="{{ clasification.nombre }}" width="20" height="20" class="menu-title-img">
+                                        {% endif %}
+                                        <a href="{% url 'products:list' %}?classification_id_padre={{ clasification.id }}">
+                                            <p class="menu-title">{{ clasification.nombre }}</p>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <ion-icon name="add-outline" class="add-icon"></ion-icon>
+                                        <ion-icon name="remove-outline" class="remove-icon"></ion-icon>
+                                    </div>
+                                </button>
+                                {% if clasification.hijos.all %}
+                                <ul class="sidebar-submenu-category-list" data-accordion>
+                                    {% for child_classification in clasification.hijos.all %}
+                                        {% if child_classification.pro.exists %}
+                                            <li class="sidebar-submenu-category">
+                                                <a href="{% url 'products:list' %}?classification_id={{ child_classification.id }}" class="sidebar-submenu-title">
+                                                    <p class="product-name">{{ child_classification.nombre }}</p>
+                                                    {% with product_count=child_classification.pro.count %}
+                                                        <data value="300" class="stock" title="Available Stock">{{ product_count }}</data>
+                                                    {% endwith %}
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
                     </li>
-
-
-
-                  </ul>
-                    {% endif %}
-                    {% endfor %}
-                    {% endif %}
-
-                </li>
-  {% endif %}
-              {% endfor %}
-
-
-              </ul>
+                {% endif %}
+            {% endfor %}
+        </ul>
 
             </div>
 
@@ -144,7 +130,35 @@
                 </div>
 
               </div>
-  
+              <script>
+                // Variables del acordeón
+                const accordionBtn = document.querySelectorAll('[data-accordion-btn]');
+                const accordion = document.querySelectorAll('[data-accordion]');
+    
+                for (let i = 0; i < accordionBtn.length; i++) {
+                    accordionBtn[i].addEventListener('click', function () {
+                        const clickedAccordion = this.nextElementSibling;
+    
+                        // Verifica si el acordeón está activo
+                        const isActive = clickedAccordion.classList.contains('active');
+    
+                        // Cierra todos los acordeones
+                        for (let j = 0; j < accordion.length; j++) {
+                            accordion[j].classList.remove('active');
+                            accordionBtn[j].classList.remove('active');
+                        }
+    
+                        // Si el acordeón no estaba activo, ábrelo
+                        if (!isActive) {
+                            clickedAccordion.classList.add('active');
+                            this.classList.add('active');
+                        }
+                    });
+                }
+            </script>
             </div>
   
           </div>
+
+          
+            
