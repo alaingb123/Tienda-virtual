@@ -72,3 +72,6 @@ class Promocion(models.Model):
 
     def __str__(self):
         return self.nombre
+
+class PromocionText(models.Model):
+    texto = models.CharField(max_length=255)
