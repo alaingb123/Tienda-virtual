@@ -10,7 +10,7 @@ select_css_class = "bg-gray-50 border border-gray-300 text-gray-900 text-sm roun
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'clasificaciones_padre','clasificacion', 'clasificaciones_nieta','handle', 'price', 'supply', 'description']
+        fields = ['name', 'clasificaciones_padre','clasificacion','handle', 'price', 'supply', 'description']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -23,7 +23,7 @@ class ProductUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ["image", 'name', 'keywords','clasificaciones_padre', 'clasificacion','clasificaciones_nieta', 'handle', 'price', 'supply', 'description', 'short_description' , 'active']
+        fields = ["image", 'name', 'keywords','clasificaciones_padre', 'clasificacion','handle', 'price', 'supply', 'description', 'short_description' , 'active']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

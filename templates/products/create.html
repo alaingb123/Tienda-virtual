@@ -1,29 +1,214 @@
 {% extends "../base.html" %}
 
 {% block content %}
+<style>
+  
+
+    .form-title {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: #333;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .form-group label {
+        flex: 1 0 30%; /* Ancho de las etiquetas */
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #555;
+    }
 
 
+
+    :root {
+        --salmon-pink: hsl(353, 100%, 78%);
+    }
+
+    .btn-submit {
+        background-color: var(--salmon-pink);
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .btn-submit:hover {
+        background-color: #000000;
+    }
+
+    .btn-submit2 {
+        background-color: gray;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .btn-submit2:hover {
+        background-color: #000000;
+    }
+
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+            margin-top: 20px; margin-bottom: 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .form-row label {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .form-row input[type="text"], 
+        .form-row input[type="number"], 
+        .form-row select {
+            flex: 1.5;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .column {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .column:last-child {
+            margin-right: 0;
+        }
+      
+      
+ /* Media Queries para Responsividad */
+ @media (max-width: 768px) {
+        .form-row {
+            flex-direction: column;
+        }
+
+        .form-row label,
+        .form-row input[type="text"],
+        .form-row input[type="number"],
+        .form-row select {
+            width: 100%;
+            margin-right: 0;
+        }
+
+        .column {
+            margin-right: 0;
+            margin-bottom: 10px;
+        }
+    }
+</style>
+
+
+  
+
+
+<div class="form-container">
     {% if conexion_error %}
-   <div class="alert" role="alert">
-       <strong style="font-weight: bold;">¡Atención!</strong>
-       <span>{{ conexion_error }}</span>
-   </div>
-   {% endif %}
-
-
-<form method="POST" action="" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-
-    <input type="submit" class="btn-submit" value="Create" />
-</form>
-
-
-
-
-
-
-
-
+    <div class="alert" role="alert">
+        <strong style="font-weight: bold;">¡Atención!</strong>
+        <span>{{ conexion_error }}</span>
+    </div>
+{% endif %}
+    <h2 class="form-title">Crear Producto</h2>
+    <form method="POST" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-row">
+            <div class="column">
+                <label for="image">Imagen:</label>
+                {{ form.image }}
+            </div>
+            <div class="column">
+                <label for="name">Nombre:</label>
+                {{ form.name }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="column">
+                <label for="clasificaciones_padre">Clasificaciones Padre:</label>
+            {{ form.clasificaciones_padre }}
+            </div>
+            <div class="column">
+                <label for="clasificacion">Clasificación:</label>
+            {{ form.clasificacion }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="column">
+                <label for="handle">Handle:</label>
+                {{ form.handle }}
+            </div>
+            <div class="column">
+                <label for="price">Precio:</label>
+                {{ form.price }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="column">
+                <label for="supply">Suministro:</label>
+                {{ form.supply }}
+            </div>
+            <div class="column">
+                <label for="short_description">Descripción Corta:</label>
+                {{ form.short_description }}
+            </div>
+            
+        </div>
+        <div class="form-row">
+            <div class="column">
+                <label for="description">Descripción:</label>
+                {{ form.description }}
+           
+            </div>
+            <div class="column">
+                <label for="active">Activo:</label>
+                {{ form.active }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="column">
+                <button type="submit" class="btn-submit">Guardar</button>
+            </div>
+            <div class="column">
+                <button  class="btn-submit2">Guardar y agregar otro</button>
+            </div>
+        </div>
+        
+    </form>
+</div>
 
 {% endblock %}
