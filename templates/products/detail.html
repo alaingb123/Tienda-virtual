@@ -2,6 +2,8 @@
 
 {% block content %}
 
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
 <div style="display: flex; background-color: #f8f9fa; padding: 20px; border-radius: 8px;">
     <div style="flex: 3; margin-right: 20px;">
         <!-- main content-->
@@ -57,8 +59,9 @@
         <!-- Formulario de evaluación -->
         <div style="margin-bottom: 20px;">
             <h3 style="font-weight: bold; margin-bottom: 15px;">Evalúa este producto</h3>
-            <form method="POST" action="{% url 'products:rate_product' object.pk %}">
+            <form method="POST" id="contactform" action="{% url 'products:rate_product' object.pk %}">
                 {% csrf_token %}
+            <input type="hidden" name="g-recaptcha-response" id='recaptcha'>
                 <div>
                     {% for i in "12345" %}
                         <label style="margin-right: 10px;">
@@ -67,7 +70,7 @@
                         </label>
                     {% endfor %}
                 </div>
-                <button type="submit" style="background-color: #007bff; color: white; padding: 10px 15px; border-radius: 5px; border: none; cursor: pointer;">Enviar Evaluación</button>
+                <button type="submit" value="submit" style="background-color: #007bff; color: white; padding: 10px 15px; border-radius: 5px; border: none; cursor: pointer;">Enviar Evaluación</button>
             </form>
         </div>
     {% endif %}
@@ -97,4 +100,27 @@
     </div>
 </div>
 
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+
+
+        <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
+        <script>
+
+          grecaptcha.ready(function() {
+
+              $('#contactform').submit(function(e){
+                  var form = this;
+
+                  e.preventDefault()
+                  grecaptcha.execute('{{ site_key }}', {action: 'contactform'}).then(function(token) {
+
+                      $('#recaptcha').val(token)
+
+                      form.submit()
+                  });
+              })
+
+          });
+         </script>
 {% endblock %}

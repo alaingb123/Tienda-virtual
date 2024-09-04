@@ -1,3 +1,4 @@
+import requests
 from django.core.checks import messages
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect, get_object_or_404
@@ -10,6 +11,7 @@ from stripe import APIConnectionError
 
 from carro.carro import Carro
 from extra.models import Promocion
+from micro_ecommerce import settings
 
 from usuario.decorator import role_required
 # Create your views here.
@@ -256,7 +258,11 @@ def product_detail_view(request,handle=None):
 
     if request.user.is_authenticated:
         is_owner = True # verify ownership
-    context = {"object": obj, "is_owner": is_owner,"attachments":attachments}
+    context = {
+        "object": obj,
+        "is_owner": is_owner,
+        "attachments":attachments
+    }
 
     return render(request, 'products/detail.html', context)
 
@@ -471,6 +477,24 @@ def eliminar_oferta(request,product_id):
 def rate_product(request, product_id):
     if request.method == 'POST':
         product = get_object_or_404(Product, id=product_id)
+
+        secret_key = settings.RECAPTCHA_SECRET_KEY
+
+        # captcha verification
+        data = {
+            'response': request.POST.get('g-recaptcha-response'),
+            'secret': secret_key
+        }
+        resp = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+        result_json = resp.json()
+
+        print(result_json)
+
+        if not result_json.get('success'):
+            return redirect('products:detail', handle=product.handle)
+        # end captcha verification
+
+
         rating_product = product.rating_product
 
         score = int(request.POST.get('score'))
@@ -484,6 +508,8 @@ def rate_product(request, product_id):
         rating_product.update_average_rating()
 
         messages = 'Tu calificación ha sido registrada.'
+
+
         return redirect('products:detail', handle=product.handle)
 
     return HttpResponse(status=405)

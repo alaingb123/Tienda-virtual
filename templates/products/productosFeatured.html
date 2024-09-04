@@ -89,12 +89,10 @@
                       </p>
 
                       <div class="countdown">
-    {% if offer.get_time_remaining == "Oferta sin fecha de finalización definida" %}
+    {% if offer.get_time_remaining == "Oferta sin fecha de finalización definida" or offer.get_time_remaining.minutes == None %}
         <p class="no-end-date-text">Esta oferta puede terminar en cualquier momento</p>
     {% else %}
-         {% if offer.get_time_remaining.minutes == 0 and offer.get_time_remaining.hours == 0 and offer.get_time_remaining.days == 0 %}
-            <p class="no-end-date-text">Esta oferta puede terminar en cualquier momento</p>
-          {% endif %}
+
         <div class="countdown-content">
             <p class="display-number">{{ offer.get_time_remaining.days }}</p>
             <p class="display-text">Days</p>

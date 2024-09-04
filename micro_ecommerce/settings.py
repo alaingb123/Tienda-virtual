@@ -36,6 +36,9 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 ALLOWED_HOSTS = []
 
 
+RECAPTCHA_SITE_KEY = '6LcnADUqAAAAAGGBPz-GXhRPlO1qLlBL3WMm8qwf'
+RECAPTCHA_SECRET_KEY = '6LcnADUqAAAAAHLSWcI46yELCdJzo4P3A4k1esAe'
+# RECAPTCHA_MIN_SCORE = 0.5
 
 
 # Application definition
@@ -97,7 +100,7 @@ WSGI_APPLICATION = 'micro_ecommerce.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite5',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

@@ -1,3 +1,4 @@
+import requests
 from django.conf.global_settings import EMAIL_HOST_USER
 from django.contrib.auth import login, update_session_auth_hash, logout
 from django.contrib.auth.decorators import login_required
@@ -8,6 +9,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.views.decorators.cache import never_cache
 
+from micro_ecommerce import settings
 from usuario.forms import CrearUsuarioFormulario, PerfilUsuarioFormulario
 from django.core.mail import EmailMessage,send_mail
 
@@ -20,7 +22,24 @@ from usuario.models import Rol, Usuario
 def crear_usuario(request):
     if request.method == 'POST':
         formulario = CrearUsuarioFormulario(request.POST)
-        if formulario.is_valid():
+
+        secret_key = settings.RECAPTCHA_SECRET_KEY
+
+        # captcha verification
+        data = {
+            'response': request.POST.get('g-recaptcha-response'),
+            'secret': secret_key
+        }
+        resp = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+        result_json = resp.json()
+
+        print(result_json)
+
+        if not result_json.get('success'):
+            return render(request, 'usuario/create.html', {'form': formulario})
+        # end captcha verification
+
+        if formulario.is_valid() and result_json.get('success'):
             user = formulario.save(commit=False)
             user.save()
             cliente_role = Rol.objects.get(nombre='cliente')
@@ -34,15 +53,34 @@ def crear_usuario(request):
                 'class': 'form-control',
                 'placeholder': field.label
             })
+
+
     return render(request, 'usuario/create.html', {'form': formulario})
 
 
 
 @never_cache
 def iniciar_sesion(request):
+    formulario = AuthenticationForm()
     if request.method == 'POST':
+
+        secret_key = settings.RECAPTCHA_SECRET_KEY
+
+        # captcha verification
+        data = {
+            'response': request.POST.get('g-recaptcha-response'),
+            'secret': secret_key
+        }
+        resp = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+        result_json = resp.json()
+
+
+        if not result_json.get('success'):
+            return render(request, 'usuario/login.html', {'formulario': formulario})
+
+
         formulario = AuthenticationForm(request, data=request.POST)
-        if formulario.is_valid():
+        if formulario.is_valid() and result_json.get('success'):
             usuario = formulario.get_user()
             login(request, usuario)
             return redirect('products:list')  # Redirige al usuario a la página de inicio
@@ -56,6 +94,8 @@ def iniciar_sesion(request):
             'class': 'form-control',
             'placeholder': field.label
         })
+
+
     return render(request, 'usuario/login.html', {'formulario': formulario})
 
 
