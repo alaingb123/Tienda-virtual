@@ -30,7 +30,7 @@ urlpatterns = [
     path('password_reset_confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='usuario/reset_pass/confirm.html'), name='password_reset_confirm'),
     path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(template_name='usuario/reset_pass/done.html'), name='password_reset_done'),
 
-    path('admin/', admin.site.urls),
+    path('administrador/', admin.site.urls, name='admin'),
     path('', include('products.urls')),
     path('carro/', include('carro.urls')),
     path('usuario/', include('usuario.urls')),

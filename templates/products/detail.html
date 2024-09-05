@@ -43,37 +43,38 @@
             </div>
         {% endif %}
 
-        {% if form %}
-        <div style="margin-bottom: 20px;">
-            <h3 style="font-weight: bold; margin-bottom: 15px;">Actualizar Producto</h3>
-            <form method="POST" action="." enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" style="background-color: #007bff; color: white; padding: 10px 15px; border-radius: 5px; border: none; cursor: pointer;">Enviar</button>
-            </form>
-        </div>
-        {% endif %}
+{#        {% if form %}#}
+{#        <div style="margin-bottom: 20px;">#}
+{#            <h3 style="font-weight: bold; margin-bottom: 15px;">Actualizar Producto</h3>#}
+{#            <form method="POST" action="." enctype="multipart/form-data">#}
+{#                {% csrf_token %}#}
+{#                {{ form.as_p }}#}
+{#                <button type="submit" style="background-color: #007bff; color: white; padding: 10px 15px; border-radius: 5px; border: none; cursor: pointer;">Enviar</button>#}
+{#            </form>#}
+{#        </div>#}
+{#        {% endif %}#}
 
 
-    {% if request.user.usuario.rol.nombre == "cliente" %}
-        <!-- Formulario de evaluación -->
-        <div style="margin-bottom: 20px;">
-            <h3 style="font-weight: bold; margin-bottom: 15px;">Evalúa este producto</h3>
-            <form method="POST" id="contactform" action="{% url 'products:rate_product' object.pk %}">
-                {% csrf_token %}
+   {% if request.user.usuario.rol.nombre == "cliente" %}
+    <!-- Formulario de evaluación -->
+    <div style="margin-bottom: 20px;">
+        <h3 style="font-weight: bold; margin-bottom: 15px;">Evalúa este producto</h3>
+        <form method="POST" id="contactform" action="{% url 'products:rate_product' object.pk %}">
+            {% csrf_token %}
             <input type="hidden" name="g-recaptcha-response" id='recaptcha'>
-                <div>
-                    {% for i in "12345" %}
-                        <label style="margin-right: 10px;">
-                            <input type="radio" name="score" value="{{ i }}" required>
-                            {{ i }}
-                        </label>
-                    {% endfor %}
-                </div>
-                <button type="submit" value="submit" style="background-color: #007bff; color: white; padding: 10px 15px; border-radius: 5px; border: none; cursor: pointer;">Enviar Evaluación</button>
-            </form>
-        </div>
-    {% endif %}
+            <div>
+                {% for i in "12345" %}
+                    <label style="margin-right: 10px;">
+                        <input type="radio" name="score" value="{{ i }}"
+                        {% if user_rating and user_rating.score|stringformat:"d" == i %} checked {% endif %} required>
+                        {{ i }}
+                    </label>
+                {% endfor %}
+            </div>
+            <button type="submit" value="submit" style="background-color: #007bff; color: white; padding: 10px 15px; border-radius: 5px; border: none; cursor: pointer;">Enviar Evaluación</button>
+        </form>
+    </div>
+{% endif %}
 
         {% if request.user == object.user %}
         <div style="margin-bottom: 20px;">

@@ -251,17 +251,27 @@ def product_detail_view(request,handle=None):
         return redirect('products:list')
     attachments = ProductImage.objects.filter(product=obj)
     if request.user.is_authenticated:
-        if request.user.usuario.rol == "cliente":
+
+        if request.user.usuario.rol.nombre == "cliente":
             ProductView.objects.create(product=obj, user=request.user)
+            rating_product = get_object_or_404(Rating_product, product=obj)
+            try:
+                user_rating = Rating.objects.get(average=rating_product, user=request.user)
+            except Rating.DoesNotExist:
+                user_rating = None
     # attachments = obj.productattachment_set.all()
     is_owner = False
 
     if request.user.is_authenticated:
         is_owner = True # verify ownership
+
+
+
     context = {
         "object": obj,
         "is_owner": is_owner,
-        "attachments":attachments
+        "attachments":attachments,
+        "user_rating":user_rating,
     }
 
     return render(request, 'products/detail.html', context)

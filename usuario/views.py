@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.views import PasswordChangeView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.urls import reverse
 from django.views.decorators.cache import never_cache
 
 from micro_ecommerce import settings
@@ -14,6 +15,15 @@ from usuario.forms import CrearUsuarioFormulario, PerfilUsuarioFormulario
 from django.core.mail import EmailMessage,send_mail
 
 from usuario.models import Rol, Usuario
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import CrearUsuarioFormulario
+from .token import account_activation_token
+from django.contrib.auth.models import User
+import requests
+from django.conf import settings
+from django.template.loader import render_to_string
 
 
 # Create your views here.
@@ -25,7 +35,7 @@ def crear_usuario(request):
 
         secret_key = settings.RECAPTCHA_SECRET_KEY
 
-        # captcha verification
+        # Captcha verification
         data = {
             'response': request.POST.get('g-recaptcha-response'),
             'secret': secret_key
@@ -33,31 +43,46 @@ def crear_usuario(request):
         resp = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
         result_json = resp.json()
 
-        print(result_json)
-
         if not result_json.get('success'):
             return render(request, 'usuario/create.html', {'form': formulario})
-        # end captcha verification
 
         if formulario.is_valid() and result_json.get('success'):
             user = formulario.save(commit=False)
+            user.is_active = False  # Desactivar el usuario hasta que verifique su correo
             user.save()
-            cliente_role = Rol.objects.get(nombre='cliente')
-            Usuario.objects.create(user=user, rol=cliente_role)
+
+            # Enviar correo de verificación
+            subject = 'Activa tu cuenta'
+            uidb64 = urlsafe_base64_encode(force_bytes(user.pk))  # Codifica el ID del usuario
+            context = {
+                'user': user,
+                'domain': request.get_host(),
+                'uidb64': uidb64,  # Cambia aquí a uidb64
+                'token': account_activation_token.make_token(user),
+            }
+            html_message = render_to_string('usuario/activation_email.html', context)
+
+            send_mail(
+                subject=subject,
+                message="Activar cuenta",
+                from_email=EMAIL_HOST_USER,
+                recipient_list=[user.email],
+                html_message=html_message,
+                fail_silently=False,
+            )
+
+            messages.success(request, 'Te hemos enviado un correo de verificación. Por favor, verifica tu cuenta.')
             return redirect('usuario:login')  # Redirige al usuario a la página de inicio de sesión
     else:
         formulario = CrearUsuarioFormulario()
 
-        for field in formulario.fields.values():
-            field.widget.attrs.update({
-                'class': 'form-control',
-                'placeholder': field.label
-            })
-
+    for field in formulario.fields.values():
+        field.widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': field.label
+        })
 
     return render(request, 'usuario/create.html', {'form': formulario})
-
-
 
 @never_cache
 def iniciar_sesion(request):
@@ -83,7 +108,10 @@ def iniciar_sesion(request):
         if formulario.is_valid() and result_json.get('success'):
             usuario = formulario.get_user()
             login(request, usuario)
-            return redirect('products:list')  # Redirige al usuario a la página de inicio
+            if usuario.usuario.rol.nombre == 'admin':
+                return redirect('/administrador/')
+            else:
+                return redirect('products:list')  # Redirige al usuario a la página de inicio
         else:
             messages.error(request, 'El usuario o la contraseña es incorrecta')
     else:
@@ -184,4 +212,23 @@ def password_change_done(request):
     return render(request, 'usuario/password_change_done.html')
 
 
+from django.contrib.auth import get_user_model
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.encoding import force_str, force_bytes
 
+
+def activate(request, uidb64, token):
+    User = get_user_model()
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user)
+        return redirect('products:list')  # Redirige a la página de inicio o a donde quieras
+    else:
+        return render(request, 'usuario/activation_invalid.html')  # Plantilla para un enlace inválido
