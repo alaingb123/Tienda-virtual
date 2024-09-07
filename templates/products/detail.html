@@ -148,6 +148,7 @@ p{
     <div class="div-image2" >
         <img class="main-image" src="{{ object.image.url }}" alt="">
     </div>
+
     
     {% endif %}
     <div style="flex: 1;">
@@ -160,6 +161,66 @@ p{
             <p><strong>Fecha de Fin:</strong> {{ object.offer.end_date|date:"d. M, Y" }}</p>
             <p><strong>Descuento:</strong> {{ object.offer.descuento }}%</p>
             <p><strong>¿Oferta Activa?:</strong> {% if object.offer.is_offer_active %} Sí {% else %} No {% endif %}</p>
+
+    <div style="flex: 1;">
+        <!-- sidebar -->
+        <div>
+            {% include 'purchases/buy-btn-form.html' with product=object %}
+        </div>
+        {% if object.image %}
+            <div style="margin-bottom: 20px;">
+                <img style="width: 100%; border-radius: 8px;" src="{{ object.image.url }}" alt="">
+            </div>
+        {% endif %}
+
+        {% if object.offer %}
+            <div style="margin-bottom: 20px;">
+                <h3 style="font-weight: bold; margin-bottom: 15px;">Detalles de la Oferta</h3>
+                <p>Precio Nuevo: {{ object.offer.precio_nuevo }}</p>
+                <p>Precio Anterior: {{ object.offer.precio_viejo }}</p>
+                <p>Fecha de Inicio: {{ object.offer.start_date|date:"d. M, Y" }}</p>
+                <p>Fecha de Fin: {{ object.offer.end_date|date:"d. M, Y" }}</p>
+                <p>Descuento: {{ object.offer.descuento }}%</p>
+                <p>¿Oferta Activa?: {% if object.offer.is_offer_active %} Sí {% else %} No {% endif %}</p>
+            </div>
+        {% endif %}
+
+{#        {% if form %}#}
+{#        <div style="margin-bottom: 20px;">#}
+{#            <h3 style="font-weight: bold; margin-bottom: 15px;">Actualizar Producto</h3>#}
+{#            <form method="POST" action="." enctype="multipart/form-data">#}
+{#                {% csrf_token %}#}
+{#                {{ form.as_p }}#}
+{#                <button type="submit" style="background-color: #007bff; color: white; padding: 10px 15px; border-radius: 5px; border: none; cursor: pointer;">Enviar</button>#}
+{#            </form>#}
+{#        </div>#}
+{#        {% endif %}#}
+
+
+   {% if request.user.usuario.rol.nombre == "cliente" %}
+    <!-- Formulario de evaluación -->
+    <div style="margin-bottom: 20px;">
+        <h3 style="font-weight: bold; margin-bottom: 15px;">Evalúa este producto</h3>
+        <form method="POST" id="contactform" action="{% url 'products:rate_product' object.pk %}">
+            {% csrf_token %}
+            <input type="hidden" name="g-recaptcha-response" id='recaptcha'>
+            <div>
+                {% for i in "12345" %}
+                    <label style="margin-right: 10px;">
+                        <input type="radio" name="score" value="{{ i }}"
+                        {% if user_rating and user_rating.score|stringformat:"d" == i %} checked {% endif %} required>
+                        {{ i }}
+                    </label>
+                {% endfor %}
+            </div>
+            <button type="submit" value="submit" style="background-color: #007bff; color: white; padding: 10px 15px; border-radius: 5px; border: none; cursor: pointer;">Enviar Evaluación</button>
+        </form>
+    </div>
+{% endif %}
+
+        {% if request.user == object.user %}
+        <div style="margin-bottom: 20px;">
+            <a href="{% url 'products:manage' object.handle %}" style="background-color: #007bff; color: white; padding: 10px 15px; border-radius: 5px; text-decoration: none;">Administrar Producto</a>
         </div>
         {% endif %}
     </div>

@@ -44,7 +44,7 @@
 {#                    <button class="btn-action">#}
 {#                      <ion-icon name="repeat-outline"></ion-icon>#}
 {#                    </button>#}
-                    {% if request.user.usuario.rol.nombre == 'cliente' %}
+                    {% if not request.user.usuario.rol.nombre == 'Proveedor' %}
     <form action="{% url 'carro:agregar' object.id %}" method="POST">
                       {% csrf_token %}
                     <button type="submit" class="btn-action">
