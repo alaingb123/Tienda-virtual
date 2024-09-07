@@ -527,7 +527,7 @@
   .desktop-navigation-menu { display: none; }
   
   .header-main {
-    padding: 20px 0;
+    padding: 5px 0;
     border-bottom: 1px solid var(--cultured);
   }
   
@@ -1230,7 +1230,7 @@
     flex-direction: column; /* Cambia a columna para scroll vertical */
     overflow-y: auto; /* Permite el scroll vertical */
     overscroll-behavior: contain;
-    scroll-snap-type: y mandatory; /* Cambia a scroll vertical */
+    /*scroll-snap-type: y mandatory; !* Cambia a scroll vertical *!*/
     max-height: 400px; /* Ajusta la altura máxima según sea necesario */
 }
 
@@ -2187,7 +2187,7 @@
   
     .header-alert-news b { font-weight: var(--weight-500); }
   
-    .header-main { padding: 25px 0; }
+    .header-main { padding: 5px 0; }
   
     .mobile-bottom-navigation {
       -webkit-border-top-left-radius: var(--border-radius-md);
@@ -2860,7 +2860,7 @@
       -o-transition: var(--transition-timing);
       transition: var(--transition-timing);
     }
-  
+
     .dropdown-list .dropdown-item a:hover { color: var(--salmon-pink); }
   
     .mobile-bottom-navigation { display: none; }

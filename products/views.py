@@ -77,7 +77,7 @@ def product_list_view(request,provider_id=None,promotion_id=None):
     # productos mas vendidos
     top_products = (
         Product.objects.filter(active=True).annotate(total_sold=Sum('solicitudstripeitem__quantity'))
-        .order_by('-total_sold')[:5]
+        .order_by('-total_sold')[:10]
     )
     #------------------------------------------------------------------------------
 
@@ -95,20 +95,20 @@ def product_list_view(request,provider_id=None,promotion_id=None):
     # ---------------------------------------------------------------
 
     # productos mejor evaluados
-    top_rated = Product.objects.filter(active=True).order_by('-rating_product__average_rating')[:5]
+    top_rated = Product.objects.filter(active=True).order_by('-rating_product__average_rating')[:10]
     # ---------------------------------------------------------------
 
     # productos nuevos
     today = timezone.now().date()
     seven_days_ago = today - timedelta(days=7)
-    new_products = Product.objects.filter(timestamp__gte=seven_days_ago,active=True)[:5]
+    new_products = Product.objects.filter(timestamp__gte=seven_days_ago,active=True)[:10]
 
     # productos gustados por el usuario
     if not new_products.exists():
         # Si no hay productos nuevos, obtiene el top 5 de los productos con más likes
         new_products = Product.objects.filter(active=True).annotate(
             like_count=models.Count('like')
-        ).order_by('-like_count')[:5]
+        ).order_by('-like_count')[:10]
         no_nuevos=True
     else:
         pass
@@ -132,7 +132,7 @@ def product_list_view(request,provider_id=None,promotion_id=None):
     trending_products = (
         Product.objects.annotate(
             view_count=models.Count('productview', filter=models.Q(productview__timestamp__gte=week_ago,active=True)))
-        .order_by('-view_count')[:5]  # Limitar a los 10 más vistos
+        .order_by('-view_count')[:10]  # Limitar a los 10 más vistos
     )
     # ---------------------------------------------------------------
 
