@@ -24,13 +24,8 @@ function addToCart(productId,quantity) {
       throw new Error('Error al agregar el producto al carrito');
     }
   })
-  .then(data => {
-    // Actualiza la información del carrito en la interfaz de usuario
-    updateCartInfo(data);
-  })
-  .catch(error => {
-    console.error('Error al agregar el producto al carrito:', error);
-  });
+
+
 }
 
 function getCookie(name) {
@@ -39,6 +34,4 @@ function getCookie(name) {
   return cookieValue ? cookieValue.pop() : '';
 }
 
-function updateCartInfo(data) {
 
-}

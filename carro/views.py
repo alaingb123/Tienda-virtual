@@ -3,17 +3,17 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .carro import Carro
 from products.models import Product
 
-def agregar_producto(request,product_id):
+def agregar_producto(request, product_id):
     carro = Carro(request)
-    product = Product.objects.get(pk=product_id)
-    if product.active == False:
-        return redirect('products:list')
+    product = get_object_or_404(Product, pk=product_id)
+
+    if not product.active:
+        return JsonResponse({'error': 'Producto no disponible'}, status=400)
+
     quantity = int(request.POST.get('quantity', 1))
-    print(" la cantidad es : ", quantity)
-    carro.agregar(product=product,quantity=quantity)
+    carro.agregar(product=product, quantity=quantity)
 
-
-    return redirect("products:list")
+    return JsonResponse({'message': 'Producto agregado al carrito'}, status=200)
 
 
 def agregar_producto_desde_carro(request,product_id):
@@ -75,6 +75,13 @@ def ver_carro(request):
         "stock_error": stock_error
     }
     return render(request, "purchases/cart.html", context)
+
+
+
+def contar_carro(request):
+    carro = Carro(request)
+    count = len(carro)  # O usa carro.get_total_items() si tienes esa función
+    return JsonResponse({'count': count})
 
 
 

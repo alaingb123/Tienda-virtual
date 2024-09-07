@@ -539,33 +539,30 @@ def like_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     user = request.user
 
-    print("El producto es:", product)
-
     # Verificar si el usuario ya dio like al producto
     like, created = Likes.objects.get_or_create(user=user, product=product)
 
     if created:
-        print("Se ha creado un nuevo like para este producto.")
+        return JsonResponse({'message': 'Producto añadido a gustados'}, status=200)
     else:
-        print("El usuario ya había dado like a este producto anteriormente.")
-
-    return redirect('products:list')
+        return JsonResponse({'message': 'Ya has dado like a este producto'}, status=400)
 
 @role_required(['cliente'])
 def dislike_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     user = request.user
-    print("el like es ", product)
-
 
     try:
         like = Likes.objects.get(user=user, product=product)
-        print("el like es ",like)
         like.delete()  # Eliminar el like del usuario para el producto
+        return JsonResponse({'message': 'Producto quitado de gustados'}, status=200)
     except Likes.DoesNotExist:
-        pass  # El usuario no había dado like previamente
+        return JsonResponse({'message': 'No has dado like a este producto'}, status=400)
 
-    return redirect('products:list')
+
+
+    
+
 
 # def filtrar_productos(request):
 #     productos = list(Product.objects.values())
