@@ -91,6 +91,9 @@ def crear_usuario(request):
 
 @never_cache
 def iniciar_sesion(request):
+    if request.user.is_authenticated:
+        return redirect('products:list')
+
     formulario = AuthenticationForm()
     if request.method == 'POST':
 

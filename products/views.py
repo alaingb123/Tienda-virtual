@@ -70,6 +70,8 @@ def product_list_view(request,provider_id=None,promotion_id=None):
     object_list = Product.objects.all()
     object_list = object_list.filter(active=True)
 
+    no_nuevos=False
+
     filtrado=False
 
     # productos mas vendidos
@@ -79,7 +81,7 @@ def product_list_view(request,provider_id=None,promotion_id=None):
     )
     #------------------------------------------------------------------------------
 
-    # productos gustados por el usuario
+
 
 
 
@@ -100,6 +102,16 @@ def product_list_view(request,provider_id=None,promotion_id=None):
     today = timezone.now().date()
     seven_days_ago = today - timedelta(days=7)
     new_products = Product.objects.filter(timestamp__gte=seven_days_ago,active=True)[:5]
+
+    # productos gustados por el usuario
+    if not new_products.exists():
+        # Si no hay productos nuevos, obtiene el top 5 de los productos con más likes
+        new_products = Product.objects.filter(active=True).annotate(
+            like_count=models.Count('like')
+        ).order_by('-like_count')[:5]
+        no_nuevos=True
+    else:
+        pass
     # ---------------------------------------------------------------
 
 
@@ -185,6 +197,7 @@ def product_list_view(request,provider_id=None,promotion_id=None):
         'top_rated': top_rated,
         'premium_offer': premium_offer,
         'filtrado': filtrado,
+        'no_nuevos': no_nuevos,
 
     }
     return render(request,"products/list.html",context)
@@ -257,11 +270,14 @@ def product_manage_detail_view(request,handle=None):
 
 def product_detail_view(request,handle=None):
     obj = get_object_or_404(Product,handle=handle)
+    user_rating = None
     if obj.active == False:
         return redirect('products:list')
     attachments = ProductImage.objects.filter(product=obj)
     if request.user.is_authenticated:
+        print("el rol es ",request.user.usuario.rol.nombre)
         if request.user.usuario.rol.nombre == "cliente":
+            print("entro")
             ProductView.objects.create(product=obj, user=request.user)
             rating_product = get_object_or_404(Rating_product, product=obj)
             try:
@@ -561,7 +577,7 @@ def dislike_product(request, product_id):
 
 
 
-    
+
 
 
 # def filtrar_productos(request):

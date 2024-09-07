@@ -9,7 +9,11 @@
         {% if new_products %}
       <div class="product-showcase">
 
+        {% if no_nuevos == False %}
         <h2 class="title">Nuevos</h2>
+            {% else %}
+            <h2 class="title">Más like</h2>
+            {% endif %}
 
         <div class="showcase-wrapper  has-scrollbar ">
 
