@@ -22,10 +22,17 @@ class UsuarioAdmin(admin.ModelAdmin):
 
 User = get_user_model()
 admin.site.unregister(User)
+
+
 class CustomUserAdmin(UserAdmin):
     model = User
-    list_display = ('username', 'email', 'is_active', 'is_staff', 'date_joined')  # Añade is_active aquí
-    list_filter = ('is_active', 'is_staff')  # Filtros en el panel de administración
+    list_display = ('username', 'email', 'is_active','get_rol', 'is_staff', 'date_joined')  # Añade get_rol aquí
+    list_filter = ('is_active', 'is_staff')
+
+    def get_rol(self, obj):
+        return obj.usuario.rol.nombre if hasattr(obj, 'usuario') and obj.usuario.rol else 'Sin rol'
+
+    get_rol.short_description = 'Rol'  # Título de la columna en el admin
 
 # Registra el modelo con la clase personalizada
 admin.site.register(User, CustomUserAdmin)

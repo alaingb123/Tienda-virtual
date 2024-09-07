@@ -48,8 +48,13 @@ def crear_usuario(request):
 
         if formulario.is_valid() and result_json.get('success'):
             user = formulario.save(commit=False)
+
+            rol_cliente = Rol.objects.get(nombre='cliente')  # Asegúrate de que este rol exista
+
             user.is_active = False  # Desactivar el usuario hasta que verifique su correo
             user.save()
+            nuevo_usuario = Usuario(user=user, rol=rol_cliente)
+            nuevo_usuario.save()
 
             # Enviar correo de verificación
             subject = 'Activa tu cuenta'

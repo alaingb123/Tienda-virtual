@@ -64,11 +64,13 @@ def product_create_view(request):
     context['form'] = form
     return render(request, 'products/create.html',context)
 
+
+from django.core.serializers import serialize
 def product_list_view(request,provider_id=None,promotion_id=None):
     object_list = Product.objects.all()
     object_list = object_list.filter(active=True)
 
-
+    filtrado=False
 
     # productos mas vendidos
     top_products = (
@@ -106,6 +108,7 @@ def product_list_view(request,provider_id=None,promotion_id=None):
 
     # filtrar por la promocion
     if promotion_id:
+        filtrado=True
         promotion = get_object_or_404(Promocion, id=promotion_id)
         object_list = promotion.productos.filter(active=True)
     # ------------------------------------------------------------
@@ -122,6 +125,7 @@ def product_list_view(request,provider_id=None,promotion_id=None):
     # ---------------------------------------------------------------
 
     if provider_id:
+        filtrado=True
         obj = get_object_or_404(User, id=provider_id)
         object_list = object_list.filter(user=obj)
 
@@ -132,19 +136,23 @@ def product_list_view(request,provider_id=None,promotion_id=None):
     # Handle search query
     search_query = request.GET.get('search')
     if search_query:
+        filtrado=True
         object_list = object_list.filter(keywords__icontains=search_query)
 
     # Handle classification filter
     classification_id = request.GET.get('classification_id')
     if classification_id:
+        filtrado=True
         object_list = object_list.filter(clasificacion__id=classification_id)
 
     liked = request.GET.get('liked_product')
     if liked:
+        filtrado=True
         object_list = Product.objects.filter(like__user=request.user)
 
     classification_id_padre = request.GET.get('classification_id_padre')
     if classification_id_padre:
+        filtrado=True
         object_list = object_list.filter(clasificaciones_padre__id=classification_id_padre)
 
 
@@ -163,7 +171,7 @@ def product_list_view(request,provider_id=None,promotion_id=None):
     #     page_solicitudes = paginator.page(1)
     # except EmptyPage:
     #     page_solicitudes = paginator.page(paginator.num_pages)
-
+    # products_data = serialize('json', object_list)
 
 
     context = {
@@ -176,6 +184,8 @@ def product_list_view(request,provider_id=None,promotion_id=None):
         'trending_products': trending_products,
         'top_rated': top_rated,
         'premium_offer': premium_offer,
+        'filtrado': filtrado,
+
     }
     return render(request,"products/list.html",context)
 
@@ -251,7 +261,6 @@ def product_detail_view(request,handle=None):
         return redirect('products:list')
     attachments = ProductImage.objects.filter(product=obj)
     if request.user.is_authenticated:
-
         if request.user.usuario.rol.nombre == "cliente":
             ProductView.objects.create(product=obj, user=request.user)
             rating_product = get_object_or_404(Rating_product, product=obj)
@@ -557,3 +566,12 @@ def dislike_product(request, product_id):
         pass  # El usuario no había dado like previamente
 
     return redirect('products:list')
+
+# def filtrar_productos(request):
+#     productos = list(Product.objects.values())
+#     print(productos)
+#     if (len(productos) > 0 ):
+#         data = {'message': "Succes", 'productos': productos}
+#     else:
+#         data = {'message': "Not Found"}
+#     return JsonResponse(data)

@@ -4,9 +4,10 @@
 
 {%load static%}
 
-
+{% if filtrado == False %}
 {% if promociones %}
 {% include 'products/prueba2.html' with promociones=promociones %}
+    {% endif %}
     {% endif %}
 
 
@@ -20,13 +21,14 @@
 {% include 'products/productos.html' with classifications=classifications top_products=top_products %}
     {% endif %}
 
-
+{% if filtrado == False %}
 {% include 'products/productosMinimal.html' %}
 
 
 {% include 'products/productosFeatured.html' with classifications=classifications %}
+    {% endif %}
 
-{% include 'products/productosGrid.html' with classifications=classifications %}
+{% include 'products/productosGrid.html' %}
 
 {% include 'products/tcs.html' with classifications=classifications %}
 
