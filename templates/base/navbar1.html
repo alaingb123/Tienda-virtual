@@ -178,7 +178,7 @@
 </style>
 
 {% if classifications %}
-  <form method="get" action="{% url 'products:list' %}">
+
   <nav class="desktop-navigation-menu">
 
     <div class="container">
@@ -192,118 +192,46 @@
       </li>
 
 
-<!--CATEGORIAS-->
-{#<li class="menu-category">#}
-{#  <a href="#" class="menu-title">Categorías</a>#}
-{#  <div class="dropdown-panel">#}
-{#      <ul class="dropdown-panel-list" >#}
-{#       <!---TIENE QUE ESTAR ORGANIZADO HORIZONTALMENTE-->#}
-{#       <div id="conten-horizontal">#}
-{#          {% for classification in classifications %}#}
-{#              {% if not classification.parent %}#}
-{#              <div id="cont-hijos">#}
-{#                  <li class="menu-title" >#}
-{#                      <a href="#" >{{ classification.nombre }}</a>#}
-{#                       <button id="button-link" name="classification_id" value="{{ classification.id }}" type="submit">{{ classification.nombre }}</button>#}
-{#                  </li>#}
-{#          #}
-{#           #}
-{#                  {% if classification.hijos.all %}#}
-{#                    #}
-{#                          {% for child_classification in classification.hijos.all %}#}
-{#                              {% if child_classification.pro.exists %}#}
-{#                                  <li class="panel-list-item"  >#}
-{#                                      <button id="button-link" name="classification_id" value="{{ child_classification.id }}" type="submit">{{ child_classification.nombre }}</button>#}
-{#                                  </li>#}
-{#                              {% endif %}#}
-{#                          {% endfor %}#}
-{#                     #}
-{#                  {% endif %}#}
-{#                #}
-{#                  <li class="panel-list-item" >#}
-{#                    <a href="#">#}
-{#                        <img src="{{ classification.image.url }}" alt="{{ classification.nombre }}" width="250" height="119">#}
-{#                    </a>#}
-{#                  </li>#}
-{#                </div>#}
-{#              {% endif %}#}
-{#          {% endfor %}#}
-{#        </div>#}
-{#      </ul>#}
-{#  </div>#}
-{#</li>#}
 
+<li class="menu-category">
+</li>
 
 
 
 {% for classification in classifications %}
     {% if classification.productos_padre.count > 0 %}
-
-
         <li class="menu-category">
-          <button id="button-link" name="classification_id_padre" value="{{ classification.id }}" type="submit" class="menu-title">{{ classification.nombre }}</button>
-{% if not classification.parent %}
-            {% if classification.hijos.all %}
-                {% for child_classification in classification.hijos.all %}
-                {% if child_classification.pro.exists %}
-          <ul class="dropdown-list">
-
-            <li class="dropdown-item">
-              <button id="button-link" name="classification_id" value="{{ child_classification.id }}" type="submit" >{{ child_classification.nombre }}</button>
-            </li>
-
-          </ul>
+            <a class="menu-title" href="{% url 'products:list' %}?classification_id_padre={{ classification.pk }}">
+        {{ classification.nombre }}
+            </a>
+            {% if not classification.parent %}
+                {% if classification.hijos.all %}
+                    <ul class="dropdown-list">
+                        {% for child_classification in classification.hijos.all %}
+                            {% if child_classification.pro.exists %}
+                                <li class="dropdown-item">
+                                    <a href="{% url 'products:list' %}?classification_id={{ child_classification.pk  }}" > {{ child_classification.nombre }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endif %}
         </li>
-                    {% endif %}
-
-                    {% endfor %}
-                    {% endif %}
-                    {% endif %}
     {% endif %}
-                    {% endfor %}
+{% endfor %}
 
-{#        <li class="menu-category">#}
-{#          <a href="#" class="menu-title">Women's</a>#}
-{##}
-{#          <ul class="dropdown-list">#}
-{##}
-{#            <li class="dropdown-item">#}
-{#              <a href="#">Dress & Frock</a>#}
-{#            </li>#}
-{##}
-{#            <li class="dropdown-item">#}
-{#              <a href="#">Earrings</a>#}
-{#            </li>#}
-{##}
-{#            <li class="dropdown-item">#}
-{#              <a href="#">Necklace</a>#}
-{#            </li>#}
-{##}
-{#            <li class="dropdown-item">#}
-{#              <a href="#">Makeup Kit</a>#}
-{#            </li>#}
 
-          </ul>
-        </li>
 
-        
 
-     
 
-{#        <li class="menu-category">#}
-{#          <a href="#" class="menu-title">Blog</a>#}
-{#        </li>#}
-
-{#        <li class="menu-category">#}
-{#          <a href="#" class="menu-title">Mejores Ofertas</a>#}
-{#        </li>#}
 
       </ul>
 
     </div>
 
   </nav>
-  </form>
+
 <!--Aqui termina-->
 {% endif %}
 
