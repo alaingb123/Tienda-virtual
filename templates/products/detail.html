@@ -2,125 +2,323 @@
 
 {% block content %}
 
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
-<div style="display: flex; background-color: #f8f9fa; padding: 20px; border-radius: 8px;">
-    <div style="flex: 3; margin-right: 20px;">
-        <!-- main content-->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2 style="font-weight: bold; color: #343a40;">{{ object.name }}</h2>
-            <div>
-                <a href="{% url 'products:filter_by_provider' object.user.pk %}" style="background-color: #007bff; color: white; padding: 10px 15px; border-radius: 5px; text-decoration: none;">Filtrar por proveedor</a>
+<style>
+      :root {
+        --salmon-pink: hsl(353, 100%, 78%);
+    }
+
+  .div-all{
+    display: flex;
+     justify-content: center;
+      padding: 20px;
+  } 
+
+  .div-all2{
+  width: 80%; max-width: 800px;
+  }
+
+.div-card{
+   background-color: #fff;
+    padding: 20px; border-radius: 8px;
+     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.name-filter{
+ margin-bottom: 20px;
+  display: flex;
+   justify-content: space-between;
+    align-items: center;
+}
+
+h2{
+    font-weight: bold;
+     color: #343a40;
+}
+
+.a-sec{
+ background-color: var(--salmon-pink);
+  color: white;
+   padding: 10px 15px;
+    border-radius: 5px;
+     text-decoration: none;
+}
+.a-sec:hover{
+    background-color: black;  
+}
+
+.button-submit{
+    background-color: var(--salmon-pink);
+     color: white;
+      padding: 10px 15px; 
+      border-radius: 5px;
+       border: none;
+        cursor: pointer;
+}
+.button-submit:hover{
+    background-color: black;
+}
+.button-sec{
+   background-color: #6c757d;
+    color: white;
+     padding: 10px 15px;
+      border-radius: 5px;
+       border: none; cursor: pointer;
+}
+.button-sec:hover{
+    background-color: black;
+}
+p{
+    margin-bottom: 15px;
+     color: #6c757d;
+      text-transform: uppercase;
+}
+
+.div-image1{
+   display: flex;
+    align-items: flex-start;
+     margin-bottom: 20px;
+}
+.div-image2{
+    flex: 1;
+     margin-right: 20px;
+      max-width: 250px;
+}
+
+.main-image{
+   width: 100%; border-radius: 8px;
+}
+
+
+@media (max-width: 768px) {
+        .div-all {
+            padding: 10px;
+        }
+
+        .name-filter {
+            flex-direction: column; /* Cambiar a columna en pantallas pequeñas */
+            align-items: flex-start; /* Alinear a la izquierda */
+        }
+
+        .div-image1 {
+            flex-direction: column; /* Cambiar a columna para imágenes */
+            align-items: center; /* Centrar imágenes */
+        }
+
+        .div-image2 {
+            margin-right: 0; /* Eliminar margen en pantallas pequeñas */
+            margin-bottom: 10px; /* Espacio entre imágenes */
+        }
+        p{
+            font-size: small;
+        }
+    }
+</style>
+
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+
+<div class="div-all" >
+    <div class="div-all2" >
+        <div class="div-card" >
+            <div class="name-filter" >
+                <h2 >{{ object.name }}</h2>
+                <a class="a-sec" href="{% url 'products:filter_by_provider' object.user.pk %}" 
+                   >
+                   Filtrar por proveedor
+                </a>
             </div>
-        </div>
-        {% if object.description %}
-        <p style="margin-bottom: 15px; color: #6c757d; text-transform: uppercase;">
-            {{ object.description|linebreaksbr }}
-        </p>
-        {% endif %}
+
+            {% if object.description %}
+            <p >
+                {{ object.description|linebreaksbr }}
+            </p>
+            {% endif %}
+
+            <div style="display: flex; justify-content: space-between;">
+                <div style="flex: 3; margin-right: 20px;">
+                    <!-- Sidebar -->
+                    <div style="margin-bottom: 20px;">
+                        {% include 'purchases/buy-btn-form.html' with product=object %}
+                    </div>
+
+                    {% if object.image %}
+<div class="div-image1" >
+    <div class="div-image2" >
+        <img class="main-image" src="{{ object.image.url }}" alt="">
     </div>
-
-    <div style="flex: 1;">
-        <!-- sidebar -->
-        <div>
-            {% include 'purchases/buy-btn-form.html' with product=object %}
-        </div>
-        {% if object.image %}
-            <div style="margin-bottom: 20px;">
-                <img style="width: 100%; border-radius: 8px;" src="{{ object.image.url }}" alt="">
-            </div>
-        {% endif %}
-
-        {% if object.offer %}
-            <div style="margin-bottom: 20px;">
-                <h3 style="font-weight: bold; margin-bottom: 15px;">Detalles de la Oferta</h3>
-                <p>Precio Nuevo: {{ object.offer.precio_nuevo }}</p>
-                <p>Precio Anterior: {{ object.offer.precio_viejo }}</p>
-                <p>Fecha de Inicio: {{ object.offer.start_date|date:"d. M, Y" }}</p>
-                <p>Fecha de Fin: {{ object.offer.end_date|date:"d. M, Y" }}</p>
-                <p>Descuento: {{ object.offer.descuento }}%</p>
-                <p>¿Oferta Activa?: {% if object.offer.is_offer_active %} Sí {% else %} No {% endif %}</p>
-            </div>
-        {% endif %}
-
-        {% if form %}
-        <div style="margin-bottom: 20px;">
-            <h3 style="font-weight: bold; margin-bottom: 15px;">Actualizar Producto</h3>
-            <form method="POST" action="." enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" style="background-color: #007bff; color: white; padding: 10px 15px; border-radius: 5px; border: none; cursor: pointer;">Enviar</button>
-            </form>
-        </div>
-        {% endif %}
-
-
-    {% if request.user.usuario.rol.nombre == "cliente" %}
-        <!-- Formulario de evaluación -->
-        <div style="margin-bottom: 20px;">
-            <h3 style="font-weight: bold; margin-bottom: 15px;">Evalúa este producto</h3>
-            <form method="POST" id="contactform" action="{% url 'products:rate_product' object.pk %}">
-                {% csrf_token %}
-            <input type="hidden" name="g-recaptcha-response" id='recaptcha'>
-                <div>
-                    {% for i in "12345" %}
-                        <label style="margin-right: 10px;">
-                            <input type="radio" name="score" value="{{ i }}" required>
-                            {{ i }}
-                        </label>
-                    {% endfor %}
-                </div>
-                <button type="submit" value="submit" style="background-color: #007bff; color: white; padding: 10px 15px; border-radius: 5px; border: none; cursor: pointer;">Enviar Evaluación</button>
-            </form>
-        </div>
+    
     {% endif %}
-
-        {% if request.user == object.user %}
-        <div style="margin-bottom: 20px;">
-            <a href="{% url 'products:manage' object.handle %}" style="background-color: #007bff; color: white; padding: 10px 15px; border-radius: 5px; text-decoration: none;">Administrar Producto</a>
+    <div style="flex: 1;">
+        {% if object.offer %}
+        <div style="padding: 15px;  border-radius: 8px; ">
+            <h3 style="font-weight: bold; margin-bottom: 15px;">Detalles de la Oferta</h3>
+            <p><strong>Precio Nuevo:</strong> {{ object.offer.precio_nuevo }}</p>
+            <p><strong>Precio Anterior:</strong> {{ object.offer.precio_viejo }}</p>
+            <p><strong>Fecha de Inicio:</strong> {{ object.offer.start_date|date:"d. M, Y" }}</p>
+            <p><strong>Fecha de Fin:</strong> {{ object.offer.end_date|date:"d. M, Y" }}</p>
+            <p><strong>Descuento:</strong> {{ object.offer.descuento }}%</p>
+            <p><strong>¿Oferta Activa?:</strong> {% if object.offer.is_offer_active %} Sí {% else %} No {% endif %}</p>
         </div>
-
-        {% if not object.offer %}
-        <form method="POST" action="{% url 'products:crear_oferta' object.pk %}">
-            {% csrf_token %}
-            <div>
-                <button type="submit" style="background-color: #6c757d; color: white; padding: 10px 15px; border-radius: 5px; border: none; cursor: pointer;">Crear Oferta</button>
-            </div>
-        </form>
-        {% else %}
-        <form method="POST" action="{% url 'products:eliminar_oferta' object.pk %}">
-            {% csrf_token %}
-            <div>
-                <button type="submit" style="background-color: #6c757d; color: white; padding: 10px 15px; border-radius: 5px; border: none; cursor: pointer;">Eliminar Oferta</button>
-            </div>
-        </form>
-        {% endif %}
-
         {% endif %}
     </div>
 </div>
 
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+
+                    {% if form %}
+                    <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ced4da; border-radius: 8px; background-color: #f8f9fa;">
+                        <h3 style="font-weight: bold; margin-bottom: 15px;">Actualizar Producto</h3>
+                        <form method="POST" action="." enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button class="button-submit" type="submit" >
+                                Enviar
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+
+                    {% if request.user.usuario.rol.nombre == "cliente" %}
+                    <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ced4da; border-radius: 8px; background-color: #f8f9fa;">
+                        <h3 style="font-weight: bold; margin-bottom: 15px;">Evalúa este producto</h3>
+                        <form method="POST" id="contactform" action="{% url 'products:rate_product' object.pk %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="g-recaptcha-response" id='recaptcha'>
+                            <div style="display: flex; justify-content: center;">
+                                {% for i in "12345" %}
+                                    <label style="margin-right: 10px; cursor: pointer;">
+                                        <input type="radio" name="score" value="{{ i }}" required style="display: none;">
+                                        <ion-icon name="star" class="star" style="font-size: 2em; color: #ccc;" data-value="{{ i }}"></ion-icon>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                            <div id="face-icon" style="text-align: center; margin-top: 15px;">
+                                <ion-icon id="satisfaction-face" name="happy-outline" style="font-size: 3em; color: #ffcc00;"></ion-icon>
+                            </div>
+                            <button class="button-submit" type="submit">
+                                Enviar Evaluación
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+
+                    {% if request.user == object.user %}
+                    <div style="margin-bottom: 20px; max-width: 250px;">
+                        <a class="a-sec" href="{% url 'products:manage' object.handle %}" >
+                           Administrar Producto
+                        </a>
+                    </div>
+
+                    {% if not object.offer %}
+                    <form method="POST" action="{% url 'products:crear_oferta' object.pk %}">
+                        {% csrf_token %}
+                        <div>
+                            <button class="button-sec" type="submit" 
+                                   >
+                                Crear Oferta
+                            </button>
+                        </div>
+                    </form>
+                    {% else %}
+                    <form method="POST" action="{% url 'products:eliminar_oferta' object.pk %}">
+                        {% csrf_token %}
+                        <div>
+                            <button class="button-sec" type="submit" 
+                                    >
+                                Eliminar Oferta
+                            </button>
+                        </div>
+                    </form>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
   crossorigin="anonymous"></script>
 
+<script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
+<script>
+    grecaptcha.ready(function() {
+        $('#contactform').submit(function(e) {
+            var form = this;
+            e.preventDefault();
+            grecaptcha.execute('{{ site_key }}', {action: 'contactform'}).then(function(token) {
+                $('#recaptcha').val(token);
+                form.submit();
+            });
+        });
+    });
+    
+</script>
+<script>
+    const stars = document.querySelectorAll('.star');
+    const faceIcon = document.getElementById('satisfaction-face');
 
-        <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
-        <script>
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const value = this.getAttribute('data-value');
+            stars.forEach(s => {
+                // Marca las estrellas hasta el valor seleccionado
+                s.style.color = s.getAttribute('data-value') <= value ? '#ffcc00' : '#ccc';
+                // Marca el botón de radio correspondiente
+                if (s.getAttribute('data-value') === value) {
+                    s.previousElementSibling.checked = true;
+                }
+            });
+            // Cambia el ícono de la cara y su color según la calificación
+            updateFaceIcon(value);
+        });
+        
+        star.addEventListener('mouseover', function() {
+            const value = this.getAttribute('data-value');
+            stars.forEach(s => {
+                // Cambia el color de las estrellas hasta la estrella sobre la que se pasa el mouse
+                s.style.color = s.getAttribute('data-value') <= value ? '#ffcc00' : '#ccc';
+            });
+        });
 
-          grecaptcha.ready(function() {
+        star.addEventListener('mouseout', function() {
+            // No cambiar el color de las estrellas seleccionadas
+            stars.forEach(s => {
+                if (!s.previousElementSibling.checked) {
+                    s.style.color = '#ccc';
+                }
+            });
+        });
+    });
 
-              $('#contactform').submit(function(e){
-                  var form = this;
+    function updateFaceIcon(value) {
+        switch (value) {
+            case '1':
+                faceIcon.setAttribute('name', 'sad-outline');
+                faceIcon.style.color = 'red'; // Rojo
+                break;
+            case '2':
+                faceIcon.setAttribute('name', 'sad-outline');
+                faceIcon.style.color = 'orange'; // Naranja
+                break;
+            case '3':
+                faceIcon.setAttribute('name', 'remove-circle-outline');
+                faceIcon.style.color = 'yellow'; // Amarillo
+                break;
+            case '4':
+                faceIcon.setAttribute('name', 'happy-outline');
+                faceIcon.style.color = 'yellowgreen'; // Verde amarillento
+                break;
+            case '5':
+                faceIcon.setAttribute('name', 'happy-outline');
+                faceIcon.style.color = 'green'; // Verde
+                break;
+            default:
+                faceIcon.setAttribute('name', 'happy-outline');
+                faceIcon.style.color = 'green'; // Por defecto
+        }
+    }
+</script>
 
-                  e.preventDefault()
-                  grecaptcha.execute('{{ site_key }}', {action: 'contactform'}).then(function(token) {
-
-                      $('#recaptcha').val(token)
-
-                      form.submit()
-                  });
-              })
-
-          });
-         </script>
 {% endblock %}
