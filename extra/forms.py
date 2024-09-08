@@ -5,7 +5,7 @@ class DestinatarioForm(forms.ModelForm):
     class Meta:
         model = Destinatario
         fields = ['nombre', 'apellidos', 'telefono', 'carnet_de_identidad',
-                  'correo_electronico', 'direccion', 'municipio' ,'instrucciones_entrega']
+                  'correo_electronico', 'direccion', 'municipio', 'instrucciones_entrega']
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-input'}),
             'apellidos': forms.TextInput(attrs={'class': 'form-input'}),

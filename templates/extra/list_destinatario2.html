@@ -15,6 +15,20 @@
 
 
 
+.search-input:focus {
+    border-color: #4CAF50; /* Color de borde al enfocar */
+    outline: none; /* Elimina el contorno */
+}
+
+
+
+.search-button:hover {
+    background-color: #45a049;
+}
+
+
+
+
 .destinatarios-list {
     list-style: none;
     padding: 0;
@@ -49,7 +63,20 @@
     color: #666; /* Color de texto más suave para descripciones */
 }
 
+.purchase-button {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #e67e22; /* Color naranja */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
 
+.purchase-button:hover {
+    background-color: #d35400; /* Naranja más oscuro */
+}
 
 .action-buttons {
     display: flex;
@@ -79,42 +106,48 @@
     background-color: #c0392b; /* Rojo más oscuro */
 }
 
-
-
-.button-container {
-    display: flex; /* Usar flexbox para alinear los botones */
+.search-bar {
+    display: flex; /* Usar flexbox para alinear elementos */
     justify-content: center; /* Centrar horizontalmente */
-    margin: 20px 0; /* Espacio superior e inferior */
-    gap: 10px; /* Espacio entre los botones */
+    margin-bottom: 20px; /* Espacio debajo de la barra de búsqueda */
 }
 
-.add-button,
-.purchase-button {
-    padding: 10px 20px; /* Espacio interno */
-    border-radius: 5px; /* Bordes redondeados */
+.search-input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 300px;
+    transition: border-color 0.3s ease;
+}
+
+.search-button {
+    padding: 10px 15px;
+    background-color: #4CAF50;
     color: white;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
+    margin-left: 10px; /* Espacio entre el botón de búsqueda y el de agregar */
     transition: background-color 0.3s ease;
 }
 
 .add-button {
+    margin-left: 10px; /* Espacio entre el botón de búsqueda y el de agregar */
+    padding: 8px 15px; /* Tamaño más pequeño */
     background-color: #3498db; /* Color azul */
-    text-decoration: none; /* Sin subrayado */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px; /* Tamaño de fuente más pequeño */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .add-button:hover {
     background-color: #2980b9; /* Azul más oscuro al pasar el ratón */
 }
-
-.purchase-button {
-    background-color: #e67e22; /* Color naranja */
-    border: none; /* Sin borde */
-}
-
-.purchase-button:hover {
-    background-color: #d35400; /* Naranja más oscuro */
-}
-
 
 /* Estilos para pantallas pequeñas */
 @media (max-width: 480px) {
@@ -123,7 +156,6 @@
     }
 }
 </style>
-
 {% if messages %}
   {% for message in messages %}
     <div class="alert alert-{{ message.tags }}">
@@ -134,7 +166,15 @@
 
 <h1 class="page-title">Lista de Destinatarios</h1>
 
-
+<div class="search-bar">
+    <form method="get" style="display: flex; align-items: center;">
+        <input type="text" name="q" placeholder="Buscar por nombre..." class="search-input">
+        <button type="submit" class="search-button">Buscar</button>
+        <a href="{% url 'extra:crear_destinatario' %}" class="add-button">
+            Agregar Destinatario
+        </a>
+    </form>
+</div>
 
 <ul id="destinatarios-list" class="destinatarios-list">
     {% for destinatario in destinatarios %}
@@ -146,6 +186,11 @@
                 <p class="destinatario-address">{{ destinatario.direccion }}</p>
             </label>
         </div>
+        <form method="post" action="{% url 'pedidos_stripe:buy_cart' destinatario.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="selected_destinatario_id" id="destinatario_id" value="">
+            <button type="submit" class="purchase-button">Realizar Compra</button>
+        </form>
         <div class="action-buttons">
             <a href="{% url 'extra:editar_destinatario' destinatario.id %}" class="edit-button">Editar</a>
             <a href="{% url 'extra:eliminar_destinatario' destinatario.id %}" class="delete-button">
@@ -156,31 +201,7 @@
     {% endfor %}
 </ul>
 
-    <div class="button-container">
-    <a href="{% url 'extra:crear_destinatario' %}" class="add-button">
-        Agregar
-    </a>
-    <form id="purchase-form" class="purchase-form" method="post" action="">
-        {% csrf_token %}
-        <button type="submit" class="purchase-button" onclick="setPurchaseUrl(event)">Realizar Compra</button>
-    </form>
-</div>
-
-<script>
-function setPurchaseUrl(event) {
-    event.preventDefault(); // Previene el envío del formulario
-    const selectedRadio = document.querySelector('input[name="destinatario_id"]:checked');
-
-    if (selectedRadio) {
-        const destinatarioId = selectedRadio.value;
-        const form = document.getElementById('purchase-form');
-        form.action = "{% url 'pedidos_stripe:buy_cart' '0' %}".replace('0', destinatarioId); // Reemplaza '0' con el ID seleccionado
-        form.submit(); // Envía el formulario
-    } else {
-        alert('Por favor, selecciona un destinatario antes de continuar.');
-    }
-}
-</script>
+<script src="{% static 'js/extra/list_destinatario.js' %}"></script>
 
 
 {% endblock %}
