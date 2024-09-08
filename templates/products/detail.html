@@ -239,25 +239,25 @@
         
         <h3 style="font-weight: bold; margin-bottom: 15px;">Evalúa este producto</h3>
         <form method="POST" id="contactform" action="{% url 'products:rate_product' object.pk %}" style="display: inline-block;">
-            {% csrf_token %}
-            <input type="hidden" name="g-recaptcha-response" id='recaptcha'>
-            <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 15px;">
-                <div style="display: flex; margin-bottom: 10px;">
-                    {% for i in "12345" %}
-                    <label style="margin-right: 10px; cursor: pointer;">
-                        <input type="radio" name="score" value="{{ i }}" style="display: none;"
-                            {% if user_rating and user_rating.score|stringformat:"d" == i %} checked {% endif %} required>
-                        <ion-icon name="star" class="star" style="font-size: 2em; color: #ccc;" data-value="{{ i }}"></ion-icon>
-                    </label>
-                    {% endfor %}
-                </div>
-                <div id="face-icon" style="text-align: center; display: none; margin-top: 15px;">
-                    <ion-icon id="satisfaction-face" name="happy-outline" style="font-size: 3em; color: #ffcc00; display: block; margin: 0 auto;"></ion-icon>
-                    <div id="satisfaction-message" style="font-size: 1.2em; color: #333; display: block; margin: 0 auto;"></div>
-                </div>
-                <button class="button-submit" type="submit" style="margin-top: 15px;">Enviar Evaluación</button>
-            </div>
-        </form>
+    {% csrf_token %}
+    <input type="hidden" name="g-recaptcha-response" id='recaptcha'>
+    <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 15px;">
+        <div style="display: flex; margin-bottom: 10px;" id="star-rating">
+            {% for i in "12345" %}
+            <label style="margin-right: 10px; cursor: pointer;">
+                <input type="radio" name="score" value="{{ i }}" style="display: none;"
+                    {% if user_rating and user_rating.score|stringformat:"d" == i %} checked {% endif %} required>
+                <ion-icon name="star" class="star" style="font-size: 2em; color: {% if user_rating and user_rating.score|stringformat:"d" == i %} #ffcc00 {% else %} #ccc {% endif %};" data-value="{{ i }}"></ion-icon>
+            </label>
+            {% endfor %}
+        </div>
+        <div id="face-icon" style="text-align: center; display: none; margin-top: 15px;">
+            <ion-icon id="satisfaction-face" name="happy-outline" style="font-size: 3em; color: #ffcc00; display: block; margin: 0 auto;"></ion-icon>
+            <div id="satisfaction-message" style="font-size: 1.2em; color: #333; display: block; margin: 0 auto;"></div>
+        </div>
+        <button class="button-submit" type="submit" style="margin-top: 15px;">Enviar Evaluación</button>
+    </div>
+</form>
     </div>
 </div>
 
@@ -289,133 +289,135 @@
     </div>
 </div>
 
-<script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
+{#<script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>#}
 <script>
-    grecaptcha.ready(function() {
-        $('#contactform').submit(function(e) {
-            var form = this;
-            e.preventDefault();
-            grecaptcha.execute('{{ site_key }}', {action: 'contactform'}).then(function(token) {
-                $('#recaptcha').val(token);
-                form.submit();
-            });
-        });
-    });
+
 
    const stars = document.querySelectorAll('.star');
-    const faceIconContainer = document.getElementById('face-icon');
-    const faceIcon = document.getElementById('satisfaction-face');
-    const satisfactionMessage = document.getElementById('satisfaction-message');
+const faceIconContainer = document.getElementById('face-icon');
+const faceIcon = document.getElementById('satisfaction-face');
+const satisfactionMessage = document.getElementById('satisfaction-message');
 
-    stars.forEach(star => {
-        star.addEventListener('click', function() {
-            const value = this.getAttribute('data-value');
-            stars.forEach(s => {
-                s.style.color = s.getAttribute('data-value') <= value ? '#ffcc00' : '#ccc';
-                if (s.getAttribute('data-value') === value) {
-                    s.previousElementSibling.checked = true;
-                }
-            });
-            updateFaceIcon(value);
-            faceIconContainer.style.display = 'block'; // Mostrar el ícono de la carita
-            updateSatisfactionMessage(value); // Actualizar el mensaje de satisfacción
-        });
-
-        star.addEventListener('mouseover', function() {
-            const value = this.getAttribute('data-value');
-            stars.forEach(s => {
-                s.style.color = s.getAttribute('data-value') <= value ? '#ffcc00' : '#ccc';
-            });
-        });
-
-        star.addEventListener('mouseout', function() {
-            stars.forEach(s => {
-                if (!s.previousElementSibling.checked) {
-                    s.style.color = '#ccc';
-                }
-            });
-        });
+stars.forEach(star => {
+    star.addEventListener('click', function() {
+        const value = this.getAttribute('data-value');
+        updateStars(value);
+        updateFaceIcon(value);
+        faceIconContainer.style.display = 'block'; // Mostrar el ícono de la carita
+        updateSatisfactionMessage(value); // Actualizar el mensaje de satisfacción
     });
 
-    function updateFaceIcon(value) {
-        switch (value) {
-            case '1':
-                faceIcon.setAttribute('name', 'sad-outline');
-                faceIcon.style.color = 'red';
-                break;
-            case '2':
-                faceIcon.setAttribute('name', 'sad-outline');
-                faceIcon.style.color = 'orange';
-                break;
-            case '3':
-                faceIcon.setAttribute('name', 'remove-circle-outline');
-                faceIcon.style.color = 'yellow';
-                break;
-            case '4':
-                faceIcon.setAttribute('name', 'happy-outline');
-                faceIcon.style.color = 'yellowgreen';
-                break;
-            case '5':
-                faceIcon.setAttribute('name', 'happy-outline');
-                faceIcon.style.color = 'green';
-                break;
-            default:
-                faceIcon.setAttribute('name', 'happy-outline');
-                faceIcon.style.color = 'green';
+    star.addEventListener('mouseover', function() {
+        const value = this.getAttribute('data-value');
+        highlightStars(value);
+    });
+
+    star.addEventListener('mouseout', function() {
+        const checkedStar = document.querySelector('input[name="score"]:checked');
+        if (checkedStar) {
+            updateStars(checkedStar.value); // Mantener el color de las estrellas seleccionadas
+        } else {
+            resetStars(); // Restablecer si no hay selección
         }
-    }
+    });
+});
 
-    function updateSatisfactionMessage(value) {
-        let message = '';
-        switch (value) {
-            case '1':
-                message = 'Muy Insatisfecho';
-                break;
-            case '2':
-                message = 'Insatisfecho';
-                break;
-            case '3':
-                message = 'Neutral';
-                break;
-            case '4':
-                message = 'Satisfecho';
-                break;
-            case '5':
-                message = 'Muy Satisfecho';
-                break;
+function updateStars(value) {
+    stars.forEach(s => {
+        s.style.color = s.getAttribute('data-value') <= value ? '#ffcc00' : '#ccc';
+        if (s.getAttribute('data-value') === value) {
+            s.previousElementSibling.checked = true; // Marcar el radio button
         }
-        satisfactionMessage.textContent = message;
-        satisfactionMessage.style.display = 'block'; // Mostrar el mensaje
+    });
+}
+
+function highlightStars(value) {
+    stars.forEach(s => {
+        s.style.color = s.getAttribute('data-value') <= value ? '#ffcc00' : '#ccc';
+    });
+}
+
+function resetStars() {
+    stars.forEach(s => {
+        s.style.color = '#ccc'; // Restablecer color a gris
+    });
+}
+
+function updateFaceIcon(value) {
+    switch (value) {
+        case '1':
+            faceIcon.setAttribute('name', 'sad-outline');
+            faceIcon.style.color = 'red';
+            break;
+        case '2':
+            faceIcon.setAttribute('name', 'sad-outline');
+            faceIcon.style.color = 'orange';
+            break;
+        case '3':
+            faceIcon.setAttribute('name', 'remove-circle-outline');
+            faceIcon.style.color = 'yellow';
+            break;
+        case '4':
+            faceIcon.setAttribute('name', 'happy-outline');
+            faceIcon.style.color = 'yellowgreen';
+            break;
+        case '5':
+            faceIcon.setAttribute('name', 'happy-outline');
+            faceIcon.style.color = 'green';
+            break;
+        default:
+            faceIcon.setAttribute('name', 'happy-outline');
+            faceIcon.style.color = 'green';
     }
+}
 
-    // Ocultar el ícono de la carita y el mensaje al cargar la página
-    window.onload = function() {
-        faceIconContainer.style.display = 'none';
-        satisfactionMessage.style.display = 'none';
-    };
-
-
-
-
-
-        // Funciones para abrir y cerrar el modal
-        const modal = document.getElementById("evaluationModal");
-    const openModalButton = document.getElementById("openModalButton");
-    const closeModalButton = document.getElementById("closeModalButton");
-
-    openModalButton.onclick = function() {
-        modal.style.display = "block";
+function updateSatisfactionMessage(value) {
+    let message = '';
+    switch (value) {
+        case '1':
+            message = 'Muy Insatisfecho';
+            break;
+        case '2':
+            message = 'Insatisfecho';
+            break;
+        case '3':
+            message = 'Neutral';
+            break;
+        case '4':
+            message = 'Satisfecho';
+            break;
+        case '5':
+            message = 'Muy Satisfecho';
+            break;
     }
+    satisfactionMessage.textContent = message;
+    satisfactionMessage.style.display = 'block'; // Mostrar el mensaje
+}
 
-    closeModalButton.onclick = function() {
+// Ocultar el ícono de la carita y el mensaje al cargar la página
+window.onload = function() {
+    faceIconContainer.style.display = 'none';
+    satisfactionMessage.style.display = 'none';
+};
+
+// Funciones para abrir y cerrar el modal
+const modal = document.getElementById("evaluationModal");
+const openModalButton = document.getElementById("openModalButton");
+const closeModalButton = document.getElementById("closeModalButton");
+
+openModalButton.onclick = function() {
+    modal.style.display = "block";
+}
+
+closeModalButton.onclick = function() {
+    modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+    if (event.target === modal) {
         modal.style.display = "none";
     }
-
-    window.onclick = function(event) {
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
-    }
+}
 
 
 
@@ -444,6 +446,48 @@
             icon.setAttribute('name', 'chevron-down'); // Cambia el icono a flecha abajo
         }
     }
+
+    function addToCart(productId, quantity) {
+    console.log("Este es el ID del producto: ", productId);
+    console.log("La cantidad es: ", quantity);
+
+    fetch(`/carro/agregar/${productId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ product_id: productId, quantity: quantity })
+    })
+    .then(response => {
+        console.log("Estado de la respuesta:", response.status);
+        if (response.ok) {
+            return response.json();
+        } else {
+            return response.text().then(text => {
+                throw new Error(`Error al agregar el producto: ${text}`);
+            });
+        }
+    })
+    .then(data => {
+       const countElement = document.getElementById('cart-count1');
+       const countElement2 = document.getElementById('cart-count2');
+        const currentCount = parseInt(countElement.innerText, 10); // Obtener el conteo actual
+        const currentCount2 = parseInt(countElement2.innerText, 10); // Obtener el conteo actual
+        countElement.innerText = currentCount + 1; // Incrementar el contador
+        countElement2.innerText = currentCount2 + 1; // Incrementar el contador
+        alert(data.message); // Ahora muestra el mensaje del servidor
+    })
+    .catch(error => {
+        console.error(error);
+        alert('Hubo un problema al agregar el producto');
+    });
+}
+        function getCookie(name) {
+            const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+            return cookieValue ? cookieValue.pop() : '';
+        }
+
 </script>
 
 {% endblock %}

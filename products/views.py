@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 import mimetypes
 from django.http import FileResponse, HttpResponseBadRequest, JsonResponse, HttpResponseRedirect, HttpResponse
 from django.urls import reverse
+from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import  User
 from stripe import APIConnectionError
@@ -66,6 +67,8 @@ def product_create_view(request):
 
 
 from django.core.serializers import serialize
+
+# @cache_page(60 * 15)  # 15 minutos
 def product_list_view(request,provider_id=None,promotion_id=None):
     object_list = Product.objects.all()
     object_list = object_list.filter(active=True)

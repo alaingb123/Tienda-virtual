@@ -89,7 +89,7 @@ def crear_usuario(request):
 
     return render(request, 'usuario/create.html', {'form': formulario})
 
-@never_cache
+
 def iniciar_sesion(request):
     if request.user.is_authenticated:
         return redirect('products:list')
@@ -137,7 +137,7 @@ def iniciar_sesion(request):
 
 
 
-@never_cache
+
 @login_required
 def editar_perfil(request):
     if request.method == 'POST':
@@ -156,7 +156,7 @@ def editar_perfil(request):
 
 
 @login_required
-@never_cache
+
 def cerrar_sesion(request):
     logout(request)
     return redirect('usuario:login')
