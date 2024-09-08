@@ -1,26 +1,77 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="py-8 px-4 sm:px-6 lg:px-8">
-  {% if solicitudes or pedidos_stripe %}
-    {% if solicitudes %}
-      {% include 'purchases/solicitud/filtro_solicitudes_list.html' %}
-      {% include 'purchases/solicitud/tabla_zelle.html' %}
-    {% endif %}
+<div class="custom-container">
 
     {% if pedidos_stripe %}
-      {% include 'purchases/solicitud/filtrar_solicitudes_stripe.html' %}
-      {% include 'purchases/solicitud/pedidos_stripe.html' %}
+        {% include 'purchases/solicitud/filtrar_solicitudes_stripe.html' %}
+        {% include 'purchases/solicitud/pedidos_stripe.html' %}
+    {% else %}
+        <div class="custom-empty-state">
+            <h2 class="custom-title">No tienes pedidos</h2>
+            <p class="custom-message">Aún no has realizado ningún pedido.</p>
+            <a href="{% url 'products:list' %}" class="custom-button">
+                Realizar un pedido
+            </a>
+        </div>
     {% endif %}
-  {% else %}
-    <div class="bg-white shadow-md rounded-lg p-6 text-center">
-      <h2 class="text-2xl font-bold mb-4">No tienes pedidos</h2>
-      <p class="text-gray-600 mb-6">Aún no has realizado ningún pedido.</p>
-      <a href="{% url 'products:list' %}" class="inline-block bg-blue-500 hover:bg-blue-600 font-bold py-3 px-6 rounded-lg transition duration-300">
-        Realizar un pedido
-      </a>
-    </div>
-  {% endif %}
 </div>
-{% endblock %}
 
+<style>
+    .custom-container {
+        padding: 20px;
+        max-width: 1200px;
+        margin: auto;
+        background-color: white; /* Fondo blanco */
+        border-radius: 8px;
+        /* Eliminamos la sombra para que no se distinga del fondo */
+    }
+
+    .custom-empty-state {
+        background-color: white; /* Fondo blanco para el estado vacío */
+        border-radius: 8px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil para destacar el contenido */
+    }
+
+    .custom-title {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #2c3e50;
+    }
+
+    .custom-message {
+        color: #666;
+        margin-bottom: 20px;
+    }
+
+    .custom-button {
+        background-color: #3498db;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+
+    .custom-button:hover {
+        background-color: #2980b9;
+    }
+
+    @media (max-width: 768px) {
+        .custom-container {
+            padding: 15px;
+        }
+
+        .custom-title {
+            font-size: 1.5rem;
+        }
+
+        .custom-button {
+            padding: 10px 20px;
+        }
+    }
+</style>
+{% endblock %}
