@@ -1,3 +1,16 @@
+
+
+<style>
+.category-img-box {
+    width: 90px; /* Ajusta según tus necesidades */
+    height: 70px; /* Ajusta según tus necesidades */
+    background-size: cover; /* Para que la imagen cubra todo el contenedor */
+    background-position: center; /* Centra la imagen */
+    overflow: hidden; /* Oculta cualquier contenido que sobresalga */
+}
+
+</style>
+
 <div class="category">
 
     <div class="container">
@@ -8,13 +21,13 @@
                 {% if clasification.productos_padre.count > 0 %}
                     <div class="category-item">
 
-                        <div class="category-img-box">
+
+                        <div class="category-img-box" style="{% if clasification.image %} background-image: url('{{ clasification.image.url }}'); {% endif %}">
                             <a href="{% url 'products:list' %}?classification_id_padre={{ clasification.id }}">
-                                {% if clasification.image %}
-                                    <img src="{{ clasification.image.url }}" alt="{{ clasification.nombre }}" width="50"> <!-- Ajustado el ancho -->
-                                {% endif %}
+                                <!-- Contenido adicional si es necesario -->
                             </a>
                         </div>
+                        
 
                         <div class="category-content-box">
 
