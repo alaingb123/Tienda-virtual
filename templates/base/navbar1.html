@@ -93,15 +93,12 @@
         <img src="{% static 'img/logo.png' %}" alt="Anon's logo" width="150" height="56">
       </a>
 
-      <form method="get" action="{% url 'products:list' %}" >
-      <div class="header-search-container">
-        <!--EL INPUT DEBE SER MAS ANCHO-->
-        <input type="search" name="search" class="search-field" placeholder="Introduce el nombre del producto..." >
-        <button class="search-btn" type="submit">
-          <ion-icon name="search-outline"></ion-icon>
-        </button>
-      </div>
-    </form>
+<div class="header-search-container">
+    <input type="search" id="search-input" class="search-field" placeholder="Introduce el nombre del producto...">
+    <a href="#" class="search-btn" id="search-link">
+        <ion-icon name="search-outline"></ion-icon>
+    </a>
+</div>
 
 
 
@@ -391,6 +388,15 @@
       </ul>
 
     </div>
+
+  <script>
+      document.getElementById('search-link').onclick = function(e) {
+    e.preventDefault();  // Evitar que el enlace navegue
+    const searchValue = document.getElementById('search-input').value;
+    const url = "{% url 'products:list' %}?search=" + encodeURIComponent(searchValue);
+    window.location.href = url;  // Redirigir a la URL de búsqueda
+};
+  </script>
 <script>
 // mobile menu variables
 const mobileMenuOpenBtn = document.querySelectorAll('[data-mobile-menu-open-btn]');
@@ -415,6 +421,10 @@ for (let i = 0; i < mobileMenuOpenBtn.length; i++) {
   overlay.addEventListener('click', mobileMenuCloseFunc);
 
 }
+
+
+
+
 
 
 </script>

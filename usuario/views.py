@@ -33,20 +33,20 @@ def crear_usuario(request):
     if request.method == 'POST':
         formulario = CrearUsuarioFormulario(request.POST)
 
-        secret_key = settings.RECAPTCHA_SECRET_KEY
+        # secret_key = settings.RECAPTCHA_SECRET_KEY
+        #
+        # # Captcha verification
+        # data = {
+        #     'response': request.POST.get('g-recaptcha-response'),
+        #     'secret': secret_key
+        # }
+        # resp = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+        # result_json = resp.json()
+        #
+        # if not result_json.get('success'):
+        #     return render(request, 'usuario/create.html', {'form': formulario})
 
-        # Captcha verification
-        data = {
-            'response': request.POST.get('g-recaptcha-response'),
-            'secret': secret_key
-        }
-        resp = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
-        result_json = resp.json()
-
-        if not result_json.get('success'):
-            return render(request, 'usuario/create.html', {'form': formulario})
-
-        if formulario.is_valid() and result_json.get('success'):
+        if formulario.is_valid():
             user = formulario.save(commit=False)
 
             rol_cliente = Rol.objects.get(nombre='cliente')  # Asegúrate de que este rol exista
@@ -97,23 +97,23 @@ def iniciar_sesion(request):
     formulario = AuthenticationForm()
     if request.method == 'POST':
 
-        secret_key = settings.RECAPTCHA_SECRET_KEY
-
-        # captcha verification
-        data = {
-            'response': request.POST.get('g-recaptcha-response'),
-            'secret': secret_key
-        }
-        resp = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
-        result_json = resp.json()
-
-
-        if not result_json.get('success'):
-            return render(request, 'usuario/login.html', {'formulario': formulario})
+        # secret_key = settings.RECAPTCHA_SECRET_KEY
+        #
+        # # captcha verification
+        # data = {
+        #     'response': request.POST.get('g-recaptcha-response'),
+        #     'secret': secret_key
+        # }
+        # resp = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+        # result_json = resp.json()
+        #
+        #
+        # if not result_json.get('success'):
+        #     return render(request, 'usuario/login.html', {'formulario': formulario})
 
 
         formulario = AuthenticationForm(request, data=request.POST)
-        if formulario.is_valid() and result_json.get('success'):
+        if formulario.is_valid():
             usuario = formulario.get_user()
             login(request, usuario)
             if usuario.usuario.rol.nombre == 'admin':

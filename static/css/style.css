@@ -897,7 +897,7 @@
   \*-----------------------------------*/
   
   .category { margin-bottom: 30px; }
-  
+
   .category-item-container {
     display: -webkit-box;
     display: -webkit-flex;
@@ -914,7 +914,7 @@
             scroll-snap-type: inline mandatory;
     overscroll-behavior-inline: contain;
   }
-  
+
   .category-item {
     min-width: 100%;
     display: -webkit-box;
@@ -932,7 +932,7 @@
             border-radius: var(--border-radius-md);
     scroll-snap-align: start;
   }
-  
+
   .category-img-box {
     background: var(--cultured);
     border: 1px solid hsl(0, 0%, 80%);
@@ -940,9 +940,9 @@
     -webkit-border-radius: var(--border-radius-sm);
             border-radius: var(--border-radius-sm);
   }
-  
+
   .category-content-box { width: 100%; }
-  
+
   .category-content-flex {
     display: -webkit-box;
     display: -webkit-flex;
@@ -958,26 +958,26 @@
             align-items: center;
     margin-bottom: 10px;
   }
-  
+
   .category-item-title {
     color: var(--eerie-black);
     font-size: var(--fs-9);
     font-weight: var(--weight-600);
     text-transform: uppercase;
   }
-  
+
   .category-item-amount {
     color: var(--sonic-silver);
     font-size: var(--fs-11);
   }
-  
+
   .category-btn {
     color: var(--salmon-pink);
     font-size: var(--fs-9);
     font-weight: var(--weight-500);
     text-transform: capitalize;
   }
-  
+
   
   
   

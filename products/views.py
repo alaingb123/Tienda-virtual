@@ -513,21 +513,21 @@ def rate_product(request, product_id):
     if request.method == 'POST':
         product = get_object_or_404(Product, id=product_id)
 
-        secret_key = settings.RECAPTCHA_SECRET_KEY
-
-        # captcha verification
-        data = {
-            'response': request.POST.get('g-recaptcha-response'),
-            'secret': secret_key
-        }
-        resp = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
-        result_json = resp.json()
-
-        print(result_json)
-
-        if not result_json.get('success'):
-            return redirect('products:detail', handle=product.handle)
-        # end captcha verification
+        # secret_key = settings.RECAPTCHA_SECRET_KEY
+        #
+        # # captcha verification
+        # data = {
+        #     'response': request.POST.get('g-recaptcha-response'),
+        #     'secret': secret_key
+        # }
+        # resp = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+        # result_json = resp.json()
+        #
+        # print(result_json)
+        #
+        # if not result_json.get('success'):
+        #     return redirect('products:detail', handle=product.handle)
+        # # end captcha verification
 
 
         rating_product = product.rating_product

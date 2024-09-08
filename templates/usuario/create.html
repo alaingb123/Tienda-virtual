@@ -249,24 +249,24 @@
   crossorigin="anonymous"></script>
 
 
-        <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
-        <script>
+{#        <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>#}
+{#        <script>#}
+{##}
+{#          grecaptcha.ready(function() {#}
+{##}
+{#              $('#create_user').submit(function(e){#}
+{#                  var form = this;#}
+{##}
+{#                  e.preventDefault()#}
+{#                  grecaptcha.execute('{{ site_key }}', {action: 'create_user'}).then(function(token) {#}
+{##}
+{#                      $('#recaptcha').val(token)#}
+{##}
+{#                      form.submit()#}
+{#                  });#}
+{#              })#}
+{##}
+{#          });#}
+{#         </script>#}
 
-          grecaptcha.ready(function() {
-
-              $('#create_user').submit(function(e){
-                  var form = this;
-
-                  e.preventDefault()
-                  grecaptcha.execute('{{ site_key }}', {action: 'create_user'}).then(function(token) {
-
-                      $('#recaptcha').val(token)
-
-                      form.submit()
-                  });
-              })
-
-          });
-         </script>
-
-{%endblock%}
+{% endblock %}

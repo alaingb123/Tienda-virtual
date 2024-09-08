@@ -1,0 +1,41 @@
+<div class="category">
+
+    <div class="container">
+
+        <div class="category-item-container has-scrollbar">
+
+            {% for clasification in classifications %}
+                {% if clasification.productos_padre.count > 0 %}
+                    <div class="category-item">
+
+                        <div class="category-img-box">
+                            <a href="{% url 'products:list' %}?classification_id_padre={{ clasification.id }}">
+                                {% if clasification.image %}
+                                    <img src="{{ clasification.image.url }}" alt="{{ clasification.nombre }}" width="50"> <!-- Ajustado el ancho -->
+                                {% endif %}
+                            </a>
+                        </div>
+
+                        <div class="category-content-box">
+
+                            <div class="category-content-flex">
+                                <h3 class="category-item-title">{{ clasification.nombre }}</h3>
+
+                                {% with product_count=clasification.productos_padre.count %}
+                                    <p class="category-item-amount">{{ product_count }}</p>
+                                {% endwith %}
+                            </div>
+
+                            <a href="{% url 'products:list' %}?classification_id_padre={{ clasification.id }}" class="category-btn">Mostrar</a>
+
+                        </div>
+
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
