@@ -9,15 +9,13 @@ from .models import Product, ProductImage, ProductOffer, ClasificacionPadre, Cla
 class ProductForm(forms.ModelForm):
     clasificaciones_padre = forms.ModelChoiceField(
         queryset=ClasificacionPadre.objects.all(),
-        empty_label="Seleccione una clasificación padre"
-    )
-    clasificacion = forms.ModelChoiceField(
-        queryset=ClasificacionHija.objects.none(),  # Inicialmente vacío
-        empty_label="Seleccione una clasificación"
+        empty_label="Seleccione una clasificación padre",
+        required=False
     )
     class Meta:
         model = Product
-        fields = ['name', 'clasificaciones_padre','clasificacion','handle', 'price', 'supply', 'description']
+        fields = ['name', 'image','clasificaciones_padre','handle', 'price', 'supply', 'description']
+
 
 
 
@@ -28,17 +26,12 @@ class ProductUpdateForm(forms.ModelForm):
         empty_label="Seleccione una clasificación",
         required=False
     )
-    clasificacion = forms.ModelChoiceField(
-        queryset=ClasificacionHija.objects.none(),  # Inicialmente vacío
-        empty_label="Seleccione una clasificación",
-        required=False
-    )
 
     class Meta:
         model = Product
         fields = [
             "image", 'name', 'keywords', 'clasificaciones_padre',
-            'clasificacion', 'handle', 'price', 'supply',
+             'handle', 'price', 'supply',
             'description', 'short_description', 'active'
         ]
 

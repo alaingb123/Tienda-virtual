@@ -16,7 +16,7 @@ from micro_ecommerce import settings
 
 from usuario.decorator import role_required
 # Create your views here.
-from .form import ProductUpdateForm, ProductAttachmentInlineFormSet, ProductOfferForm
+from .form import ProductUpdateForm, ProductAttachmentInlineFormSet, ProductOfferForm, ProductForm
 from .models import Product, ProductImage, ClasificacionPadre, ProductView, Rating, ProductOffer, Rating_product, Likes, \
     ClasificacionHija
 
@@ -32,43 +32,52 @@ from django.db import models
 @role_required(['Proveedor'])
 def product_create_view(request):
     context={}
-    form = ProductUpdateForm(request.POST or None,  request.FILES or None)
-    if form.is_valid():
-        obj = form.save(commit=False)
-        if request.user.is_authenticated:
-            obj.user = request.user
-            try:
-                obj.active = True
-                obj.save()
-                if not hasattr(obj, 'rating_product'):
-                    Rating_product.objects.create(product=obj)
-                form.save_m2m()
-            except APIConnectionError:
-                # Manejo de error de conexión con Stripe
-                conexion_error = 'Error de conexión con Stripe. Por favor, intenta más tarde.'
-                context = {
-                    'conexion_error':conexion_error,
-                    'form':form
-                }
-                return render(request, 'products/create.html', context )
+    form = ProductForm(request.POST or None,  request.FILES or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            clasi=int(request.POST.get('clasificacion'))
+            obj = form.save(commit=False)
+            clasificacion_hija = ClasificacionHija.objects.get(id=clasi)
+            if request.user.is_authenticated:
+                obj.user = request.user
+                try:
+                    obj.active = True
+                    obj.save()
+                    obj.clasificacion.add(clasificacion_hija)
+                    obj.save()
+                    if not hasattr(obj, 'rating_product'):
+                        Rating_product.objects.create(product=obj)
+                    form.save_m2m()
+                except APIConnectionError:
+                    # Manejo de error de conexión con Stripe
+                    conexion_error = 'Error de conexión con Stripe. Por favor, intenta más tarde.'
+                    context = {
+                        'conexion_error':conexion_error,
+                        'form':form
+                    }
+                    return render(request, 'products/create.html', context )
 
-            except Exception as e:
-                # Manejo de otras excepciones
-                conexion_error =  f'Ocurrió un error inesperado: {str(e)}'
-                context = {
-                    'conexion_error': conexion_error,
-                    'form': form
-                }
-                return render(request, 'products/create.html', context)
+                except Exception as e:
+                    # Manejo de otras excepciones
+                    conexion_error =  f'Ocurrió un error inesperado: {str(e)}'
+                    context = {
+                        'conexion_error': conexion_error,
+                        'form': form
+                    }
+                    return render(request, 'products/create.html', context)
 
-            if request.POST.get('action') == 'save_and_add':
-                # Redirigir al mismo formulario para agregar otro producto
-                return redirect('products:create')
+                if request.POST.get('action') == 'save_and_add':
+                    # Redirigir al mismo formulario para agregar otro producto
+                    return redirect('products:create')
+                else:
+                    # Redirigir a otra página, por ejemplo, la lista de productos
+                    return redirect(obj.get_manage_url())
             else:
-                # Redirigir a otra página, por ejemplo, la lista de productos
-                return redirect(obj.get_manage_url())
+                form.add_error(None,"Your  must be looged in to create product")
         else:
-            form.add_error(None,"Your  must be looged in to create product")
+            conexion_error = form.errors
+
+            context['conexion_error'] = conexion_error
     context['form'] = form
     return render(request, 'products/create.html',context)
 
@@ -77,12 +86,18 @@ from django.core.serializers import serialize
 
 # @cache_page(60 * 15)  # 15 minutos
 def product_list_view(request,provider_id=None,promotion_id=None):
+    filtrado = False
     object_list = Product.objects.all()
+    descuento = request.GET.get('descuento')
+    if descuento:
+        filtrado=True
+        object_list = Product.objects.filter(offer__is_active=True)
+
     object_list = object_list.filter(active=True)
 
     no_nuevos=False
 
-    filtrado=False
+
 
     # productos mas vendidos
     top_products = (
@@ -153,6 +168,8 @@ def product_list_view(request,provider_id=None,promotion_id=None):
 
     classifications = ClasificacionPadre.objects.all()
     carro = Carro(request)
+
+
 
 
     # Handle search query
@@ -230,57 +247,63 @@ def product_manage_detail_view(request,handle=None):
     form = ProductUpdateForm(request.POST or None,  request.FILES or None, instance=obj)
 
     # formset = ProductAttachmentInlineFormSet(request.POST or None,request.FILES or None,queryset=attachments)
-    if form.is_valid():
-        instance = form.save(commit=False)
-        print("el form es valido")
-        try:
-            instance.save()
-            form.save_m2m()  # Guarda las relaciones ManyToMany
-        except APIConnectionError:
-            # Manejo de error de conexión con Stripe
-            conexion_error = 'Error de conexión con Stripe. Por favor, intenta más tarde.'
-            context = {
-                'conexion_error': conexion_error,
-                'form': form,
-                # 'formset': formset,
-            }
-            return render(request, 'products/manager.html', context)
+    if request.method == 'POST':
+        clasi = int(request.POST.get('clasificacion'))
+        clasificacion_hija = ClasificacionHija.objects.get(id=clasi)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            print("el form es valido")
+            try:
+                instance.save()
+                instance.clasificacion.clear()
+                instance.clasificacion.add(clasificacion_hija)
+                instance.save()
+                form.save_m2m()  # Guarda las relaciones ManyToMany
+            except APIConnectionError:
+                # Manejo de error de conexión con Stripe
+                conexion_error = 'Error de conexión con Stripe. Por favor, intenta más tarde.'
+                context = {
+                    'conexion_error': conexion_error,
+                    'form': form,
+                    # 'formset': formset,
+                }
+                return render(request, 'products/manager.html', context)
 
-        except Exception as e:
-            # Manejo de otras excepciones
-            conexion_error = f'Ocurrió un error inesperado: {str(e)}'
-            context = {
-                'conexion_error': conexion_error,
-                'form': form,
-                # 'formset': formset,
-            }
-            return render(request, 'products/manager.html', context)
+            except Exception as e:
+                # Manejo de otras excepciones
+                conexion_error = f'Ocurrió un error inesperado: {str(e)}'
+                context = {
+                    'conexion_error': conexion_error,
+                    'form': form,
+                    # 'formset': formset,
+                }
+                return render(request, 'products/manager.html', context)
 
-        # formset.save(commit=False)
-        # for _form in formset:
-        #
-        #     is_delete = _form.cleaned_data.get("DELETE")
-        #
-        #     try:
-        #         attachments_obj = _form.save(commit=False)
-        #     except:
-        #         attachments_obj = None
-        #     if is_delete:
-        #         if attachments_obj is not None:
-        #            if attachments_obj.pk:
-        #                attachments_obj.delete()
-        #     else:
-        #         if attachments_obj is not None:
-        #             attachments_obj.product = instance
-        #             attachments_obj.save()
+            # formset.save(commit=False)
+            # for _form in formset:
+            #
+            #     is_delete = _form.cleaned_data.get("DELETE")
+            #
+            #     try:
+            #         attachments_obj = _form.save(commit=False)
+            #     except:
+            #         attachments_obj = None
+            #     if is_delete:
+            #         if attachments_obj is not None:
+            #            if attachments_obj.pk:
+            #                attachments_obj.delete()
+            #     else:
+            #         if attachments_obj is not None:
+            #             attachments_obj.product = instance
+            #             attachments_obj.save()
 
 
-        return redirect(obj.get_manage_url())
-    else:
-        conexion_error = form.errors
-        context['conexion_error'] = conexion_error
-    context['form'] = form
-    # context['formset'] = formset
+            return redirect(obj.get_manage_url())
+        else:
+            conexion_error = form.errors
+            context['conexion_error'] = conexion_error
+        context['form'] = form
+        # context['formset'] = formset
     try:
         hija = obj.clasificacion.first().pk
         context['hija'] = hija
@@ -292,6 +315,7 @@ def product_manage_detail_view(request,handle=None):
         context['padre'] = padre
     except:
         pass
+    context['form'] = form
     return render(request, 'products/manager.html', context)
 
 def product_detail_view(request,handle=None):
@@ -608,5 +632,6 @@ def dislike_product(request, product_id):
 
 def get_hijas(request):
     padre_id = request.GET.get('padre_id')
-    hijas = ClasificacionHija.objects.filter(padre_id=padre_id).values('id', 'nombre')  # Cambia 'nombre' por el campo adecuado
+    hijas = ClasificacionHija.objects.filter(padre_id=padre_id).values('id', 'nombre')
+    print(hijas)# Cambia 'nombre' por el campo adecuado
     return JsonResponse(list(hijas), safe=False)
