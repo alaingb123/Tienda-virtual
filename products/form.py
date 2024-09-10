@@ -25,7 +25,12 @@ class ProductForm(forms.ModelForm):
 class ProductUpdateForm(forms.ModelForm):
     clasificaciones_padre = forms.ModelChoiceField(
         queryset=ClasificacionPadre.objects.all(),
-        empty_label="Seleccione una clasificación padre",
+        empty_label="Seleccione una clasificación",
+        required=False
+    )
+    clasificacion = forms.ModelChoiceField(
+        queryset=ClasificacionHija.objects.none(),  # Inicialmente vacío
+        empty_label="Seleccione una clasificación",
         required=False
     )
 

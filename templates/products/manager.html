@@ -71,7 +71,7 @@
         <div class="form-group">
             <label for="clasificaciones_padre">Clasificaciones Padre:</label>
             <select name="clasificaciones_padre" id="clasificaciones_padre" onchange="cargarHijas()">
-                <option value="">Seleccione una clasificación padre</option>
+                <option value="">Seleccione una clasificación</option>
                 {% for clasificacion in form.clasificaciones_padre.field.queryset %}
                     <option value="{{ clasificacion.id }}" {% if padre == clasificacion.id %} selected {% endif %}>{{ clasificacion }}</option>
                 {% endfor %}

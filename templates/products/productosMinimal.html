@@ -38,10 +38,10 @@
                 <a href="{% url 'products:list' %}?classification_id={{ clasi.id }}" class="showcase-category">{{ clasi.nombre }}</a>
                     {% endfor %}
                     {% else %}
-                     {% if product.clasificaciones_padre.all %}
-                             {% for clasi_pa in product.clasificaciones_padre.all|slice:":1" %}
-                     <a href="{% url 'products:list' %}?classification_id_padre={{ clasi_pa.id }}" class="showcase-category">{{ clasi_pa.nombre }}</a>
-                         {% endfor %}
+                     {% if product.clasificaciones_padre %}
+
+                     <a href="{% url 'products:list' %}?classification_id_padre={{ product.clasificaciones_padre.id }}" class="showcase-category">{{ product.clasificaciones_padre.nombre }}</a>
+
                          {% endif %}
                   {% endif %}
 
@@ -98,10 +98,10 @@
                 <a href="{% url 'products:list' %}?classification_id={{ clasi.id }}" class="showcase-category">{{ clasi.nombre }}</a>
                     {% endfor %}
                     {% else %}
-                     {% if product.clasificaciones_padre.all %}
-                             {% for clasi_pa in product.clasificaciones_padre.all|slice:":1" %}
-                     <a href="{% url 'products:list' %}?classification_id_padre={{ clasi_pa.id }}" class="showcase-category">{{ clasi_pa.nombre }}</a>
-                         {% endfor %}
+                     {% if product.clasificaciones_padre %}
+
+                     <a href="{% url 'products:list' %}?classification_id_padre={{ product.clasificaciones_padre.id }}" class="showcase-category">{{ product.clasificaciones_padre.nombre }}</a>
+
                          {% endif %}
                   {% endif %}
 
@@ -159,10 +159,10 @@
                 <a href="{% url 'products:list' %}?classification_id={{ clasi.id }}" class="showcase-category">{{ clasi.nombre }}</a>
                     {% endfor %}
                     {% else %}
-                     {% if product.clasificaciones_padre.all %}
-                             {% for clasi_pa in product.clasificaciones_padre.all|slice:":1" %}
-                     <a href="{% url 'products:list' %}?classification_id_padre={{ clasi_pa.id }}" class="showcase-category">{{ clasi_pa.nombre }}</a>
-                         {% endfor %}
+                     {% if product.clasificaciones_padre %}
+
+                     <a href="{% url 'products:list' %}?classification_id_padre={{ product.clasificaciones_padre.id }}" class="showcase-category">{{ product.clasificaciones_padre.nombre }}</a>
+
                          {% endif %}
                   {% endif %}
 
