@@ -11,38 +11,205 @@
    </div>
    {% endif %}
 
-<form class='space-y-5' method="POST" action="" enctype="multipart/form-data">
+<style>
+
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+    }
+
+    .form-group button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .form-group button:hover {
+        background-color: #45a049;
+    }
+
+    .grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .grid > div {
+        flex: 1;
+        min-width: 250px; /* Ajusta según tus necesidades */
+    }
+</style>
+
+<form method="POST" action="" enctype="multipart/form-data">
     {% csrf_token %}
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {{ form.as_ul }}
+    <div class="grid">
+        <!-- Clasificaciones Padre -->
+        <div class="form-group">
+            <label for="clasificaciones_padre">Clasificaciones Padre:</label>
+            <select name="clasificaciones_padre" id="clasificaciones_padre" onchange="cargarHijas()">
+                <option value="">Seleccione una clasificación padre</option>
+                {% for clasificacion in form.clasificaciones_padre.field.queryset %}
+                    <option value="{{ clasificacion.id }}" {% if padre == clasificacion.id %} selected {% endif %}>{{ clasificacion }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Clasificación -->
+            <div class="form-group">
+    <label for="clasificacion">Clasificación:</label>
+        <select name="clasificacion" id="clasificacion" >
+            <option value="">Seleccione una clasificación</option>
+        </select>
+            </div>
+{#        <div class="form-group">#}
+{#            <label for="id_clasificacion">Clasificación:</label>#}
+{#            {{ form.clasificacion }}#}
+{#        </div>#}
+
+        <!-- Imagen -->
+        <div class="form-group">
+            {{ form.image.label_tag }}
+            {{ form.image }}
+        </div>
+
+        <!-- Nombre -->
+        <div class="form-group">
+            {{ form.name.label_tag }}
+            {{ form.name }}
+        </div>
+
+        <!-- Palabras clave -->
+        <div class="form-group">
+            {{ form.keywords.label_tag }}
+            {{ form.keywords }}
+        </div>
+
+        <!-- Handle -->
+        <div class="form-group">
+            {{ form.handle.label_tag }}
+            {{ form.handle }}
+        </div>
+
+        <!-- Precio -->
+        <div class="form-group">
+            {{ form.price.label_tag }}
+            {{ form.price }}
+        </div>
+
+        <!-- Suministro -->
+        <div class="form-group">
+            {{ form.supply.label_tag }}
+            {{ form.supply }}
+        </div>
+
+        <!-- Descripción -->
+        <div class="form-group">
+            {{ form.description.label_tag }}
+            {{ form.description }}
+        </div>
+
+        <!-- Descripción corta -->
+        <div class="form-group">
+            {{ form.short_description.label_tag }}
+            {{ form.short_description }}
+        </div>
+
+        <!-- Activo -->
+        <div class="form-group">
+            {{ form.active.label_tag }}
+            {{ form.active }}
+        </div>
     </div>
 
     <div>
         {{ formset.management_form }}
         <div class="pb-3 border-b space-y-3" id="attachments">
             {% for form in formset %}
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {{ form.as_ul }}
-            </div>
+                <div class="grid">
+                    {{ form.as_ul }}
+                </div>
             {% endfor %}
         </div>
     </div>
 
-    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" id="add-attachment-btn">Add attachment</button>
-
-    <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Save</button>
+    <div class="form-group">
+        <button type="submit">Guardar</button>
+    </div>
 </form>
 
-<div class="hidden" id="blank-form">
-    {{ formset.empty_form }}
-</div>
+
+    {#    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" id="add-attachment-btn">Add attachment</button>#}
+{#<div class="hidden" id="blank-form">#}
+{#    {{ formset.empty_form }}#}
+{#</div>#}
 
 
 
-<div class="hidden" id="blank-form">
-    {{ formset.empty_form }}
-</div>
+{#<div class="hidden" id="blank-form">#}
+{#    {{ formset.empty_form }}#}
+{#</div>#}
+
+
+    <script>
+
+     // Llamar a la función al cargar la página
+         document.addEventListener('DOMContentLoaded', () => {
+        const selectedId = '{{ hija }}'; // Obtener el ID desde el contexto
+        cargarHijas(selectedId); // Pasar el ID a la función
+    });
+
+    function cargarHijas(selectedId) {
+        const padreId = document.getElementById('clasificaciones_padre').value;
+        console.log(padreId)
+        const clasificacionSelect = document.getElementById('clasificacion');
+
+
+        clasificacionSelect.innerHTML = '<option value="">Seleccione una clasificación</option>'; // Limpiar opciones
+
+        if (padreId) {
+            fetch(`/get_hijas/?padre_id=${padreId}`)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(hija => {
+                        const option = document.createElement('option');
+                        option.value = hija.id;
+                        option.textContent = hija.nombre; // Cambia 'nombre' por el campo adecuado
+                        clasificacionSelect.appendChild(option);
+                        if (hija.id == selectedId) {
+                        option.selected = true; // Marca como seleccionado
+                    }
+                    });
+                });
+        }
+    }
+
+
+    </script>
+
 
 <script>
    const blankFormEl = document.querySelector("#blank-form")

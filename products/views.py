@@ -17,7 +17,8 @@ from micro_ecommerce import settings
 from usuario.decorator import role_required
 # Create your views here.
 from .form import ProductUpdateForm, ProductAttachmentInlineFormSet, ProductOfferForm
-from .models import Product, ProductImage, ClasificacionPadre, ProductView, Rating, ProductOffer, Rating_product, Likes
+from .models import Product, ProductImage, ClasificacionPadre, ProductView, Rating, ProductOffer, Rating_product, Likes, \
+    ClasificacionHija
 
 from pedidos_stripe.models import SolicitudStripeItem
 from django.db.models import Sum, Count
@@ -37,6 +38,7 @@ def product_create_view(request):
         if request.user.is_authenticated:
             obj.user = request.user
             try:
+                obj.active = True
                 obj.save()
                 if not hasattr(obj, 'rating_product'):
                     Rating_product.objects.create(product=obj)
@@ -59,7 +61,12 @@ def product_create_view(request):
                 }
                 return render(request, 'products/create.html', context)
 
-            return redirect(obj.get_manage_url())
+            if request.POST.get('action') == 'save_and_add':
+                # Redirigir al mismo formulario para agregar otro producto
+                return redirect('products:create')
+            else:
+                # Redirigir a otra página, por ejemplo, la lista de productos
+                return redirect(obj.get_manage_url())
         else:
             form.add_error(None,"Your  must be looged in to create product")
     context['form'] = form
@@ -211,7 +218,7 @@ def product_list_view(request,provider_id=None,promotion_id=None):
 @role_required(['Proveedor'])
 def product_manage_detail_view(request,handle=None):
     obj = get_object_or_404(Product,handle=handle)
-    attachments = ProductImage.objects.filter(product=obj)
+    # attachments = ProductImage.objects.filter(product=obj)
     is_manager = False
 
     if request.user.is_authenticated:
@@ -221,9 +228,11 @@ def product_manage_detail_view(request,handle=None):
     if not is_manager:
         return HttpResponseBadRequest("No eres proveedor de este producto")
     form = ProductUpdateForm(request.POST or None,  request.FILES or None, instance=obj)
-    formset = ProductAttachmentInlineFormSet(request.POST or None,request.FILES or None,queryset=attachments)
-    if form.is_valid() and formset.is_valid():
+
+    # formset = ProductAttachmentInlineFormSet(request.POST or None,request.FILES or None,queryset=attachments)
+    if form.is_valid():
         instance = form.save(commit=False)
+        print("el form es valido")
         try:
             instance.save()
             form.save_m2m()  # Guarda las relaciones ManyToMany
@@ -233,7 +242,7 @@ def product_manage_detail_view(request,handle=None):
             context = {
                 'conexion_error': conexion_error,
                 'form': form,
-                'formset': formset,
+                # 'formset': formset,
             }
             return render(request, 'products/manager.html', context)
 
@@ -243,32 +252,46 @@ def product_manage_detail_view(request,handle=None):
             context = {
                 'conexion_error': conexion_error,
                 'form': form,
-                'formset': formset,
+                # 'formset': formset,
             }
             return render(request, 'products/manager.html', context)
 
-        formset.save(commit=False)
-        for _form in formset:
-
-            is_delete = _form.cleaned_data.get("DELETE")
-
-            try:
-                attachments_obj = _form.save(commit=False)
-            except:
-                attachments_obj = None
-            if is_delete:
-                if attachments_obj is not None:
-                   if attachments_obj.pk:
-                       attachments_obj.delete()
-            else:
-                if attachments_obj is not None:
-                    attachments_obj.product = instance
-                    attachments_obj.save()
+        # formset.save(commit=False)
+        # for _form in formset:
+        #
+        #     is_delete = _form.cleaned_data.get("DELETE")
+        #
+        #     try:
+        #         attachments_obj = _form.save(commit=False)
+        #     except:
+        #         attachments_obj = None
+        #     if is_delete:
+        #         if attachments_obj is not None:
+        #            if attachments_obj.pk:
+        #                attachments_obj.delete()
+        #     else:
+        #         if attachments_obj is not None:
+        #             attachments_obj.product = instance
+        #             attachments_obj.save()
 
 
         return redirect(obj.get_manage_url())
+    else:
+        conexion_error = form.errors
+        context['conexion_error'] = conexion_error
     context['form'] = form
-    context['formset'] = formset
+    # context['formset'] = formset
+    try:
+        hija = obj.clasificacion.first().pk
+        context['hija'] = hija
+    except:
+        pass
+    try:
+        padre = obj.clasificaciones_padre.pk
+        print(padre)
+        context['padre'] = padre
+    except:
+        pass
     return render(request, 'products/manager.html', context)
 
 def product_detail_view(request,handle=None):
@@ -583,11 +606,7 @@ def dislike_product(request, product_id):
 
 
 
-# def filtrar_productos(request):
-#     productos = list(Product.objects.values())
-#     print(productos)
-#     if (len(productos) > 0 ):
-#         data = {'message': "Succes", 'productos': productos}
-#     else:
-#         data = {'message': "Not Found"}
-#     return JsonResponse(data)
+def get_hijas(request):
+    padre_id = request.GET.get('padre_id')
+    hijas = ClasificacionHija.objects.filter(padre_id=padre_id).values('id', 'nombre')  # Cambia 'nombre' por el campo adecuado
+    return JsonResponse(list(hijas), safe=False)

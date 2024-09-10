@@ -67,11 +67,11 @@
                 <a href="{% url 'products:list' %}?classification_id={{ clasi.id }}" class="showcase-category">{{ clasi.nombre }}</a>
                     {% endfor %}
                     {% else %}
-                     {% if object.clasificaciones_padre.all %}
-                             {% for clasi_pa in object.clasificaciones_padre.all|slice:":1" %}
+                     {% if object.clasificaciones_padre %}
 
-                                 <a href="{% url 'products:list' %}?classification_id_padre={{ clasi_pa.id }}" class="showcase-category">{{ clasi_pa.nombre }}</a>
-                         {% endfor %}
+
+                                 <a href="{% url 'products:list' %}?classification_id_padre={{ object.clasificaciones_padre.id }}" class="showcase-category">{{ object.clasificaciones_padre.nombre }}</a>
+
                          {% endif %}
                   {% endif %}
 

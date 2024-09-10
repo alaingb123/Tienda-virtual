@@ -3,10 +3,37 @@
 {% block content %}
 <style>
     /* Basic styles for responsiveness */
-    body {
-      font-family: sans-serif;
-      margin: 0;
-    }
+   .form-control {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.75rem; /* Espaciado interno */
+    font-size: 1rem; /* Tamaño de fuente */
+    line-height: 1.5; /* Altura de línea */
+    color: #495057; /* Color del texto */
+    background-color: #fff; /* Color de fondo */
+    background-clip: padding-box; /* Clip del fondo */
+    border: 1px solid #ced4da; /* Borde */
+    border-radius: 0.25rem; /* Bordes redondeados */
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; /* Transición */
+}
+
+.form-control:focus {
+    color: #495057; /* Color del texto al enfocar */
+    background-color: #fff; /* Color de fondo al enfocar */
+    border-color: #80bdff; /* Color del borde al enfocar */
+    outline: 0; /* Eliminar contorno */
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Sombra al enfocar */
+}
+
+.form-control::placeholder {
+    color: #6c757d; /* Color del texto de marcador de posición */
+    opacity: 1; /* Opacidad del marcador de posición */
+}
+
+.form-control:disabled, .form-control[readonly] {
+    background-color: #e9ecef; /* Color de fondo para campos deshabilitados */
+    opacity: 1; /* Opacidad */
+}
 
     section {
       background-color: #f8fafc;

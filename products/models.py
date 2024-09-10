@@ -58,8 +58,8 @@ class Product(models.Model):
     )
     keywords = models.TextField(blank=True, null=True)
 
-    clasificaciones_padre = models.ManyToManyField(
-        ClasificacionPadre, blank=True, related_name="productos_padre"
+    clasificaciones_padre = models.ForeignKey(
+        ClasificacionPadre, on_delete=models.CASCADE, related_name="productos_padre",default=1
     )
     clasificaciones_nieta = models.ManyToManyField(
         ClasificacionNieta, blank=True, related_name="productos_nietos"

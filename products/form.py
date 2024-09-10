@@ -1,37 +1,49 @@
 from django import forms
 from django.forms import modelformset_factory, inlineformset_factory, NumberInput
-from .models import Product, ProductImage, ProductOffer
+from .models import Product, ProductImage, ProductOffer, ClasificacionPadre, ClasificacionHija
 
-input_css_class = "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-select_css_class = "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 appearance-none"
+
 
 
 
 class ProductForm(forms.ModelForm):
+    clasificaciones_padre = forms.ModelChoiceField(
+        queryset=ClasificacionPadre.objects.all(),
+        empty_label="Seleccione una clasificación padre"
+    )
+    clasificacion = forms.ModelChoiceField(
+        queryset=ClasificacionHija.objects.none(),  # Inicialmente vacío
+        empty_label="Seleccione una clasificación"
+    )
     class Meta:
         model = Product
         fields = ['name', 'clasificaciones_padre','clasificacion','handle', 'price', 'supply', 'description']
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # self.fields['name'].widget.attrs['placeholder'] = "Your name"
-        for field in self.fields:
-            self.fields[field].widget.attrs['class'] = select_css_class
+
 
 
 class ProductUpdateForm(forms.ModelForm):
+    clasificaciones_padre = forms.ModelChoiceField(
+        queryset=ClasificacionPadre.objects.all(),
+        empty_label="Seleccione una clasificación padre",
+        required=False
+    )
 
     class Meta:
         model = Product
-        fields = ["image", 'name', 'keywords','clasificaciones_padre', 'clasificacion','handle', 'price', 'supply', 'description', 'short_description' , 'active']
+        fields = [
+            "image", 'name', 'keywords', 'clasificaciones_padre',
+            'clasificacion', 'handle', 'price', 'supply',
+            'description', 'short_description', 'active'
+        ]
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self.fields:
-            if isinstance(self.fields[field].widget, forms.Select):
-                self.fields[field].widget.attrs['class'] = select_css_class
-            else:
-                self.fields[field].widget.attrs['class'] = input_css_class
+        super(ProductUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['clasificaciones_padre'].queryset = ClasificacionPadre.objects.all()  # O fil
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'form-control'})
+
+
 
 
 
@@ -42,13 +54,6 @@ class ProductAttachmentForm(forms.ModelForm):
         model = ProductImage
         fields = ["file", 'name', 'is_free', 'active']
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # self.fields['name'].widget.attrs['placeholder'] = "Your name"
-        for field in self.fields:
-            if field in ['is_free', 'active']:
-                continue
-            self.fields[field].widget.attrs['class'] = select_css_class
 
 
 ProductAttachmentModelFormSet = modelformset_factory(

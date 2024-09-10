@@ -55,15 +55,21 @@
         </select> -->
 
       
-        {% if request.user.username %}
-        <select name="pedidos" class="form-select" aria-label="Opciones" onchange="location = this.value;">
-          <option value="" disabled selected>Pedidos</option>
-         
-              <option value="{% url 'pedidos_stripe:purchases_stripe' %}">Pedidos Stripe</option>
-      </select>
+{#        {% if request.user.username %}#}
+{#        <select name="pedidos" class="form-select" aria-label="Opciones" onchange="location = this.value;">#}
+{#          <option value="" disabled selected>Pedidos</option>#}
+{#         #}
+{#              <option value="{% url 'pedidos_stripe:purchases_stripe' %}">Pedidos Stripe</option>#}
+{#      </select>#}
+{#      {% endif %}#}
+
+       {% if request.user.username %}
+
+
+              <a class="form-select" href="{% url 'pedidos_stripe:purchases_stripe' %}">Pedidos</a>
       {% endif %}
 
-      {% if request.user.username %}
+      {% if request.user.usuario.rol.nombre == 'Proveedor' %}
       <select name="pedidos" class="form-select" aria-label="Opciones" onchange="location = this.value;">
         <option value="" disabled selected>Productos</option>
 
@@ -321,7 +327,7 @@
  
       {% if request.user.username %}
       <li class="menu-category">
-          <a href="{% url 'pedidos_stripe:purchases_stripe' %}" class="menu-title">Pedidos Stripe</a>
+          <a href="{% url 'pedidos_stripe:purchases_stripe' %}" class="menu-title">Pedidos</a>
       </li>
   {% endif %}
   
