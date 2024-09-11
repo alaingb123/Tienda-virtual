@@ -1,18 +1,7 @@
    <!--
       - CATEGORY
     -->
-   <style>
-     .category-img-box.has-image {
-        background-size: cover;
-        background-position: center;
-        background-image: url('{{ clasification.image.url }}');
-    }
-
-    .category-img-box.no-image {
-        background-color: #f0f0f0;
-    }
-   </style>
-
+   
 
 
 
@@ -27,9 +16,7 @@
 {% if clasification.productos_padre.count > 0  %}
             <div class="category-item">
 
-              <div class="category-img-box {% if clasification.image %} has-image {% else %} no-image {% endif %}" style="width: 100%; height: 100%;">
-                <a href="{% url 'products:list' %}?classification_id_padre={{ clasification.id }}" style="display: block; width: 100%; height: 100%;"></a>
-            </div>
+            
             
             
             
@@ -44,7 +31,8 @@
                         {% endwith %}
                 </div>
 
-              
+                <a href="#" class="category-btn">Show all</a>
+
               </div>
 
             </div>
