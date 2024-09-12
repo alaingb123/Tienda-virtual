@@ -63,7 +63,7 @@
 
                       <del>${{ offer.precio_viejo }}</del>
                     </div>
- <form action="{% url 'carro:agregar' offer.product.id %}" method="POST">
+<form id="add-to-cart-form2" onsubmit="event.preventDefault(); addToCart({{ offer.product.id }}, 1);">
       {% csrf_token %}
                     <button type="submit" class="add-cart-btn">Agregar al carro</button>
  </form>
@@ -133,3 +133,4 @@
     text-align: center; /* Alineación centrada */
 }
 </style>
+
