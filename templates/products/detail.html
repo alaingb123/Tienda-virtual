@@ -451,7 +451,7 @@ window.onclick = function(event) {
     console.log("Este es el ID del producto: ", productId);
     console.log("La cantidad es: ", quantity);
 
-    fetch(`/carro/agregar/${productId}/`, {
+    fetch(`/carro/agregar_cantidad/${productId}/${quantity}/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
