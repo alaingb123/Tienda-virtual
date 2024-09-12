@@ -1,6 +1,30 @@
   <!--
             - PRODUCT GRID
           -->
+<style>
+    .product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Dos columnas en pantallas pequeñas */
+    gap: 16px; /* Espacio entre los productos */
+}
+
+@media (max-width: 768px) { /* Ajustes para pantallas más pequeñas */
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr); /* Dos columnas */
+    }
+}
+
+@media (min-width: 769px) {
+    .product-grid {
+        grid-template-columns: repeat(4, 1fr); /* Tres columnas en pantallas más grandes */
+    }
+}
+</style>
+
+
+
+
+
 
           <div class="product-main ">
 
