@@ -116,7 +116,7 @@
           <ion-icon name="home-outline"></ion-icon>
       </a>
       
-     {% if  request.user.usuario.rol.nombre == "cliente" %}
+     {% if  request.user.usuario.rol.nombre != "Proveedor" %}
       <a class="action-btn" href="{% url 'carro:ver_carro' %}">
         <ion-icon name="bag-handle-outline"></ion-icon>
         <span id="cart-count2" class="count">{{ request.session.carro|length }} </span>

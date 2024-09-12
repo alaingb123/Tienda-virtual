@@ -91,7 +91,7 @@
 
     {% if object.user != request.user %}
         {% if object.supply != 0 %}
-            <form  class="form-container" id="add-to-cart-form" onsubmit="event.preventDefault(); addToCart({{ object.id }}, 1);">
+            <form  class="form-container" id="add-to-cart-form" onsubmit="event.preventDefault(); addToCart({{ object.id }},  document.getElementById('quantity').value );">
                 {% csrf_token %}
                 <input type="hidden" name="product_id" value="{{ object.id }}">
 
