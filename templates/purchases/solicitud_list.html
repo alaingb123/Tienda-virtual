@@ -18,9 +18,19 @@
 </div>
 
 <style>
+:root {
+
+/**
+ * colors
+ */
+
+
+--salmon-pink: hsl(353, 100%, 78%);
+}
+
     .custom-container {
         padding: 20px;
-        max-width: 1200px;
+        max-width: 1000px;
         margin: auto;
         background-color: white; /* Fondo blanco */
         border-radius: 8px;
@@ -48,16 +58,19 @@
     }
 
     .custom-button {
-        background-color: #3498db;
-        color: white;
-        padding: 12px 24px;
-        border-radius: 5px;
-        text-decoration: none;
-        transition: background-color 0.3s;
-    }
+    background-color: var(--salmon-pink);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    width: 300px;
+    display: block; /* Asegúrate de que sea un bloque */
+    margin: 0 auto; /* Centra horizontalmente */
+}
 
     .custom-button:hover {
-        background-color: #2980b9;
+        background-color: black;
     }
 
     @media (max-width: 768px) {
