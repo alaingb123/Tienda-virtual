@@ -432,6 +432,10 @@
   .header-user-actions,
   .desktop-navigation-menu { display: none; }
   
+.category-cell{
+  display: block;
+}
+
   .header-main {
     padding: 5px 0;
     border-bottom: 1px solid var(--cultured);
@@ -2218,6 +2222,10 @@
   
     .desktop-navigation-menu { display: block; }
   
+    .category-cell{
+      display: none;
+    }
+
     .desktop-menu-category-list {
       position: relative;
       display: flex;

@@ -180,7 +180,134 @@
       margin-right: 45px;
       justify-items: center;
     }
+
+
+
+
+
+
+
+
+    .container-cell {
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 8px;
+    overflow-x: visible; /* Asegúrate de que no haya desplazamiento en pantallas pequeñas */
+}
+
+
+
+.category-cell {
+
+  list-style: none;
+    padding: 0;
+    margin: 0; /* Asegúrate de que no haya margen por defecto */
+
+}
+
+.menu-category-cell {
+ 
+  display: inline-block; /* Cambia a inline-block para que se alineen horizontalmente */
+  margin-right: 20px; /* Espaciado entre los elementos */
+}
+
+.menu-category-cell:last-child {
+    margin-right: 0; /* Elimina el margen del último elemento */
+}
+
+
+.dropdown-list-cell {
+    display: none; /* Oculta los submenús por defecto */
+    position: absolute;
+    left: 0;
+    top: 100%;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    min-width: 200px;
+}
+
+.menu-category-cell:hover .dropdown-list-cell {
+    display: block; /* Muestra el submenú al pasar el ratón */
+}
+
+.dropdown-item-cell {
+    list-style: none;
+}
+
+.dropdown-item-cell a {
+    display: block;
+    padding: 10px 15px;
+    color: #555;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-item-cell a:hover {
+    background-color: #f0f0f0;
+}
+
+
+
+.menu-title-cell{
+  color: gray;
+}
+
+.menu-title-cell:hover{
+  color: pink;
+}
+
 </style>
+
+ 
+    <ul class="category-cell" style="margin-left: 20px; margin-bottom: 20px;margin-top: 20px;">
+        <li class="menu-category-cell">
+            <a href="{% url 'products:list' %}" class="menu-title-cell">
+                Todo
+            </a>
+        </li>
+
+        {% for classification in classifications %}
+            {% if classification.productos_padre.count > 0 %}
+            <li class="menu-category-cell">
+              <a class="menu-title-cell" >
+                {{ classification.nombre }}
+                    </a>
+                    {% if not classification.parent %}
+                        {% if classification.hijos.all %}
+                            <ul class="dropdown-list-cell">
+                                {% for child_classification in classification.hijos.all %}
+                                    {% if child_classification.pro.exists %}
+                                        <li class="dropdown-item-cell">
+                                            <a href="{% url 'products:list' %}?classification_id={{ child_classification.pk  }}" > {{ child_classification.nombre }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    {% endif %}
+
+          </li>
+          
+     
+          
+            {% endif %}
+        {% endfor %}
+
+        <li class="menu-category-cell">
+          <a href="{% url 'products:list' %}?descuento=True" class="menu-title-cell">
+              Descuentos
+          </a>
+      </li>
+
+    </ul>
+
+
+
 
 {% if classifications %}
 
@@ -198,9 +325,6 @@
 
 
 
-
-<li class="menu-category">
-</li>
 
 
 
