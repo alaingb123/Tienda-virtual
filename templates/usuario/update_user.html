@@ -88,6 +88,7 @@
           {% csrf_token %}
           <div>
               {{ form.as_p }}
+{#{{ form.password.help_text }}#}
           </div>
           <button type="submit" class="btn">Guardar Cambios</button>
       </form>

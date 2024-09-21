@@ -152,6 +152,8 @@ def editar_perfil(request):
             field.widget.attrs.update({
                 'placeholder': field.label
             })
+
+    print(formulario)
     return render(request, 'usuario/update_user.html', {'form': formulario})
 
 
