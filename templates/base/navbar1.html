@@ -275,22 +275,8 @@
             {% if classification.productos_padre.count > 0 %}
             <li class="menu-category-cell">
               <a class="menu-title-cell" >
-                <a href="{% url 'products:list' %}?classification_id_padre={{ classification.id }}" > {{ classification.nombre }}</a>
+                <a class="menu-title-cell" href="{% url 'products:list' %}?classification_id_padre={{ classification.id }}" > {{ classification.nombre }}</a>
                     </a>
-                    {% if not classification.parent %}
-                        {% if classification.hijos.all %}
-                            <ul class="dropdown-list-cell">
-                                {% for child_classification in classification.hijos.all %}
-                                    {% if child_classification.pro.exists %}
-                                        <li class="dropdown-item-cell">
-                                            <a href="{% url 'products:list' %}?classification_id={{ child_classification.pk  }}" > {{ child_classification.nombre }}</a>
-                                        </li>
-                                    {% endif %}
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                    {% endif %}
-
           </li>
           
      
