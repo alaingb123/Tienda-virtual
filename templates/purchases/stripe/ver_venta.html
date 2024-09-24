@@ -1,42 +1,116 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="bg-gray-100">
-    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 class="text-3xl font-extrabold text-gray-900 mb-8">Detalles de la Venta</h1>
+<style>
+    /* Estilos personalizados */
 
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold text-gray-800">ID de la Venta: {{ venta.pk }}</h2>
-                <span class="text-gray-600">Fecha: {{ venta.solicitud.timestamp }}</span>
-            </div>
 
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold text-gray-800">Usuario: {{ venta.solicitud.user.username }}</h3>
-                <h3 class="text-lg font-bold text-gray-800">Email: {{ venta.solicitud.user.email }}</h3>
-                <span class="text-gray-600">Estado: {{ venta.solicitud.get_entrega_display }}</span>
-            </div>
+    .title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #1a202c;
+        margin-bottom: 32px;
+    }
 
-            <div class="mt-4">
-                <table class="w-full table-auto responsive">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-4 py-2 text-left text-gray-600 font-bold">Producto</th>
-                            <th class="px-4 py-2 text-left text-gray-600 font-bold">Cantidad</th>
-                            <th class="px-4 py-2 text-left text-gray-600 font-bold">Precio Unitario</th>
-                            <th class="px-4 py-2 text-left text-gray-600 font-bold">Precio Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="px-4 py-2 text-gray-700">{{ venta.product_name_snapshot }}</td>
-                            <td class="px-4 py-2 text-gray-700">{{ venta.quantity }}</td>
-                            <td class="px-4 py-2 text-gray-700">${{ venta.product_price_snapshot }}</td>
-                            <td class="px-4 py-2 text-gray-700">${{ venta.total_price }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+    .card {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 24px;
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .sale-id {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #2d3748;
+    }
+
+    .date {
+        color: #718096;
+        font-size: 1rem;
+    }
+
+    .user-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .user-name, .user-email, .status {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #2d3748;
+    }
+
+    .status {
+        color: #718096;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 16px;
+    }
+
+    .table th, .table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .table th {
+        background-color: #f7fafc;
+        color: #4a5568;
+        font-weight: 700;
+    }
+
+    .table td {
+        color: #4a5568;
+    }
+</style>
+
+<div class="container">
+    <h1 class="title">Detalles de la Venta</h1>
+
+    <div class="card">
+        <div class="card-header">
+            <h2 class="sale-id">ID de la Venta: {{ venta.pk }}</h2>
+            <span class="date">Fecha: {{ venta.solicitud.timestamp }}</span>
+        </div>
+
+        <div class="user-info">
+            <h3 class="user-name">Usuario: {{ venta.solicitud.user.username }}</h3>
+            <h3 class="user-email">Email: {{ venta.solicitud.user.email }}</h3>
+            <span class="status">Estado: {{ venta.solicitud.get_entrega_display }}</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Precio Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ venta.product_name_snapshot }}</td>
+                        <td>{{ venta.quantity }}</td>
+                        <td>${{ venta.product_price_snapshot }}</td>
+                        <td>${{ venta.total_price }}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
