@@ -415,9 +415,9 @@
                     <a href="{% url 'products:manage' producto.handle %}">{{ producto.name }}</a>
                   </th>
                   <td class="category-cell">
-                    {% for clasi in producto.clasificaciones_padre.all %}
-                      <span class="category-badge">{{ clasi.nombre }}</span>
-                    {% endfor %}
+
+                      <span class="category-badge">{{ producto.clasificaciones_padre.nombre }}.</span>
+
                   </td>
                   <td>${{ producto.price }}</td>
                   <td>
