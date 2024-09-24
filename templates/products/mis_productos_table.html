@@ -389,7 +389,6 @@
               <tr>
                 <th>
                   <input id="checkbox-all" type="checkbox" class="checkbox-all" />
-                  <label for="checkbox-all" style="display: none;">checkbox</label>
                 </th>
                 <th>Producto</th>
                 <th>Categoría</th>
@@ -408,15 +407,17 @@
                 <tr class="product-row" data-href="{% url 'products:manage' producto.handle %}">
                   <td>
                     <input id="checkbox-table-search-1" type="checkbox" onclick="event.stopPropagation()" class="checkbox-table" />
-                    <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
+
                   </td>
                   <th scope="row" class="product-name">
+                      {% if producto.image %}
                     <img src="{{ producto.image.url }}" alt="{{ producto.name }}" class="product-image">
+                      {% endif %}
                     <a href="{% url 'products:manage' producto.handle %}">{{ producto.name }}</a>
                   </th>
-                  <td class="category-cell">
+                  <td >
 
-                      <span class="category-badge">{{ producto.clasificaciones_padre.nombre }}.</span>
+                      <span class="category-badge">{{ producto.clasificaciones_padre }}</span>
 
                   </td>
                   <td>${{ producto.price }}</td>
@@ -426,8 +427,8 @@
                       {{ producto.supply }}
                     </div>
                   </td>
-                  <td>${{ producto.ventas_dia|floatformat:2 }}</td>
-                  <td>{{ producto.ventas_mes }}</td>
+                  <td>{{ producto.ventas_dia|floatformat:2 }}</td>
+                  <td>{{ producto.ventas_mes|floatformat:2 }}</td>
                   <td>
                     <div class="sales-info">
                       <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="currentColor" class="sales-icon">
