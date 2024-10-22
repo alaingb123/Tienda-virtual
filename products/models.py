@@ -127,7 +127,7 @@ class Product(models.Model):
 
 
 
-class Rating_product(models.Model):
+class RatingProduct(models.Model):
     product = models.OneToOneField(Product, on_delete=models.CASCADE, related_name='rating_product')
     average_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
 
