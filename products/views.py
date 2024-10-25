@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import  User
 from stripe import APIConnectionError
 
+
 from carro.carro import Carro
 from extra.models import Promocion
 from micro_ecommerce import settings
@@ -17,7 +18,7 @@ from micro_ecommerce import settings
 from usuario.decorator import role_required
 # Create your views here.
 from .form import ProductUpdateForm, ProductAttachmentInlineFormSet, ProductOfferForm, ProductForm
-from .models import Product, ProductImage, ClasificacionPadre, ProductView, Rating, ProductOffer, Rating_product, Likes, \
+from .models import Product, ProductImage, ClasificacionPadre, ProductView, Rating, ProductOffer, RatingProduct, Likes, \
     ClasificacionHija
 
 from pedidos_stripe.models import SolicitudStripeItem
@@ -46,7 +47,7 @@ def product_create_view(request):
                     obj.clasificacion.add(clasificacion_hija)
                     obj.save()
                     if not hasattr(obj, 'rating_product'):
-                        Rating_product.objects.create(product=obj)
+                        RatingProduct.objects.create(product=obj)
                     form.save_m2m()
                 except APIConnectionError:
                     # Manejo de error de conexión con Stripe
@@ -237,6 +238,7 @@ def product_manage_detail_view(request,handle=None):
     obj = get_object_or_404(Product,handle=handle)
     # attachments = ProductImage.objects.filter(product=obj)
     is_manager = False
+    clasificacion_hija = None
 
     if request.user.is_authenticated:
         is_manager = obj.user == request.user
@@ -248,15 +250,16 @@ def product_manage_detail_view(request,handle=None):
 
     # formset = ProductAttachmentInlineFormSet(request.POST or None,request.FILES or None,queryset=attachments)
     if request.method == 'POST':
-        clasi = int(request.POST.get('clasificacion'))
-        clasificacion_hija = ClasificacionHija.objects.get(id=clasi)
+        if request.POST.get('clasificacion'):
+            clasi = int(request.POST.get('clasificacion'))
+            clasificacion_hija = ClasificacionHija.objects.get(id=clasi)
         if form.is_valid():
             instance = form.save(commit=False)
-            print("el form es valido")
             try:
                 instance.save()
                 instance.clasificacion.clear()
-                instance.clasificacion.add(clasificacion_hija)
+                if clasificacion_hija:
+                    instance.clasificacion.add(clasificacion_hija)
                 instance.save()
                 form.save_m2m()  # Guarda las relaciones ManyToMany
             except APIConnectionError:
@@ -329,7 +332,7 @@ def product_detail_view(request,handle=None):
         if request.user.usuario.rol.nombre == "cliente":
             print("entro")
             ProductView.objects.create(product=obj, user=request.user)
-            rating_product = get_object_or_404(Rating_product, product=obj)
+            rating_product = get_object_or_404(RatingProduct, product=obj)
             try:
                 user_rating = Rating.objects.get(average=rating_product, user=request.user)
             except Rating.DoesNotExist:

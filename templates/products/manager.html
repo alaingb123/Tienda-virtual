@@ -196,7 +196,7 @@ h2 {
         <select name="clasificaciones_padre" id="clasificaciones_padre" onchange="cargarHijas()">
             <option value="">Seleccione una clasificación padre</option>
             {% for clasificacion in form.clasificaciones_padre.field.queryset %}
-                <option value="{{ clasificacion.id }}">{{ clasificacion }}</option>
+                <option value="{{ clasificacion.id }}" {% if padre == clasificacion.id %} selected {% endif %}>{{ clasificacion }}</option>
             {% endfor %}
         </select>
     </div>
@@ -271,26 +271,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-function cargarHijas() {
-        const padreId = document.getElementById('clasificaciones_padre').value;
-        console.log(padreId)
-        const clasificacionSelect = document.getElementById('clasificacion');
+function cargarHijas(selectedId) {
+    const padreId = document.getElementById('clasificaciones_padre').value;
+    console.log(padreId);
+    const clasificacionSelect = document.getElementById('clasificacion');
 
-        clasificacionSelect.innerHTML = '<option value="">Seleccione una clasificación</option>'; // Limpiar opciones
+    clasificacionSelect.innerHTML = '<option value="">Seleccione una clasificación</option>'; // Limpiar opciones
 
-        if (padreId) {
-            fetch(`/get_hijas/?padre_id=${padreId}`)
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach(hija => {
-                        const option = document.createElement('option');
-                        option.value = hija.id;
-                        option.textContent = hija.nombre; // Cambia 'nombre' por el campo adecuado
-                        clasificacionSelect.appendChild(option);
-                    });
+    if (padreId) {
+        fetch(`/get_hijas/?padre_id=${padreId}`)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(hija => {
+                    const option = document.createElement('option');
+                    option.value = hija.id;
+                    option.textContent = hija.nombre; // Cambia 'nombre' por el campo adecuado
+
+                    // Convertir ambos a cadenas para la comparación
+                    if (String(hija.id) === String(selectedId)) {
+                        option.selected = true;
+                    }
+
+                    clasificacionSelect.appendChild(option);
                 });
-        }
+            });
     }
+}
 
 // Funcionalidad para añadir adjuntos
 const blankFormEl = document.querySelector("#blank-form");

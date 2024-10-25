@@ -144,7 +144,7 @@ class RatingProduct(models.Model):
 
 
 class Rating(models.Model):
-    average = models.ForeignKey(Rating_product, on_delete=models.CASCADE, related_name='average',default=1)
+    average = models.ForeignKey(RatingProduct, on_delete=models.CASCADE, related_name='average',default=1)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     score = models.PositiveIntegerField()  # Suponiendo que el rating va de 1 a 5
 

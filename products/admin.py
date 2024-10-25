@@ -3,7 +3,7 @@ from django.contrib import admin
 # Register your models here.
 
 from .models import Product, ProductImage, ClasificacionPadre, ClasificacionHija, ProductOffer, ClasificacionNieta, \
-    Rating_product, Rating, Likes
+    RatingProduct, Rating, Likes
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -37,7 +37,7 @@ class Rating_productAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False  # Evita que se pueda eliminar un rating
 
-admin.site.register(Rating_product, Rating_productAdmin)
+admin.site.register(RatingProduct, Rating_productAdmin)
 
 
 
