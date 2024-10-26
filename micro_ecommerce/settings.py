@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -199,3 +200,40 @@ MEDIA_URL= "media/"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+import os
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'general.log'),
+            'level': "DEBUG",
+            'formatter': 'verbose',  # Aquí se asigna el formateador
+        },
+"console": {
+        "class": "logging.StreamHandler",
+        "level": "DEBUG",
+        "formatter": "verbose",
+    },
+    },
+
+    'loggers': {
+        "": {
+            'handlers': ['file','console' ],
+            'level': "DEBUG",
+        },
+    },
+    'formatters': {
+        'simple': {
+            'format': '%(levelname)s %(asctime)s  - %(message)s',
+        },
+        'verbose': {
+            'format': '%(levelname)s - %(asctime)s - %(name)s -  Line %(lineno)d - %(message)s',
+        },
+    },
+}
