@@ -20,28 +20,33 @@ stripe.api_key = STRIPE_SECRET_KEY
 PROTECTED_MEDIA_ROOT = settings.PROTECTED_MEDIA_ROOT
 protected_storage = FileSystemStorage(location=str(PROTECTED_MEDIA_ROOT))
 
+from treebeard.mp_tree import MP_Node
 
-class ClasificacionPadre(models.Model):
-    nombre = models.CharField(max_length=120)
+class Category(MP_Node):
+    name = models.CharField(max_length=30)
     image = models.ImageField(upload_to="clasificacion/", blank=True, null=True)
 
-    def __str__(self):
-        return self.nombre
-
-
-class ClasificacionHija(models.Model):
-    nombre = models.CharField(max_length=120)
-    padre = models.ForeignKey(ClasificacionPadre, on_delete=models.CASCADE, related_name='hijos')
+    node_order_by = ['name']
 
     def __str__(self):
-        return f"{self.padre.nombre} > {self.nombre}"
+        return self.name
 
-class ClasificacionNieta(models.Model):
-    nombre = models.CharField(max_length=120)
-    padre = models.ForeignKey(ClasificacionHija, on_delete=models.CASCADE, related_name='nietos')
+    def has_products(self):
+        # Verifica si la categoría tiene productos
+        if self.products.exists():
+            return True
 
-    def __str__(self):
-        return f"{self.padre.padre.nombre} > {self.padre.nombre} > {self.nombre}"
+        # Verifica si algún hijo tiene productos
+        for child in self.get_children():
+            if child.products.exists():
+                return True
+
+        return False
+
+    def get_all_descendants(self):
+        return self.get_children()  # Obtiene los hijos directos
+
+
 
 class Product(models.Model):
     user = models.ForeignKey(
@@ -53,16 +58,9 @@ class Product(models.Model):
     supply = models.IntegerField(default=1)
     image = models.ImageField(upload_to="products/", blank=True, null=True)
     name = models.CharField(max_length=120)
-    clasificacion = models.ManyToManyField(
-        ClasificacionHija, blank=True, related_name="pro"
-    )
-    keywords = models.TextField(blank=True, null=True)
 
-    clasificaciones_padre = models.ForeignKey(
-        ClasificacionPadre, on_delete=models.CASCADE, related_name="productos_padre",default=1
-    )
-    clasificaciones_nieta = models.ManyToManyField(
-        ClasificacionNieta, blank=True, related_name="productos_nietos"
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, related_name="products",null=True
     )
     handle = models.SlugField(unique=True)  # slug
     price = models.DecimalField(max_digits=10, decimal_places=2, default=9.99)
@@ -115,8 +113,6 @@ class Product(models.Model):
                 )
                 self.stripe_price_id = stripe_price_obj.id
             self.price_changed_timestamp = timezone.now()
-        if self.keywords:
-            self.keywords = ', '.join([keyword.strip().lower() for keyword in self.keywords.split(',')])
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
@@ -124,6 +120,10 @@ class Product(models.Model):
 
     def get_manage_url(self):
         return reverse("products:manage", kwargs={"handle": self.handle})
+
+
+
+
 
 
 
@@ -268,4 +268,8 @@ class Likes(models.Model):
 
     class Meta:
         unique_together = ['user', 'product']  # Un usuario solo puede dar like a un producto una vez
+
+
+
+
 

@@ -17,9 +17,11 @@ from micro_ecommerce import settings
 
 from usuario.decorator import role_required
 # Create your views here.
-from .form import ProductUpdateForm, ProductAttachmentInlineFormSet, ProductOfferForm, ProductForm
-from .models import Product, ProductImage, ClasificacionPadre, ProductView, Rating, ProductOffer, RatingProduct, Likes, \
-    ClasificacionHija
+from .form import ProductUpdateForm, ProductOfferForm, ProductForm
+
+
+from .models import Product, ProductImage, ProductView, Rating, ProductOffer, RatingProduct, Likes
+
 
 from pedidos_stripe.models import SolicitudStripeItem
 from django.db.models import Sum, Count
@@ -30,21 +32,35 @@ from django.db import models
 
 
 
+
 @role_required(['Proveedor'])
 def product_create_view(request):
     context={}
     form = ProductForm(request.POST or None,  request.FILES or None)
     if request.method == 'POST':
         if form.is_valid():
-            clasi=int(request.POST.get('clasificacion'))
+            try:
+                clasi=int(request.POST.get('clasificacion'))
+            except:
+                clasi=None
+            try:
+                clasi2=int(request.POST.get('category'))
+            except:
+                clasi2=None
             obj = form.save(commit=False)
-            clasificacion_hija = ClasificacionHija.objects.get(id=clasi)
+            # root_category = get_object_or_404(Category, pk=clasi)
+            # clasificacion_hija = root_category.get_children()
             if request.user.is_authenticated:
                 obj.user = request.user
                 try:
                     obj.active = True
-                    obj.save()
-                    obj.clasificacion.add(clasificacion_hija)
+                    if clasi:
+                        new_category = get_object_or_404(Category, id=clasi)
+                        print(new_category)
+                    else:
+                        new_category = get_object_or_404(Category, id=clasi2)
+                    obj.category = new_category
+
                     obj.save()
                     if not hasattr(obj, 'rating_product'):
                         RatingProduct.objects.create(product=obj)
@@ -167,7 +183,7 @@ def product_list_view(request,provider_id=None,promotion_id=None):
         obj = get_object_or_404(User, id=provider_id)
         object_list = object_list.filter(user=obj)
 
-    classifications = ClasificacionPadre.objects.all()
+    category = Category.get_root_nodes()
     carro = Carro(request)
 
 
@@ -177,26 +193,24 @@ def product_list_view(request,provider_id=None,promotion_id=None):
     search_query = request.GET.get('search')
     if search_query:
         filtrado=True
-        object_list = object_list.filter(keywords__icontains=search_query)
+        object_list = object_list.filter(name__icontains=search_query)
 
     # Handle classification filter
-    classification_id = request.GET.get('classification_id')
+    classification_id = request.GET.get('category')
     if classification_id:
-        filtrado=True
-        object_list = object_list.filter(clasificacion__id=classification_id)
+        filtrado = True
+        # Obtener la categoría seleccionada
+        categoria_seleccionada = Category.objects.get(pk=classification_id)
+        # Filtrar los productos por la categoría y sus descendientes
+        descendants = categoria_seleccionada.get_descendants()
+        object_list1 = object_list.filter(category__in=descendants)
+        object_list2 = object_list.filter(category=categoria_seleccionada)
+        object_list = object_list1.union(object_list2)
 
     liked = request.GET.get('liked_product')
     if liked:
         filtrado=True
         object_list = Product.objects.filter(like__user=request.user)
-
-    classification_id_padre = request.GET.get('classification_id_padre')
-    if classification_id_padre:
-        filtrado=True
-        object_list = object_list.filter(clasificaciones_padre__id=classification_id_padre)
-
-
-
 
 
 
@@ -213,11 +227,17 @@ def product_list_view(request,provider_id=None,promotion_id=None):
     #     page_solicitudes = paginator.page(paginator.num_pages)
     # products_data = serialize('json', object_list)
 
+    for cate in category:
+        # Contar productos en la categoría y sus subcategorías
+        cate.product_count = (
+                cate.products.count() +
+                cate.get_children().aggregate(total=Count('products'))['total'] or 0
+        )
 
     context = {
         'object_list': object_list,
         'carro': carro,
-        'classifications': classifications,
+        'category': category,
         'promociones': promociones,
         'top_products': top_products,
         'new_products': new_products,
@@ -251,15 +271,28 @@ def product_manage_detail_view(request,handle=None):
     # formset = ProductAttachmentInlineFormSet(request.POST or None,request.FILES or None,queryset=attachments)
     if request.method == 'POST':
         if request.POST.get('clasificacion'):
-            clasi = int(request.POST.get('clasificacion'))
-            clasificacion_hija = ClasificacionHija.objects.get(id=clasi)
+            try:
+                clasi = int(request.POST.get('clasificacion'))
+                clasificacion_hija = get_object_or_404(Category, pk=clasi)
+                # clasificacion_hija = root_category.get_children()
+            except:
+                clasificacion_hija=None
+
+            try:
+                clasi2 = int(request.POST.get('category'))
+                clasificacion_padre = get_object_or_404(Category, pk=clasi2)
+            except:
+                clasificacion_padre = None
+
+
         if form.is_valid():
             instance = form.save(commit=False)
             try:
                 instance.save()
-                instance.clasificacion.clear()
                 if clasificacion_hija:
-                    instance.clasificacion.add(clasificacion_hija)
+                    instance.category = clasificacion_hija
+                else:
+                    instance.category = clasificacion_padre
                 instance.save()
                 form.save_m2m()  # Guarda las relaciones ManyToMany
             except APIConnectionError:
@@ -307,15 +340,22 @@ def product_manage_detail_view(request,handle=None):
             context['conexion_error'] = conexion_error
         context['form'] = form
         # context['formset'] = formset
+    # try:
+    #     hija = obj.clasificacion.first().pk
+    #     context['hija'] = hija
+    #     print("la hijas es",hija)
+    # except:
+    #     pass
     try:
-        hija = obj.clasificacion.first().pk
-        context['hija'] = hija
-    except:
-        pass
-    try:
-        padre = obj.clasificaciones_padre.pk
-        print(padre)
-        context['padre'] = padre
+
+        if obj.category.get_parent():
+            padre = obj.category.get_parent().pk
+            context['padre'] = padre
+            context['hija'] = obj.category.pk
+        else:
+            padre = obj.category.pk
+            context['padre'] = padre
+            print("la padre es", padre)
     except:
         pass
     context['form'] = form
@@ -629,12 +669,28 @@ def dislike_product(request, product_id):
         return JsonResponse({'message': 'No has dado like a este producto'}, status=400)
 
 
-
-
-
-
 def get_hijas(request):
     padre_id = request.GET.get('padre_id')
-    hijas = ClasificacionHija.objects.filter(padre_id=padre_id).values('id', 'nombre')
-    print(hijas)# Cambia 'nombre' por el campo adecuado
-    return JsonResponse(list(hijas), safe=False)
+    root_category = get_object_or_404(Category, pk=padre_id)
+    child_categories = root_category.get_children()
+
+    # Crear una lista de diccionarios para la respuesta JSON
+    child_categories_data = [{'id': child.id, 'name': child.name} for child in child_categories]
+
+    print(child_categories_data)
+    return JsonResponse(child_categories_data, safe=False)
+
+
+from .models import Category
+def tutorial_tree(request):
+    get = lambda node_id: Category.objects.get(pk=node_id)
+    root = Category.add_root(name='Computer Hardware')
+    node = get(root.pk).add_child(name='Memory')
+    get(node.pk).add_sibling(name='Hard Drives')
+    get(node.pk).add_sibling(name='SSD')
+    get(node.pk).add_child(name='Desktop Memory')
+    get(node.pk).add_child(name='Laptop Memory')
+    get(node.pk).add_child(name='Server Memory')
+
+    return HttpResponse("Categorías creadas con éxito.")
+

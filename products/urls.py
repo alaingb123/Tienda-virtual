@@ -5,6 +5,8 @@ from . import views
 app_name = 'products'
 urlpatterns = [
 
+    path('prueba/', views.tutorial_tree, name='tuto'),
+
     path('get_hijas/', views.get_hijas, name='get_hijas'),
 
     path('create/', views.product_create_view, name='create'),
@@ -32,6 +34,8 @@ urlpatterns = [
 
     path('like_product/<int:product_id>/', views.like_product, name='like'),
     path('dislike_product/<int:product_id>/', views.dislike_product, name='dislike'),
+
+
 
 
 

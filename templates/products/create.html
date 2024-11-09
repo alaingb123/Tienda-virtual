@@ -182,13 +182,12 @@ h2 {
             {{ form.handle }}
         </div>
     </div>
-    <div class="form-row">
-    <div class="column">
-        <label for="clasificaciones_padre">Clasificaciones Padre:</label>
-        <select name="clasificaciones_padre" id="clasificaciones_padre" onchange="cargarHijas()">
-            <option value="">Seleccione una clasificación padre</option>
-            {% for clasificacion in form.clasificaciones_padre.field.queryset %}
-                <option value="{{ clasificacion.id }}">{{ clasificacion }}</option>
+     <div class="column">
+        <label for="category">Clasificaciones Padre:</label>
+        <select name="category" id="category" onchange="cargarHijas()" required>
+            <option value="">Seleccione una clasificación</option>
+            {% for clasificacion in form.category.field.queryset %}
+                <option value="{{ clasificacion.id }}" {% if padre == clasificacion.id %} selected {% endif %}>{{ clasificacion }}</option>
             {% endfor %}
         </select>
     </div>
@@ -198,7 +197,6 @@ h2 {
             <option value="">Seleccione una clasificación</option>
         </select>
     </div>
-</div>
     <div class="form-row">
         <div class="column">
             <label for="price">Precio:</label>
@@ -221,7 +219,7 @@ h2 {
             <button type="submit" class="btn-submit">Guardar</button>
         </div>
         <div class="column">
-           <button type="submit" name="action" value="save_and_add" class="btn-submit2">Guardar y agregar otro</button>
+            <button type="submit" name="action" value="save_and_add" class="btn-submit2">Guardar y agregar otro</button>
         </div>
     </div>
 </form>
@@ -248,7 +246,7 @@ h2 {
 
     <script>
     function cargarHijas() {
-        const padreId = document.getElementById('clasificaciones_padre').value;
+        const padreId = document.getElementById('category').value;
         console.log(padreId)
         const clasificacionSelect = document.getElementById('clasificacion');
 
@@ -261,7 +259,7 @@ h2 {
                     data.forEach(hija => {
                         const option = document.createElement('option');
                         option.value = hija.id;
-                        option.textContent = hija.nombre; // Cambia 'nombre' por el campo adecuado
+                        option.textContent = hija.name; // Cambia 'nombre' por el campo adecuado
                         clasificacionSelect.appendChild(option);
                     });
                 });

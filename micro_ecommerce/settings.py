@@ -57,6 +57,8 @@ INSTALLED_APPS = [
     'usuario',
     'pedidos_stripe',
     'extra',
+    'treebeard',
+
 
 ]
 
